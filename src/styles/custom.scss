@@ -1,0 +1,33 @@
+// 自定义table-header
+
+.el-table .el-table__row td {
+  color: #7e8bab;
+  border-bottom: 1px solid #f4f4f4;
+}
+.el-table .el-table__header tr th:first-child {
+  border-radius: 10px 0px 0px 10px;
+}
+.el-table .el-table__header tr th:nth-last-child(2) {
+  border-radius: 0px 10px 10px 0px;
+}
+.el-table .el-table__header tr th {
+  background: #f1f6ff;
+  color: #13171e;
+  border-bottom: 0px;
+}
+
+// 搜索button
+.long-btn {
+  width: 240px;
+}
+.export-btn {
+  background: #185da6;
+  &:hover {
+    background: #185da6;
+    opacity: 0.8;
+  }
+}
+// 不允许复制
+.nocopy {
+  user-select: none !important;
+}

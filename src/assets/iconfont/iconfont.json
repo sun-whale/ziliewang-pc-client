@@ -1,0 +1,135 @@
+{
+  "id": "4419062",
+  "name": "自猎网",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "9466870",
+      "name": "电话",
+      "font_class": "dianhua",
+      "unicode": "e624",
+      "unicode_decimal": 58916
+    },
+    {
+      "icon_id": "21095618",
+      "name": "视频",
+      "font_class": "shipin",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    },
+    {
+      "icon_id": "10320395",
+      "name": "搜索",
+      "font_class": "sousuo",
+      "unicode": "e6c8",
+      "unicode_decimal": 59080
+    },
+    {
+      "icon_id": "9749381",
+      "name": "会议安排",
+      "font_class": "meeting-management-arrangements-for-the-meeting",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "1034000",
+      "name": "数据",
+      "font_class": "iconfontpaixingbang",
+      "unicode": "e639",
+      "unicode_decimal": 58937
+    },
+    {
+      "icon_id": "20997714",
+      "name": "社区互动2",
+      "font_class": "menu_sqhd2",
+      "unicode": "e64f",
+      "unicode_decimal": 58959
+    },
+    {
+      "icon_id": "20493733",
+      "name": "状态旗",
+      "font_class": "zhuangtaiqi",
+      "unicode": "e6af",
+      "unicode_decimal": 59055
+    },
+    {
+      "icon_id": "25840678",
+      "name": "状态事件",
+      "font_class": "zhuangtaishijian",
+      "unicode": "e6b9",
+      "unicode_decimal": 59065
+    },
+    {
+      "icon_id": "33942918",
+      "name": "工作状态",
+      "font_class": "gongzuozhuangtai",
+      "unicode": "e67c",
+      "unicode_decimal": 59004
+    },
+    {
+      "icon_id": "10947478",
+      "name": "身份",
+      "font_class": "shenfen",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    },
+    {
+      "icon_id": "11636536",
+      "name": "ygxxgl-01",
+      "font_class": "ygxxgl-",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    },
+    {
+      "icon_id": "36006524",
+      "name": "video_person_call_filled",
+      "font_class": "video_person_call_filled",
+      "unicode": "ea43",
+      "unicode_decimal": 59971
+    },
+    {
+      "icon_id": "31363976",
+      "name": "常用语",
+      "font_class": "changyongyu",
+      "unicode": "e623",
+      "unicode_decimal": 58915
+    },
+    {
+      "icon_id": "1608256",
+      "name": "好友",
+      "font_class": "wsmp-friends",
+      "unicode": "e65d",
+      "unicode_decimal": 58973
+    },
+    {
+      "icon_id": "5876380",
+      "name": "表情",
+      "font_class": "biaoqing",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "11435770",
+      "name": "聊天",
+      "font_class": "liaotian",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    },
+    {
+      "icon_id": "17875595",
+      "name": "图片",
+      "font_class": "tupian",
+      "unicode": "e620",
+      "unicode_decimal": 58912
+    },
+    {
+      "icon_id": "397987",
+      "name": "文件夹",
+      "font_class": "wenjianjia",
+      "unicode": "e629",
+      "unicode_decimal": 58921
+    }
+  ]
+}
