@@ -8,10 +8,10 @@
         <div class="conversation" @contextmenu.prevent.stop="e => showRightClickMenu(e,item)">
           <div class="avatar">
             <img :src="item.data.avatar?item.data.avatar:require('../../../../assets/image/img-user.jpg')"/>
-            <div v-if="item.unread>0"
-                class="unread-count">
+            <div v-if="item.unread>0" class="unread-count">
               <span class="unread">{{ item.unread }}</span>
             </div>
+            <span class="span-id">ID:{{ item.data.uid }}</span>
           </div>
           <div class="conversation-message">
             <div class="conversation-top">
@@ -310,10 +310,10 @@
 
   .conversation-message {
     flex: 1;
-    // padding-left: 5px;
+    padding-left: 2px;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: center;
   }
 
   .conversation-top {
@@ -364,11 +364,18 @@
   }
 
   .conversation .avatar {
-    width: 36px;
-    height: 36px;
+    width: auto;
+    height: auto;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
-
+  .avatar .span-id{
+    padding-top: 4px;
+    font-size: 13px;
+    font-weight: bold;
+  }
   .conversation .avatar img {
     width: 36px;
     height: 36px;

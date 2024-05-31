@@ -15,5 +15,8 @@
  #app{
   min-height: 100%;
  }
- 
+ #screenShotContainer{
+  position: fixed;
+  z-index: 9999;
+ }
 </style>

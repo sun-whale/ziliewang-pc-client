@@ -23,11 +23,17 @@
               <div class="title list-title-box">
                 <div class="title-left" v-if=" tag == 'hot'|| tag == 'attention' " @click.stop="clickName(item)">
                   <img :src=" item.users.avatar ? item.users.avatar : require('../../../assets/image/img-user.jpg' )" alt="" />
-                  <span>{{ item.users.name }}</span>
+                  <div class="name-id-box">
+                    <span>{{ item.users.real_name }}</span>
+                    <span class="span-id">ID: {{ item.users.uid }}</span>
+                  </div>
                 </div>
                 <div class="title-left" v-else>
                   <img :src="myInfoData.avatar?myInfoData.avatar:require('../../../assets/image/img-user.jpg' )" alt="" />
-                  <span>{{ myInfoData.real_name }}</span>
+                  <div class="name-id-box">
+                    <span>{{ myInfoData.real_name }}</span>
+                    <span class="span-id">ID: {{ myInfoData.uid }}</span>
+                  </div>
                 </div>
                 <div class="title-t">{{ item.createtime }}</div>
               </div>
@@ -801,12 +807,20 @@ export default {
             .title.list-title-box{
               .title-left{
                 img{
-                  width: 30px;
-                  height: 30px;
+                  width: 36px;
+                  height: 36px;
                   border-radius: 50%;
                 }
                 span{
                   font-size: 14px;
+                }
+                .name-id-box{
+                  padding-left: 4px;
+                  display: flex;
+                  flex-direction: column;
+                  .span-id{
+                    font-weight: bold;
+                  }
                 }
               }
             }
@@ -828,7 +842,7 @@ export default {
                   font-size: 12px;
                   font-weight: 400;
                   color: #4E5969;
-                  line-height: 22px;
+                  // line-height: 22px;
                 }
               }
              

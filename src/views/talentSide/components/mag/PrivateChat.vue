@@ -39,9 +39,13 @@
 
             <div class="message-item-content" :class="{ self: item.senderId === currentUser.id }">
               <!-- 头像 开始 -->
-              <div class="sender-info">
-                <img v-if="currentUser.id === item.senderId" :src="currentUser.avatar" class="sender-avatar"/>
-                <img v-else :src="friend.avatar" class="sender-avatar"/>
+              <div class="sender-info" v-if="currentUser.id === item.senderId">
+                <img :src="currentUser.avatar?currentUser.avatar:require('../../../../assets/image/img-user.jpg')" class="sender-avatar"/>
+                <span class="span-id">ID: {{ currentUser.uid }}</span>
+              </div>
+              <div class="sender-info" v-else>
+                <img :src="friend.avatar?friend.avatar:require('../../../../assets/image/img-user.jpg')" class="sender-avatar"/>
+                <span class="span-id">ID: {{ friend.uid }}</span>
               </div>
               <!-- 头像 结束 -->
 
@@ -1396,6 +1400,14 @@
 
   .sender-info {
     margin: 0 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .span-id{
+    padding-top: 4px;
+    font-size: 13px;
+    font-weight: bold;
   }
 
   .sender-avatar {

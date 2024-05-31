@@ -2,7 +2,10 @@
   <div class="right-box">
     <div class="m-box">
       <div class="users-box">
-        <img :src="basic_info.avatar?basic_info.avatar:require('../../../assets/image/img-user.jpg')" alt="" class="img-user" />
+        <div class="avatar-box">
+          <img :src="basic_info.avatar?basic_info.avatar:require('../../../assets/image/img-user.jpg')" alt="" class="img-user" />
+          <span class="span-id">ID: {{ basic_info.uid }}</span>
+        </div>
         <div class="users-right">
           <div class="users-name">
             <span class="span-1" v-if="basic_info">{{basic_info.real_name}}</span>
@@ -215,12 +218,24 @@ export default {
     width: 100%;
     display: flex;
     align-items: center;
-    img.img-user {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      border: 3px solid #F2F3F5;
+    .avatar-box{
+      width: 62px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      img.img-user {
+        width: 54px;
+        height: 54px;
+        border-radius: 50%;
+        border: 3px solid #F2F3F5;
+      }
+      .span-id{
+        font-size: 14px;
+        font-weight: bold;
+        padding-top: 4px;
+      }
     }
+    
     .users-right{
       flex: 1;
       padding-left: 8px;

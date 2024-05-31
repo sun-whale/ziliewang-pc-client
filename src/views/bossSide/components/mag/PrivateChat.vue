@@ -37,9 +37,13 @@
             </div>
             <div class="message-item-content" :class="{ self: message.senderId === currentUser.id }">
               <!-- 头像 开始 -->
-              <div class="sender-info">
-                <img v-if="currentUser.id === message.senderId" :src="currentUser.avatar?currentUser.avatar:require('../../../../assets/image/img-user.jpg')" class="sender-avatar"/>
-                <img v-else :src="friend.avatar?friend.avatar:require('../../../../assets/image/img-user.jpg')" class="sender-avatar"/>
+              <div class="sender-info" v-if="currentUser.id === message.senderId">
+                <img :src="currentUser.avatar?currentUser.avatar:require('../../../../assets/image/img-user.jpg')" class="sender-avatar"/>
+                <span class="span-id">ID: {{ currentUser.uid }}</span>
+              </div>
+              <div class="sender-info" v-else>
+                <img :src="friend.avatar?friend.avatar:require('../../../../assets/image/img-user.jpg')" class="sender-avatar"/>
+                <span class="span-id">ID: {{ friend.uid }}</span>
               </div>
               <!-- 头像 结束 -->
               <div class="message-content" @contextmenu.prevent.stop="e => showActionPopup(message,$event)">
@@ -150,15 +154,15 @@
                     <div class="message-phone-box">您已同意对方交换微信</div>
                   </div>
 
-                  <!-- 个人 发送过来的手机号 ↓ -->
+                  <!-- 个人 发送过来的微信 ↓ -->
                   <div class="message-phone-universal-card" v-if="message.type === 'wechat' && message.payload.way_status == 3">
                     <h4 class="message-phone-universal-card-header">交换微信</h4>
                     <div class="message-phone-universal-card-content">
                       <span>{{ message.payload.real_name }}的微信：{{ message.payload.wechat_number }}</span>
                     </div>
                   </div>
-                  <!-- 个人 发送过来的手机号 ↑ -->
-                  <!-- 个人 索要手机号 ↓ -->
+                  <!-- 个人 发送过来的微信 ↑ -->
+                  <!-- 个人 索要微信 ↓ -->
                   <div class="message-phone-universal-card" v-if="message.type === 'wechat' && message.payload.way_status == 1">
                     <h4 class="message-phone-universal-card-header">交换微信</h4>
                     <div class="message-phone-universal-card-content">
@@ -168,7 +172,7 @@
                       <div class="message-phone-universal-card-btn-main message-phone-universal-card-btn" @click="clickPhoneWechatBtn(2,2,'wechat',message)">同意交换</div>
                     </div>
                   </div>
-                  <!-- 个人 索要手机号 ↑ -->
+                  <!-- 个人 索要微信 ↑ -->
 
                   <!-- 交换微信功能展示 ↑   -->
 
@@ -1393,8 +1397,15 @@
 
   .sender-info {
     margin: 0 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
-
+  .span-id{
+    padding-top: 4px;
+    font-size: 13px;
+    font-weight: bold;
+  }
   .sender-avatar {
     width: 40px;
     height: 40px;

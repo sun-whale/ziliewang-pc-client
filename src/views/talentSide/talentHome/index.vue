@@ -30,7 +30,7 @@
           </div>
           <div class="items-right-box" style="flex-direction: column;justify-content: center;">
             <img :src="item.avatar?item.avatar:require('../../../assets/image/img-user.jpg')" alt="" class="items-boss-img" />
-            <!-- <div class="items-boss-name">{{ item.publish_name }}</div> -->
+            <div class="items-boss-name">ID: {{ item.publish_uid }}</div>
             <div class="items-boss-g">{{ item.role_desc?item.role_desc:'人事' }}</div>
           </div>
         </div>

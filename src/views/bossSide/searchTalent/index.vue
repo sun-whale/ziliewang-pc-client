@@ -12,8 +12,11 @@
     <div class="job-list-box">
       <div v-for="(item,index) in jobList" :key="index" class="jobList-items m-box margin-top-20" @click.stop="clickItems(item)">
         <div class="items-left-box">
-          <div></div>
-          <img :src="item.avatar?item.avatar:require('../../../assets/image/bossSide/img-user.png')" alt="" class="avatar-box">
+          <div class="avatar-box">
+            <img :src="item.avatar?item.avatar:require('../../../assets/image/bossSide/img-user.png')" alt="" />
+            <span class="span-id">ID: {{ item.uid }}</span>
+          </div>
+          
           <div class="left-info-box">
             <div class="left-info-t">
               <span class="left-info-name">{{ item.is_name_protect == 1? item.name: item.real_name }}</span>
@@ -316,9 +319,21 @@ export default {
         width: 20rem;
         display: flex;
         .avatar-box{
-          width: 2.8rem;
-          height: 2.8rem;
-          border-radius: 50%;
+          width: auto;
+          height: auto;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          &>img{
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+          }
+          .span-id{
+            padding-top: 4px;
+            font-size: 14px;
+            font-weight: bold;
+          }
         }
         .left-info-box{
           padding-left: 14px;

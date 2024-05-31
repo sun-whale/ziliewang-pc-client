@@ -101,7 +101,7 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
         isRouterAlive: true,
         width: 0,
         height: 0,
-        minw: 440,
+        minw: 516,
         minh: 340,
         parentH: 0,
         parentW: 0,

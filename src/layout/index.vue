@@ -91,7 +91,7 @@ export default {
       // 聊天弹窗
       width: 0,
       height: 0,
-      minw: 440,
+      minw: 516,
       minh: 340,
       parentH: 0,
       parentW: 0,
