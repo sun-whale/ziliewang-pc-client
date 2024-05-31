@@ -21,8 +21,8 @@
         <div v-for="(message, index) in history.messages" :key="index">
           <!-- 时间 -->
           <div class="time-tips">{{ renderMessageDate(message, index) }}</div>
-          
-          
+
+
           <div class="message-recalled" v-if="message.recalled">
             <div v-if="message.senderId !== currentUser.id">{{ friend.name }}撤回了一条消息</div>
             <div v-else class="message-recalled-self">
@@ -110,7 +110,7 @@
                     </div>
                     <div class="message-phone-box">您已同意对方交换联系方式</div>
                   </div>
-                  
+
                   <!-- 个人 发送过来的手机号 ↓ -->
                   <div class="message-phone-universal-card" v-if="message.type === 'phone' && message.payload.way_status == 3">
                     <h4 class="message-phone-universal-card-header">联系方式</h4>
@@ -149,7 +149,7 @@
                     </div>
                     <div class="message-phone-box">您已同意对方交换微信</div>
                   </div>
-                  
+
                   <!-- 个人 发送过来的手机号 ↓ -->
                   <div class="message-phone-universal-card" v-if="message.type === 'wechat' && message.payload.way_status == 3">
                     <h4 class="message-phone-universal-card-header">交换微信</h4>
@@ -186,7 +186,7 @@
                   <!-- 视频 开始 -->
                   <goeasy-video-player v-if="message.type === 'video'" :thumbnail="message.payload.thumbnail" :src="message.payload.video.url" />
                   <!-- 视频 结束 -->
-                  
+
 
                 </div>
                 <div v-if="currentUser.id === message.senderId" :class="message.read ?'message-read':'message-unread'">
@@ -251,7 +251,7 @@
                     @change="sendVideoMessage"/>
             </div> -->
             <!-- 文件 -->
-            <!-- <div class="action-item">
+            <div class="action-item">
               <label for="file-input" v-if="userVipRank > 0">
                 <i class="iconfont icon-wenjianjia" title="文件"></i>
               </label>
@@ -259,13 +259,16 @@
                 <i class="iconfont icon-wenjianjia" title="文件"></i>
               </label>
               <input v-show="false" id="file-input" type="file"  @change="sendFileMessage"/>
-            </div> -->
+            </div>
             <i class="vline"></i>
             <div class="btn-resume toolbar-btn unable" title="交换联系方式" @click="clickPhoneWechatBtn(1,4,'phone')">联系方式</div>
             <div class="btn-resume toolbar-btn unable" title="邀请面试" @click="clickYqms(1)">邀面试</div>
             <div class="btn-resume toolbar-btn unable" title="交换微信" @click="clickPhoneWechatBtn(1,4,'wechat')">换微信</div>
           </div>
           <div class="action-bar-right">
+            <div class="action-item" style="position: relative; z-index: 999;">
+              <i class="el-icon-scissors" style="font-size: 18px;margin-right: 6px;" title="截图" @click="clickScreenShot()"></i>
+            </div>
             <div class="action-item">
               <i class="iconfont icon-dianhua" title="电话" @click="clickCall(1)"></i>
             </div>
@@ -299,11 +302,11 @@
         <div class="action-item" @click="showCancel">取消</div>
       </div>
     </div>
-    
+
 
     <!-- 预览在线简历 弹窗  -->
     <onlineResume ref="onlineResume" :infoData="userData" :basic_info="basic_info" :is_type="is_type" />
-   
+
     <!-- 邀请面试信息弹窗 -->
     <div class="yqms-popup">
       <el-dialog title="邀请面试" :visible.sync="yqmsVisible" width="580px">
@@ -324,7 +327,7 @@
           </div>
           <div class="items-box">
             <div class="title">面试时间：</div>
-           
+
             <el-date-picker
               v-model="interviewData.interview_time"
               type="datetime"
@@ -373,7 +376,7 @@
                 <div class="items-text">{{ms_infoData.phone?ms_infoData.phone:'暂无'}}</div>
               </div>
             </div>
-            
+
             <div class="box-items">
               <div class="items items-l">
                 <div class="items-label">面试时间：</div>
@@ -386,7 +389,7 @@
                 <div class="items-text">{{ms_infoData.remark?ms_infoData.remark:''}}</div>
               </div>
             </div>
-            
+
             <div class="box-items">
               <div class="items items-l">
                 <div class="items-label">面试地址：</div>
@@ -412,6 +415,7 @@
   import onlineResume from '../onlineResume.vue';
   import BMapAddressSelect from "../../../../components/BMapAddressSelect/index";
   import BaiduMap from '../../../../utils/map.js'
+  import ScreenShot from 'js-web-screen-shot'
 
   const IMAGE_MAX_WIDTH = 200;
   const IMAGE_MAX_HEIGHT = 150;
@@ -475,7 +479,7 @@
           visible: false,
           decoder: new EmojiDecoder(emojiUrl, emojiMap),
         },
-      
+
         // 图片预览弹出框
         imagePreview: {
           visible: false,
@@ -527,7 +531,7 @@
       },
     },
     mounted(){
-      
+
     },
     created() {
       this.userVipRank = localStorage.getItem('staffVipRank');
@@ -566,6 +570,20 @@
       this.goEasy.im.off(this.GoEasy.IM_EVENT.PRIVATE_MESSAGE_RECEIVED, this.onReceivedPrivateMessage);
     },
     methods: {
+    // 截图
+    clickScreenShot() {
+      // 截图确认按钮回调函数
+      const callback = ({base64, cutInfo}) => {
+        console.log(base64,cutInfo);
+      };
+      // 截图取消时的回调函数
+      const closeFn = (err) => {
+        console.log('截图窗口关闭' + err);
+      };
+      // eslint-disable-next-line no-new
+      new ScreenShot({enableWebRtc: true, completeCallback: callback, closeCallback: closeFn});
+      console.log(1);
+    },
       // 音视频 -- 语音、视频按钮
       clickCall(t){
         this.$bus.$emit('clickCall',{to:this.to,currentUser:this.currentUser,type: t});
@@ -574,7 +592,7 @@
       showMap() {
         this.$refs.bmapAddressSelect.show();
       },
-  
+
       /** 确认地图地址 */
       confirmMapAddress(addressInfo) {
         let that = this;
@@ -646,7 +664,7 @@
         this.yqmsVisible = true;
         return
       },
-      // 交换联系方式 
+      // 交换联系方式
       clickPhoneWechatBtn(type,n,tag,i){
         let that = this;
         let userProfile = this.userProfile;
@@ -681,7 +699,7 @@
             return
           }
         }
-        
+
         that.$axios.post(apiUrl,p).then( res =>{
           console.log(res)
           if( res.code == 0){
@@ -1137,7 +1155,7 @@
           interview_address: interviewData.interview_address, //地址
           remark: interviewData.remark, // 备注
         }
-        
+
         that.$axios.post('/api/company-interview/create',p).then( res =>{
           if(res.code == 0){
             let userProfile = that.userProfile;
@@ -1154,8 +1172,8 @@
               position_name:that.interviewData.position.position_name,
               name: userProfile.staff_name,
               way_status: 1,  // 1. 向对方 发送邀请面试请求,2.用户同意面试邀请
-              longitude: interviewData.longitude, 
-              latitude: interviewData.latitude, 
+              longitude: interviewData.longitude,
+              latitude: interviewData.latitude,
             }
             that.goEasy.im.createCustomMessage({
               type: 'interview',  //字符串，可以任意自定义类型 面试邀请方式
@@ -1199,12 +1217,12 @@
             /** 初始化地图End */
             // 创建标注
             const marker = new BMap.Marker(point);
-          
+
             // 将标注添加到地图中
             map.addOverlay(marker);
             /** 点击地图创建坐标事件Start */
-           
-           
+
+
           })
         });
       },
@@ -1921,7 +1939,7 @@
   }
   .unable {
     color: #999;
-  } 
+  }
     /*================ 常用语 样式  ↓  =================*/
     .sentence-panel{
     position: absolute;
@@ -1974,7 +1992,7 @@
     background: #fff;
     box-shadow: 16px 3px 11px 0 rgba(0,0,0,.1);
   }
-  
+
   .sentence-panel li {
     height: 34px;
     line-height: 34px;
@@ -2162,7 +2180,7 @@
         border-color: $g_color;
       }
 
-    
+
     }
   }
   .view-btn{
@@ -2196,7 +2214,7 @@
         padding: 10px;
         color: $g_textColor;
         line-height: 26px;
-        
+
         .box-items{
           display: flex;
           align-items: center;
@@ -2220,7 +2238,7 @@
               color: #414a60;
               padding-left: 4px;
             }
-            
+
           }
           .items-l{
             justify-content: flex-start;
