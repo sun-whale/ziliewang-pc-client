@@ -100,17 +100,6 @@ new Vue({
   store,
   data: function(){ // 全局样式
     return {
-      login_bgurl_1:{
-        backgroundImage:'url(' + require('./assets/image/demo3.png') + ')',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      },
-      // login_bgurl_2:{
-      //   backgroundImage:'url(' + require('./assets/image/bg_2.jpg') + ')',
-      //   backgroundRepeat:'no-repeat',
-      //   backgroundSize: 'cover',
-      //   backgroundPosition: 'center',
-      // },
       positionItems: {}, // 职位中心选中的信息
     }
   },

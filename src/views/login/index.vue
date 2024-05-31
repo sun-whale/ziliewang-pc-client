@@ -3,7 +3,7 @@
     <div class="home-container" :style="login_bgurl_1">
       <div class="login-header-box">
         <div class="header-nav-box">
-          <img src="../../assets/image/log-2.png" alt="" class="logo"/>
+          <img src="../../assets/image/login-logo.png" alt="" class="logo"/>
         </div>
       </div>
     <!-- <div class="home-container"> -->
@@ -185,8 +185,11 @@ export default {
       c_role: false,
       tag: '',  // 用户角色 user、人才 company、企业端缓存
       
-      login_bgurl_1:{},
-      login_bgurl_2:{},
+      login_bgurl_1:{
+        backgroundImage:'url(' + require('../../assets/image/demo3.png') + ')',
+        backgroundSize: 'cover',
+        // backgroundPosition: 'center',
+      },
       sign_login: 'login', // sign、注册； login、登录
       login_way: 2, // 登录方式 1、快捷登录 2、密码登录
       login_user: { // 登录信息
@@ -242,8 +245,7 @@ export default {
     // localStorage.setItem('userVipRank', ''); // 人才端用户会员等级
     // localStorage.setItem('company_id', ''); // 企业id缓存
     localStorage.setItem('ipCity','');
-    this.login_bgurl_1 = this.$root.login_bgurl_1;
-    // this.login_bgurl_2 = this.$root.login_bgurl_2;
+    // this.login_bgurl_1 = this.$root.login_bgurl_1;
     this.$nextTick(() => {
       this.preUrl = !!this.$route.query.preUrl ? this.$route.query.preUrl : undefined
     })

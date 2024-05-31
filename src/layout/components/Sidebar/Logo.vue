@@ -26,7 +26,7 @@ export default {
   data() {
     return {
       title: '自猎网',
-      logo: require('../../../assets/image/bossSide/logo-2.png')
+      logo: require('../../../assets/image/bossSide/logo.png')
     }
   }
 }

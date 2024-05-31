@@ -3,7 +3,7 @@
     <div class="navber-container" :style="`background:${backgroundColor};`">
       <div class="navbar">
         <div class="hospital">
-          <img src="../../../assets/image/logo-2.png" alt="">
+          <img src="../../../assets/image/logo.png" alt="">
         </div>
         <div class="navbar-items-box">
           <el-menu
@@ -266,7 +266,7 @@ export default {
   align-items: center;
   justify-content: space-between;
   .hospital{
-    height: 42px;
+    height: 40px;
   }
   .hospital>img{
     width: 100%;
