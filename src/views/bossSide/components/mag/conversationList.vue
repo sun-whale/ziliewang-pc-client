@@ -4,53 +4,55 @@
       <div class="contact-searchQuery-box">
         <el-input type="text" prefix-icon="el-icon-search" clearable v-model="searchQuery" placeholder="搜索名称" @input="searchQuery_input"></el-input>
       </div>
-      <div v-for="(item, key) in filteredList" :key="key" @click="chatLocation(item)" class="conversation-box" :class="{actived: profile.friend && profile.friend.id == item.userId}">
+      <div v-for="(item, key) in conversations" :key="key" @click="chatLocation(item)" class="conversation-box" :class="{actived: profile.friend && profile.friend.id == item.userId}">
         <div class="conversation" @contextmenu.prevent.stop="e => showRightClickMenu(e,conversation)">
-          <div class="avatar">
-            <img :src="item.data.avatar?item.data.avatar:require('../../../../assets/image/img-user.jpg')"/>
-            <div v-if="item.unread>0" class="unread-count">
-              <span class="unread">{{ item.unread }}</span>
+          <div class="item-top-box">
+            <div class="avatar">
+              <img :src="item.data.avatar?item.data.avatar:require('../../../../assets/image/img-user.jpg')"/>
+              <div v-if="item.unread>0" class="unread-count">
+                <span class="unread">{{ item.unread }}</span>
+              </div>
             </div>
-            <span class="span-id">ID:{{ item.data.uid }}</span>
+            <div class="conversation-message">
+              <div class="conversation-top">
+                <span class="conversation-name">{{ item.data.name }}</span>
+                <div class="conversation-time">
+                  <div>{{ formatDate(item.lastMessage.timestamp) }}</div>
+                </div>
+              </div>
+              <div class="conversation-bottom">
+                <div class="conversation-content" v-if="item.lastMessage.recalled">
+                  <div v-if="item.type === 'private'">
+                    {{ item.lastMessage.senderId === currentUser.id ? '你' : `"${item.data.name}"` }}撤回了一条消息
+                  </div>
+                  <div v-if="item.type === 'group'">
+                    {{ item.lastMessage.senderId === currentUser.id ? '你' : `"${item.lastMessage.senderData.name}"` }}撤回了一条消息
+                  </div>
+                </div>
+                <div class="conversation-content" v-else>
+                  <div class="unread-text"
+                        v-if="item.lastMessage.read === false && item.lastMessage.senderId === currentUser.id">
+                    [未读]
+                  </div>
+                  <div v-if="item.type === 'private'">
+                    {{ item.lastMessage.senderId === currentUser.id ? '我' : item.data.name }}:
+                  </div>
+                  <div v-else>
+                    {{ item.lastMessage.senderId === currentUser.id ? '我' : item.lastMessage.senderData.name }}:
+                  </div>
+                  <span class="text" v-if="item.lastMessage.type === 'text'">{{item.lastMessage.payload.text}}</span>
+                  <span v-else-if="item.lastMessage.type === 'video'">[视频消息]</span>
+                  <span v-else-if="item.lastMessage.type === 'audio'">[语音消息]</span>
+                  <span v-else-if="item.lastMessage.type === 'image' || item.lastMessage.type === 'images'">[图片消息]</span>
+                  <span v-else-if="item.lastMessage.type === 'file'">[文件消息]</span>
+                  <span v-else-if="item.lastMessage.type === 'resume'">[简历消息]</span>
+                  <span v-else-if="item.lastMessage.type === 'phone'">[交换联系方式消息]</span>
+                  <span v-else-if="item.lastMessage.type === 'interview'">[邀请面试消息]</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="conversation-message">
-            <div class="conversation-top">
-              <span class="conversation-name">{{ item.data.name }}</span>
-              <div class="conversation-time">
-                <div>{{ formatDate(item.lastMessage.timestamp) }}</div>
-              </div>
-            </div>
-            <div class="conversation-bottom">
-              <div class="conversation-content" v-if="item.lastMessage.recalled">
-                <div v-if="item.type === 'private'">
-                  {{ item.lastMessage.senderId === currentUser.id ? '你' : `"${item.data.name}"` }}撤回了一条消息
-                </div>
-                <div v-if="item.type === 'group'">
-                  {{ item.lastMessage.senderId === currentUser.id ? '你' : `"${item.lastMessage.senderData.name}"` }}撤回了一条消息
-                </div>
-              </div>
-              <div class="conversation-content" v-else>
-                <div class="unread-text"
-                      v-if="item.lastMessage.read === false && item.lastMessage.senderId === currentUser.id">
-                  [未读]
-                </div>
-                <div v-if="item.type === 'private'">
-                  {{ item.lastMessage.senderId === currentUser.id ? '我' : item.data.name }}:
-                </div>
-                <div v-else>
-                  {{ item.lastMessage.senderId === currentUser.id ? '我' : item.lastMessage.senderData.name }}:
-                </div>
-                <span class="text" v-if="item.lastMessage.type === 'text'">{{item.lastMessage.payload.text}}</span>
-                <span v-else-if="item.lastMessage.type === 'video'">[视频消息]</span>
-                <span v-else-if="item.lastMessage.type === 'audio'">[语音消息]</span>
-                <span v-else-if="item.lastMessage.type === 'image' || item.lastMessage.type === 'images'">[图片消息]</span>
-                <span v-else-if="item.lastMessage.type === 'file'">[文件消息]</span>
-                <span v-else-if="item.lastMessage.type === 'resume'">[简历消息]</span>
-                <span v-else-if="item.lastMessage.type === 'phone'">[交换联系方式消息]</span>
-                <span v-else-if="item.lastMessage.type === 'interview'">[邀请面试消息]</span>
-              </div>
-            </div>
-          </div>
+          <span class="span-id">ID:{{ item.data.uid }}</span>
         </div>
 
       </div>
@@ -121,11 +123,11 @@
     },
     computed: {
       // filteredList 是一个计算属性，它根据 searchQuery 的值动态过滤 itemList。每次 searchQuery 更新时，filteredList 都会重新计算，以显示与搜索词匹配的项目列表。
-      filteredList() {
-        return this.conversations.filter(item => {
-          return item.data.name.toLowerCase().includes(this.searchQuery.toLowerCase());
-        });
-      }
+      // filteredList() {
+      //   return this.conversations.filter(item => {
+      //     return item.data.name.toLowerCase().includes(this.searchQuery.toLowerCase());
+      //   });
+      // }
     },
     created() {
       this.profile.friend = this.infoData; // 好友信息
@@ -153,6 +155,26 @@
     methods: {
       searchQuery_input(e){
         console.log(e)
+        let p = {
+          search: this.searchQuery,
+          tag: 'company'
+        }
+        let filteredList = this.filteredList;
+        if(p.search == '' || !p.search){
+          this.conversations =filteredList;
+          return
+        }
+        this.$axios.post('/api/chat/search',p).then(res =>{
+          if(res.code == 0){
+            let data = res.data;
+            let result = data.map(item => filteredList.find(element => element.data.uid == item.company_uid));
+            this.conversations = result;
+          }else{
+            this.conversations =filteredList;
+          }
+        }).catch(e =>{
+          console.log(e)
+        })
       },
       formatDate,
       loadConversations() {
@@ -171,7 +193,8 @@
         this.goEasy.im.on(this.GoEasy.IM_EVENT.CONVERSATIONS_UPDATED, this.renderConversations);
       },
       renderConversations(content) {
-        this.conversations = content.conversations; /// 会话列表
+        this.filteredList = content.conversations; // 会话列表
+        this.conversations = JSON.parse(JSON.stringify(content.conversations));
       },
      
       showRightClickMenu(e, conversation) {
@@ -280,11 +303,18 @@
   .conversation-box.actived{
     background: #eee;
   }
-  .conversation {
+  // .conversation {
+   
+  // }
+  .item-top-box{
     display: flex;
     cursor: pointer;
   }
-
+  .span-id{
+    padding-top: 4px;
+    font-size: 13px;
+    font-weight: bold;
+  }
   .unread-count {
     position: absolute;
     top: -10px;
@@ -371,11 +401,6 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-  }
-  .avatar .span-id{
-    padding-top: 4px;
-    font-size: 13px;
-    font-weight: bold;
   }
   .router-link-active {
     background: #eeeeee;

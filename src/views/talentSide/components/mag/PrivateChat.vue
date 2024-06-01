@@ -878,7 +878,7 @@
         that.$axios.post('/api/user/deliver',p).then( res =>{
           console.log(res)
           if( res.code == 0){
-            that.clickToolbarBtn();
+            that.clickToolbarBtn();f
           }else{
             that.$message.error({
               message: res.msg
@@ -927,26 +927,13 @@
           return
         }
         if(that.friend.position_id){
-          let conversations = that.conversations;
-          let is_sess = false;
-          conversations.forEach(ele =>{
-            if(ele.data.position_id == that.friend.position_id){
-              return is_sess = true;
-            }
-          })
-          if(!is_sess){
-            that.$axios.post('/api/user/find-company',{
-              position_id: that.friend.position_id, // 岗位id
-              company_uid: that.to.uid,//  发布人uid
-              company_id: that.friend.company_id, // 公司id
-              content: '发起聊天'
-            }).then( res =>{
-              
-            }).catch(e =>{
-
-            })
+          let p = {
+            position_id: that.friend.position_id, // 岗位id
+            company_uid: that.to.data.uid,//  发布人uid
+            company_id: that.friend.company_id, // 公司id
+            content: that.text,
           }
-          
+          that.$axios.post('/api/user/find-company',p);
         }
         that.goEasy.im.createTextMessage({
           text: that.text,
@@ -1769,7 +1756,7 @@
   }
 
   .action-bar .action-item .iconfont {
-    font-size: 23px;
+    font-size: 21px;
     margin: 0 6px 0 4px;
     z-index: 3;
     color: #606266;
