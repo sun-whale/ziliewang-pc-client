@@ -874,24 +874,20 @@
       },
       sendImageMessage(e) {
         let fileList = [...e.target.files];
-        console.log("e",e);
-        console.log("e.target.files",e.target.files);
-        console.log("fileList",fileList);
         fileList.forEach((file) => {
-          console.log("file",);
-          // this.goEasy.im.createImageMessage({
-          //   file: file,
-          //   to: this.to,
-          //   onProgress: function (progress) {
-          //     console.log(progress)
-          //   },
-          //   onSuccess: (message) => {
-          //     this.sendMessage(message);
-          //   },
-          //   onFailed: (e) => {
-          //     console.log('error :', e);
-          //   }
-          // });
+          this.goEasy.im.createImageMessage({
+            file: file,
+            to: this.to,
+            onProgress: function (progress) {
+              console.log(progress)
+            },
+            onSuccess: (message) => {
+              this.sendMessage(message);
+            },
+            onFailed: (e) => {
+              console.log('error :', e);
+            }
+          });
         })
       },
 
