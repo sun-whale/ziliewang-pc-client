@@ -69,9 +69,32 @@
                     <img src="../../../assets/image/comment.png" alt="" />
                     <span>{{ item.comment_num?item.comment_num:0 }}评论</span>
                   </div>
+                  <div class="bottom-btn-items" @click.stop="clickShare(item,index)">
+                    <i class="el-icon-share" style="color:#86909C;padding-right: 2px;"></i>
+                    <span>分享</span>
+                  </div>
                   <img src="../../../assets/image/icon-copy.png" alt="删除"  class="item-delete-img" @click.stop="clickItemDelete(item,index)"  v-if="tag == 'myCircle' && uid == myInfoData.uid"/>
 
                 </div>
+                
+                <!-- 分享区域 开始 -->
+                <div class="items-review-box" :class="item.show_share?'show-box':''">
+                  <div class="share-content">
+                    <div class="share-item" @click="clickShareWent(1)">
+                      <img src="../../../assets//image/share-wx.png" />
+                      <span>微信</span>
+                    </div>
+                    <div class="share-item" @click="clickShareWent(1)">
+                      <img src="../../../assets//image/share-pyq.png" />
+                      <span>朋友圈</span>
+                    </div>
+                    <div class="share-item" @click="clickShareWent(2)">
+                      <img src="../../../assets//image/share-wb.png" />
+                      <span>微博</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- 分享区域 结束 -->
 
                 <!-- 评论区域 开始 -->
                 <div class="items-review-box" :class="item.show_review?'show-box':''">
@@ -249,6 +272,8 @@ export default {
   },
   data(){
     return{
+      shareUrl:"",// 分享的当前地址
+      shareImage:"",// 分享的封面
       content_tag: 2,
       tag: 'attention',
       page: 1,
@@ -337,6 +362,7 @@ export default {
            
           dataList.forEach( ele =>{
             ele.show_review = false
+            ele.show_share = false
           })
           that.dataList = dataList;
         }else{
@@ -459,6 +485,7 @@ export default {
       that.id = i.id;
       that.getInfoData();
       let dataList = that.dataList;
+      dataList[idx].show_share = false;
       if(dataList[idx].show_review == true){
         dataList[idx].show_review = false;
         that.dataList = dataList;
@@ -469,6 +496,45 @@ export default {
       })
       dataList[idx].show_review = true;
       that.dataList = dataList;
+    },
+    // 分享按钮点击  1 复制链接  2 微博
+    clickShareWent(i){
+      const that = this;
+      const title = "【自猎网】"; // 标题
+      if(i == 2){
+        const url = `http://service.weibo.com/share/share.php?url=${that.shareUrl}/&title=${title}&pic=${that.shareImage}`;  
+        window.open(url, '_blank');  
+        return;
+      }
+      navigator.clipboard.writeText(title + that.shareUrl).then(() => {
+        this.$message.success('已复制到剪贴板')
+      }).catch(err => {
+        console.error('复制失败', err);
+      });
+    },
+    // 分享
+    clickShare(i,idx){
+      const that = this;
+      that.seltItemInfoData = i;
+      that.id = i.id;
+      that.getInfoData();
+      let dataList = that.dataList;
+      dataList[idx].show_review = false;
+      that.shareUrl = window.location.href; // 获取分享的当前封面
+      if(dataList[idx].show_share == true){
+        dataList[idx].show_share = false;
+        that.dataList = dataList;
+        return
+      }
+      dataList.forEach( ele =>{
+        ele.show_share = false;
+      })
+      dataList[idx].show_share = true;
+      that.dataList = dataList;
+      // 设置分享封面
+      if(i.images.length >= 1){
+        that.shareImage = i.images[0]
+      }
     },
     // 获取详情
     async getInfoData(){
@@ -1272,6 +1338,30 @@ export default {
   @media screen and (max-width: 1366px) {
     .interaction-box{
       width: 850px;
+    }
+  }
+  .share-content{
+    display: flex;
+    align-items: center;
+    .share-item{
+      font-size: 14px;
+      color: #505050;
+      line-height: 20px;
+      margin-right: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      img{
+        width: 40px;
+        height: 40px;
+        margin-bottom: 2px;
+      }
+      span{
+        display: block;
+        width: 100%;
+        text-align: center; 
+      }
     }
   }
 </style>
