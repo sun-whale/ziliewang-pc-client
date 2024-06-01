@@ -69,7 +69,7 @@
                   </a>
                   <!-- 简历 结束 -->
                   <!-- 图片 开始 -->
-                  <div v-if="message.type === 'image'" class="content-image" @click="showImagePreviewPopup(message.payload.url)">
+                  <div v-if="message.type === 'image' || message.type === 'images'" class="content-image" @click="showImagePreviewPopup(message.payload.url)">
                     <img :src="message.payload.url" :style="{height:getImageHeight(message.payload.width,message.payload.height)+'px'}"/>
                   </div>
                   <!-- 图片 结束 -->
@@ -574,20 +574,64 @@
       this.goEasy.im.off(this.GoEasy.IM_EVENT.PRIVATE_MESSAGE_RECEIVED, this.onReceivedPrivateMessage);
     },
     methods: {
-    // 截图
-    clickScreenShot() {
-      // 截图确认按钮回调函数
-      const callback = ({base64, cutInfo}) => {
-        console.log(base64,cutInfo);
-      };
-      // 截图取消时的回调函数
-      const closeFn = (err) => {
-        console.log('截图窗口关闭' + err);
-      };
-      // eslint-disable-next-line no-new
-      new ScreenShot({enableWebRtc: true, completeCallback: callback, closeCallback: closeFn});
-      console.log(1);
-    },
+      // 发送截图消息
+      async screenshotMessage(image){
+        var payload = {
+          contentType: "image/jpeg",
+          url: image,
+        };
+        
+        this.goEasy.im.createCustomMessage({
+          type: 'images',  // 自定义类型,不能添加image 
+          payload,
+          to: this.to,
+          onSuccess: (message) => {
+            this.sendMessage(message);
+          },
+          onFailed: (err) => {
+            console.log("创建消息err:", err);
+          }
+        });
+      },
+      // 上传图片到服务器
+      uploadFile(base64String){
+        const that = this;
+        // 将base64 转成FormData文件格式上传
+        var bytes = window.atob(base64String.split(',')[1]);
+        var array = [];
+        for(var i = 0; i < bytes.length; i++){
+            array.push(bytes.charCodeAt(i));
+        }
+        var blob = new Blob([new Uint8Array(array)], {type: 'image/jpeg'});
+        var formData = new FormData();
+        // --end--
+        formData.append('file[]',blob, Date.now() + '.jpg');
+        formData.append('up_tag','other');
+        formData.append('pictureCategory','articleCover');
+        console.log(formData);
+        that.$axios.post('/api/upload',formData,{'Content-Type': 'multipart/form-data'}).then(res => {
+          that.screenshotMessage(res.data.upload_files);
+        }).catch(e => {
+          that.$message.error({
+            message: "系统繁忙，请稍后重试"
+          })
+        })
+      },
+      // 截图
+      clickScreenShot() {
+        // 截图确认按钮回调函数
+        const that = this;
+        const callback = ({base64, cutInfo}) => {
+          that.uploadFile(base64);          
+        };
+        // 截图取消时的回调函数
+        const closeFn = (err) => {
+          console.log('截图窗口关闭' + err);
+        };
+        // eslint-disable-next-line no-new
+        new ScreenShot({enableWebRtc: true, completeCallback: callback, closeCallback: closeFn});
+        console.log(1);
+      },
       // 音视频 -- 语音、视频按钮
       clickCall(t){
         this.$bus.$emit('clickCall',{to:this.to,currentUser:this.currentUser,type: t});
@@ -830,20 +874,24 @@
       },
       sendImageMessage(e) {
         let fileList = [...e.target.files];
+        console.log("e",e);
+        console.log("e.target.files",e.target.files);
+        console.log("fileList",fileList);
         fileList.forEach((file) => {
-          this.goEasy.im.createImageMessage({
-            file: file,
-            to: this.to,
-            onProgress: function (progress) {
-              console.log(progress)
-            },
-            onSuccess: (message) => {
-              this.sendMessage(message);
-            },
-            onFailed: (e) => {
-              console.log('error :', e);
-            }
-          });
+          console.log("file",);
+          // this.goEasy.im.createImageMessage({
+          //   file: file,
+          //   to: this.to,
+          //   onProgress: function (progress) {
+          //     console.log(progress)
+          //   },
+          //   onSuccess: (message) => {
+          //     this.sendMessage(message);
+          //   },
+          //   onFailed: (e) => {
+          //     console.log('error :', e);
+          //   }
+          // });
         })
       },
 

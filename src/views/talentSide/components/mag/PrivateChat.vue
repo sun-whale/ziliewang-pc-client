@@ -189,7 +189,7 @@
                   <!-- 交换微信功能展示 ↑   -->
 
                   <!-- 图片 开始 -->
-                  <div v-if="item.type === 'image'" class="content-image" @click="showImagePreviewPopup(item.payload.url)">
+                  <div v-if="item.type === 'image' || item.type === 'images'" class="content-image" @click="showImagePreviewPopup(item.payload.url)">
                     <img :src="item.payload.url" :style="{height:getImageHeight(item.payload.width,item.payload.height)+'px'}"/>
                   </div>
                   <!-- 图片 结束 -->
