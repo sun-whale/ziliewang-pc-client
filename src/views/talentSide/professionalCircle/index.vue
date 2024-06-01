@@ -502,8 +502,11 @@ export default {
       const that = this;
       const title = "【自猎网】"; // 标题
       if(i == 2){
-        const url = `http://service.weibo.com/share/share.php?url=${that.shareUrl}/&title=${title}&pic=${that.shareImage}`;  
-        window.open(url, '_blank');  
+        let images = encodeURIComponent(that.shareImage)
+        let shareUrl = encodeURIComponent(that.shareUrl);
+        const url = `https://service.weibo.com/share/share.php?url=${shareUrl}&type=3&count=1&appkey=&title=${title}&pic=${images}&searchPic=false&ralateUid=&language=zh_cn&rnd=`;
+        window.open(url, '_blank');
+        that.shareImage = ""; // 重置头像
         return;
       }
       navigator.clipboard.writeText(title + that.shareUrl).then(() => {
