@@ -271,18 +271,21 @@
                     @change="sendVideoMessage"/>
             </div> -->
             <!-- 文件 -->
-            <!-- <div class="action-item">
+            <div class="action-item">
               <label @click="clickvipRank_0">
                 <i class="iconfont icon-wenjianjia" title="文件"></i>
               </label>
               <input v-show="false" id="file-input" type="file" @change="sendFileMessage"/>
-            </div> -->
+            </div>
             <i class="vline"></i>
             <div class="btn-resume toolbar-btn unable" title="发送简历" @click="clickDeliver('resume')">发简历</div>
             <div class="btn-resume toolbar-btn unable" title="交换联系方式" @click="clickPhoneWechatBtn(1,1,'phone')">联系方式</div>
             <div class="btn-resume toolbar-btn unable" title="交换微信" @click="clickPhoneWechatBtn(1,1,'wechat')">换微信</div>
           </div>
           <div class="action-bar-right">
+            <div class="action-item" style="position: relative; z-index: 999;">
+              <i class="el-icon-scissors" style="font-size: 18px;margin-right: 6px;" title="截图" @click="clickScreenShot()"></i>
+            </div>
             <div class="action-item">
               <i class="iconfont icon-dianhua" title="电话" @click="user_clickCall(1)"></i>
             </div>
@@ -376,6 +379,7 @@
   import EmojiDecoder from '../../../../utils/EmojiDecoder';
   import GoeasyVideoPlayer from "../../../../components/GoEasyVideoPlayer";
   import BaiduMap from '../../../../utils/map.js'
+  import ScreenShot from 'js-web-screen-shot'
 
   const IMAGE_MAX_WIDTH = 200;
   const IMAGE_MAX_HEIGHT = 150;
@@ -534,6 +538,64 @@
       this.goEasy.im.off(this.GoEasy.IM_EVENT.CONVERSATIONS_UPDATED, this.renderConversations);
     },
     methods: {
+      // 发送截图消息
+      async screenshotMessage(image){
+        var payload = {
+          contentType: "image/jpeg",
+          url: image,
+        };
+        
+        this.goEasy.im.createCustomMessage({
+          type: 'images',  // 自定义类型,不能添加image 
+          payload,
+          to: this.to,
+          onSuccess: (message) => {
+            this.sendMessage(message);
+          },
+          onFailed: (err) => {
+            console.log("创建消息err:", err);
+          }
+        });
+      },
+      // 上传图片到服务器
+      uploadFile(base64String){
+        const that = this;
+        // 将base64 转成FormData文件格式上传
+        var bytes = window.atob(base64String.split(',')[1]);
+        var array = [];
+        for(var i = 0; i < bytes.length; i++){
+            array.push(bytes.charCodeAt(i));
+        }
+        var blob = new Blob([new Uint8Array(array)], {type: 'image/jpeg'});
+        var formData = new FormData();
+        // --end--
+        formData.append('file[]',blob, Date.now() + '.jpg');
+        formData.append('up_tag','other');
+        formData.append('pictureCategory','articleCover');
+        console.log(formData);
+        that.$axios.post('/api/upload',formData,{'Content-Type': 'multipart/form-data'}).then(res => {
+          that.screenshotMessage(res.data.upload_files);
+        }).catch(e => {
+          that.$message.error({
+            message: "系统繁忙，请稍后重试"
+          })
+        })
+      },
+      // 截图
+      clickScreenShot() {
+        // 截图确认按钮回调函数
+        const that = this;
+        const callback = ({base64, cutInfo}) => {
+          that.uploadFile(base64);          
+        };
+        // 截图取消时的回调函数
+        const closeFn = (err) => {
+          console.log('截图窗口关闭' + err);
+        };
+        // eslint-disable-next-line no-new
+        new ScreenShot({enableWebRtc: true, completeCallback: callback, closeCallback: closeFn});
+        console.log(1);
+      },
       // 点击电话、视频按钮
       user_clickCall(t){
         this.$bus.$emit('user_clickCall',{to:this.to,currentUser:this.currentUser,type: t});
