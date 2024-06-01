@@ -41,7 +41,7 @@
               <!-- 头像 开始 -->
               <div class="sender-info" v-if="currentUser.id === item.senderId">
                 <img :src="currentUser.avatar?currentUser.avatar:require('../../../../assets/image/img-user.jpg')" class="sender-avatar"/>
-                <span class="span-id">ID: {{ currentUser.uid }}</span>
+                <span class="span-id">ID: {{ uid  }}</span>
               </div>
               <div class="sender-info" v-else>
                 <img :src="friend.avatar?friend.avatar:require('../../../../assets/image/img-user.jpg')" class="sender-avatar"/>
@@ -422,7 +422,7 @@
         phraseslist:[], // 常用语
         currentUser: null,
         friend: null,
-
+        uid: localStorage.getItem('realUid'),
         to: {},//用于创建消息时传入
 
         history: {
@@ -2071,10 +2071,10 @@
     height: 22px;
     border-radius: 4px;
     border: 1px solid #e6e8eb;
-    padding: 0 10px;
+    padding: 0 8px;
     line-height: 23px;
     vertical-align: top;
-    margin-right: 10px;
+    margin-right: 8px;
     box-sizing: content-box;
     cursor: pointer;
     position: relative;
