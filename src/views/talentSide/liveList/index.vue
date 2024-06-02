@@ -1,9 +1,18 @@
 <template>
   <div class="container">
-    <div class="sec-hd">
-      <h3>精选直播</h3>
-      <p>体验沉浸式求职</p>
-    </div>  
+    <div class="sec-head"> 
+      <div class="sec-hd">
+        <h3>精选直播</h3>
+        <p>体验沉浸式求职</p>
+      </div>
+      <div class="sec-head-right">
+        <div>私信</div>
+        <div>粉丝量(0)</div>
+        <div>新增粉丝</div>
+        <div>我要直播</div>
+        <div>直播管理</div>
+      </div>
+    </div>
     <div class="sec-bd">
       <div v-for="(item,index) in liveList" :key="index" class="liveList-box">
         <div class="liveList-box-item" @click="clickItems(item)">
@@ -221,5 +230,21 @@ export default {
       color: $g_color;
     }
   }
-  
+  .sec-head{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .sec-head-right{
+      display: flex;
+      align-items: center;
+      font-size: 15px;
+      line-height: 40px;
+      font-weight: 600;
+      color: #303133;
+      div{
+        margin: 0 10px;
+        cursor: pointer;
+      }      
+    }
+  }
 </style>
