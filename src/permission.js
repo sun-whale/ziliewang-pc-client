@@ -19,8 +19,7 @@ router.beforeEach(async(to, from, next) => {
 
   // determine whether the user has logged in
   const hasToken = getToken();
-  let tag = localStorage.getItem('tag');
-  console.log(hasToken)
+  // let tag = localStorage.getItem('tag');
   if (hasToken) {
     if (to.path === '/login') {
       removeToken();
