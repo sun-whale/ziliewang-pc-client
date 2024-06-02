@@ -2,8 +2,8 @@
   <div id="myProfessionalCircle">
     <div class="dynamicState-box view-box">
       <div class="dynamicState-top">
-        <div class="dynamicState-title">动态</div>
-        <div class="fb-btn" @click="clickPublishBtn">发布动态</div>
+        <div class="dynamicState-title">推荐语</div>
+        <div class="fb-btn" @click="clickPublishBtn">评价</div>
       </div>
       <div class="dynamicState-container">
         <!-- 列表项 开始 -->
@@ -14,6 +14,10 @@
               <div class="title-left">
                 <img :src="infoData.avatar?infoData.avatar:require('../../../../assets/image/img-user.jpg' )" alt="" />
                 <span>{{ infoData.real_name }}</span>
+                <div class="name-id-box">
+                  <span>{{ infoData.real_name }}</span>
+                  <span class="span-id">ID: {{ infoData.uid }}</span>
+                </div>
               </div>
               <div class="title-t">{{ item.createtime }}</div>
             </div>
@@ -746,6 +750,14 @@ export default {
               }
               span{
                 font-size: 14px;
+              }
+              .name-id-box{
+                padding-left: 4px;
+                display: flex;
+                flex-direction: column;
+                .span-id{
+                  font-weight: bold;
+                }
               }
             }
           }
