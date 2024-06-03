@@ -140,7 +140,31 @@
                 <img src="../../../assets/image/bossSide/icon-star-1.png" alt="" />
                 <span :class="infoData.is_collection == 1?'hover':''"> {{ infoData.is_collection == 1?"已收藏":'收藏' }}</span>
               </div>
+              <div @click.stop="clickShare()">
+                <img src="../../../assets/image/bossSide/icon-shareAlt-1.png" alt="" />
+                <span>分享</span>
+              </div>
             </div>
+            
+            <!-- 分享区域 开始 -->
+            <div class="items-review-box" :class="show_share?'show-box':''">
+              <div class="share-content">
+                <div class="share-item" @click="clickShareWent(1)">
+                  <img src="../../../assets//image/share-wx.png" />
+                  <span>微信</span>
+                </div>
+                <div class="share-item" @click="clickShareWent(1)">
+                  <img src="../../../assets//image/share-pyq.png" />
+                  <span>朋友圈</span>
+                </div>
+                <div class="share-item" @click="clickShareWent(2)">
+                  <img src="../../../assets//image/share-wb.png" />
+                  <span>微博</span>
+                </div>
+              </div>
+            </div>
+            <!-- 分享区域 结束 -->
+
           </div>
         </div>
       </el-dialog>
@@ -194,6 +218,7 @@ export default {
   },
   data(){
     return{
+      show_share: false,
       zx_dialogVisible: false,
       positionList:[], // 岗位列表
       position_dialogVisible: false,
@@ -204,10 +229,30 @@ export default {
 
   },
   mounted() {
-    
   },
   methods: {
-   
+    // 是否显示分享
+    clickShare(){
+      this.show_share = this.show_share ? false : true;
+    },
+    // 分享按钮点击  1 复制链接  2 微博
+    clickShareWent(i){
+      const that = this;
+      const title = "【自猎网】"; // 标题
+      if(i == 2){
+        let images = encodeURIComponent(that.basic_info.avatar)
+        let shareUrl = encodeURIComponent(window.location.href);
+        const url = `https://service.weibo.com/share/share.php?url=${shareUrl}&type=3&count=1&appkey=&title=${title}&pic=${images}&searchPic=false&ralateUid=&language=zh_cn&rnd=`;
+        window.open(url, '_blank');
+        this.show_share = false;
+        return;
+      }
+      navigator.clipboard.writeText(title + window.location.href).then(() => {
+        this.$message.success('已复制到剪贴板')
+      }).catch(err => {
+        console.error('复制失败', err);
+      });
+    },
     handleClose(done) {
       this.zx_dialogVisible = false;
     },
@@ -642,4 +687,45 @@ export default {
       }
     }
   }
+// 评论展示
+.items-review-box{
+  transition: all 0.5s;
+  padding-left: 16px;
+  padding-right: 16px;
+  background: #f6f6f694;
+  margin-top: 10px;
+  height: 0;
+  overflow: auto;
+  &.show-box{
+    height: auto;
+    padding-top: 10px;
+    padding-bottom: 14px;
+    max-height: 450px;
+  }
+  .share-content{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    .share-item{
+      font-size: 12px;
+      color: #505050;
+      line-height: 20px;
+      margin-right: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      img{
+        width: 28px;
+        height: 28px;
+        margin-bottom: 4px;
+      }
+      span{
+        display: block;
+        width: 100%;
+        text-align: center; 
+      }
+    }
+  }
+}
 </style>
