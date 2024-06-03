@@ -52,6 +52,32 @@
           </div>
         </div>
 
+        <div class="share-content">
+
+          <div style="position: absolute;" @click="clickShare()">
+            <i class="el-icon-share" style="color:#86909C;padding-right: 2px;"></i>
+            <span>分享</span>
+          </div>
+
+          <!-- 分享区域 开始 -->
+          <div class="items-review-box" :class="show_share?'show-box':''">
+            <div class="share-list">
+              <div class="share-item" @click="clickShareWent(1)">
+                <img src="../../../assets//image/share-wx.png" />
+                <span>微信</span>
+              </div>
+              <div class="share-item" @click="clickShareWent(1)">
+                <img src="../../../assets//image/share-pyq.png" />
+                <span>朋友圈</span>
+               </div>
+              <div class="share-item" @click="clickShareWent(2)">
+                <img src="../../../assets//image/share-wb.png" />
+                <span>微博</span>
+              </div>
+            </div>
+          </div>
+          <!-- 分享区域 结束 -->
+        </div>
       </div>
       
     </div>
@@ -118,6 +144,7 @@ export default {
   },
   data(){
     return{
+      show_share: false,
       see_uid:'',
       uid:'',
       infoData: {}, // 信息
@@ -138,6 +165,28 @@ export default {
     this.getUserProfile();
   },
   methods: {
+    // 是否显示分享
+    clickShare(){
+      this.show_share = this.show_share ? false : true;
+    },
+    // 分享按钮点击  1 复制链接  2 微博
+    clickShareWent(i){
+      const that = this;
+      const title = "【自猎网】"; // 标题
+      if(i == 2){
+        let images = encodeURIComponent(that.infoData.avatar)
+        let shareUrl = encodeURIComponent(window.location.href);
+        const url = `https://service.weibo.com/share/share.php?url=${shareUrl}&type=3&count=1&appkey=&title=${title}&pic=${images}&searchPic=false&ralateUid=&language=zh_cn&rnd=`;
+        window.open(url, '_blank');
+        this.show_share = false;
+        return;
+      }
+      navigator.clipboard.writeText(title + window.location.href).then(() => {
+        this.$message.success('已复制到剪贴板')
+      }).catch(err => {
+        console.error('复制失败', err);
+      });
+    },
     
     clickAttentionTab(name){
       this.$router.push({
@@ -275,6 +324,7 @@ export default {
     }
     .ph5{
       padding: 0 20px;
+      position: relative;
       .display-flex{
         display: flex;
         align-items: center;
@@ -381,6 +431,16 @@ export default {
           
         }
       }
+      .share-content{
+        font-size: 14px;
+        color: #505050;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        cursor: pointer;
+        display: flex;
+        justify-content: flex-end;
+      }
     }
    
   }
@@ -448,6 +508,46 @@ export default {
   .recommendation-showbox{
     padding: 10px 20px 20px;
   }
+// 评论展示
+.items-review-box{
+  transition: all 0.5s;
+  padding-left: 10px;
+  padding-right: 10px;
+  background: #f6f6f694;
+  height: 0;
+  overflow: auto;
+  margin-top: 20px;
+  &.show-box{
+    height: auto;
+    padding-top: 10px;
+    padding-bottom: 14px;
+    max-height: 450px;
+  }
+  .share-list{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    .share-item{
+      font-size: 12px;
+      color: #505050;
+      line-height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      img{
+        width: 28px;
+        height: 28px;
+        margin-bottom: 4px;
+      }
+      span{
+        display: block;
+        width: 100%;
+        text-align: center; 
+      }
+    }
+  }
+}
   // 、、、、、、、、、、、、、、、   新版样式  ↑  、、、、、、、、、、、、
 
 </style>
