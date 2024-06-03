@@ -21,6 +21,9 @@
               <div class="left" @click="clickCancelAttention" v-if=" infoData.is_already_attention ==  1">
                 <span>已关注</span>
               </div>
+              <div class="left" @click="clickCancelAttention" v-if=" infoData.is_already_attention ==  3">
+                <span>互相关注</span>
+              </div>
             </div>
             <div>
               <div class="right" @click="clickAddBlacklist" v-if=" infoData.is_already_black ==  2">
@@ -42,15 +45,15 @@
         </div>
 
         <div class="user-top-num">
-          <div @click="clickAttentionTab('attention')">
-            <span class="title">关注: </span>
-            <span class="text">{{ infoData.attention_num }}</span>
-          </div>
-          <div @click="clickAttentionTab('fans')">
-            <span class="title">粉丝: </span>
-            <span class="text">{{ infoData.fan_num }}</span>
-          </div>
-        </div>
+          <div @click="uid == see_uid ? clickAttentionTab('attention'):'' ">
+            <span class="title">关注: </span>
+            <span class="text">{{ infoData.attention_num }}</span>
+          </div>
+          <div @click="uid == see_uid ? clickAttentionTab('attention'):'' ">
+            <span class="title">粉丝: </span>
+            <span class="text">{{ infoData.fan_num }}</span>
+          </div>
+        </div>
 
         <div class="share-content">
 
@@ -126,7 +129,7 @@
     </div>
     
     <div class="recommendation">
-      <!-- <dynamicState /> -->
+      <recommendation :see_uid="see_uid" />
     </div>
 
   </div>
@@ -134,13 +137,13 @@
 
 <script>
 import videoDialog from '../components/videoDialog.vue';
-import dynamicState from './dynamicState/index.vue';
+import recommendation from './recommendation/index.vue';
 
 export default {
   name: 'careerIdentity',
   components: {
     videoDialog,
-    dynamicState
+    recommendation
   },
   data(){
     return{
@@ -193,7 +196,7 @@ export default {
         path:'/attentionFans',   //跳转的路径
         query:{           //路由传参时push和query搭配使用 ，作用时传递参数
           tag:name,
-          see_uid: localStorage.getItem('realUid')
+          see_uid: this.see_uid
         }
       })
     },
@@ -323,7 +326,7 @@ export default {
       }
     }
     .ph5{
-      padding: 0 20px;
+      padding: 5px 20px 0 20px;
       position: relative;
       .display-flex{
         display: flex;
@@ -361,7 +364,7 @@ export default {
           display: flex;
           align-items: center;
           justify-content: center;
-          padding-right: 30px;
+          padding-right: 50px;
           &>div{
             flex: 1;
             padding: 0 10px;
