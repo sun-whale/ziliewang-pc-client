@@ -819,6 +819,13 @@
           return
         }
         console.log(this.to)
+        let p = {
+          uid: this.to.data.uid,
+          position_id: this.infoData.position_id, // 岗位id
+          company_id: this.infoData.company_id,// 公司id
+          content: this.text,
+        }
+        this.$axios.post('/api/company/find-user',p);
         this.goEasy.im.createTextMessage({
           text: this.text,
           to: this.to,
@@ -1758,7 +1765,7 @@
   }
 
   .action-bar .action-item .iconfont {
-    font-size: 23px;
+    font-size: 21px;
     margin: 0 6px 0 4px;
     z-index: 3;
     color: #606266;

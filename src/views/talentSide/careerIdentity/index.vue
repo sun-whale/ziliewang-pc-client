@@ -10,6 +10,7 @@
             <div class="pv-top-card__photo-wrapper">
               <img :src="infoData.avatar?infoData.avatar:require('../../../assets/image/img-user.jpg' )" alt="" />
             </div>
+            <div class="div-id">ID: {{ infoData.uid }}</div>
           </div>
           <div class="gz-sx-btn" v-if="uid != see_uid">
             <div>
@@ -97,16 +98,23 @@
         </ul>
       </div>
     </div>
+    
+    <div class="recommendation">
+      <!-- <dynamicState /> -->
+    </div>
 
   </div>
 </template>
 
 <script>
 import videoDialog from '../components/videoDialog.vue';
+import dynamicState from './dynamicState/index.vue';
+
 export default {
   name: 'careerIdentity',
   components: {
-    videoDialog
+    videoDialog,
+    dynamicState
   },
   data(){
     return{
@@ -238,6 +246,8 @@ export default {
     border-radius: 6px;
     opacity: 1;
     overflow: hidden;
+    margin-top: 10px;    
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, .15), 0 2px 3px rgba(0, 0, 0, .2);
   }
  .mt2, .mv2 {
     margin-top: 10px;
@@ -249,13 +259,13 @@ export default {
     box-shadow: 0 0 0 1px rgba(0, 0, 0, .15), 0 2px 3px rgba(0, 0, 0, .2);
     .live-video-hero-image{
       width: 100%;
-      height: 200px;
+      height: 146px;
       position: relative;
       overflow: hidden;
       .profile-background-image{
         position: relative;
         width: 100%;
-        padding-bottom: 200px;
+        padding-bottom: 146px;
         border-top-left-radius: 6px;
         border-top-right-radius: 6px;
         background:  50% / cover;
@@ -273,21 +283,27 @@ export default {
           margin-top: -112px;
           z-index: 4;
           .pv-top-card__photo-wrapper {
-            width: 160px;
-            height: 160px;
+            width: 140px;
+            height: 140px;
             box-sizing: border-box;
             background-clip: border-box;
-            border-radius: 49.9%;
+            border-radius: 50%;
             background-color: #fff;
             border: 4px solid #fff;
             box-shadow: none;
             margin: auto;
             position: relative;
             & img {
-              width: 152px;
-              height: 152px;
+              width: 132px;
+              height: 132px;
               border-radius: 50%;
             }
+           
+          }
+          .div-id{
+            font-size: 15px;
+            font-weight: bold;
+            text-align: center;
           }
         }
         .gz-sx-btn{
@@ -343,7 +359,8 @@ export default {
         align-items: center;
         div{
           text-align: center;
-          padding: 10px;
+          padding: 10px 0;
+          margin-right: 14px;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -380,16 +397,6 @@ export default {
       font-size: 20px;
       font-weight: bold;
     }
-  }
-  // 工作经历
-  .work-experience{
-    margin-top: 20px;    
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, .15), 0 2px 3px rgba(0, 0, 0, .2);
-  }
-  // 教育经历
-  .education-experience{
-    margin-top: 20px;    
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, .15), 0 2px 3px rgba(0, 0, 0, .2);
   }
   .experience-container{
     width: 100%;
@@ -438,7 +445,9 @@ export default {
       }
     }
   }
-
+  .recommendation-showbox{
+    padding: 10px 20px 20px;
+  }
   // 、、、、、、、、、、、、、、、   新版样式  ↑  、、、、、、、、、、、、
 
 </style>
