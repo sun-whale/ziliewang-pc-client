@@ -52,7 +52,7 @@
               </div>
             </div>
           </div>
-          <span class="span-id">ID:{{ item.data.uid }}</span>
+          <span class="span-id">ID:{{ item.data.user_number }}</span>
         </div>
 
       </div>

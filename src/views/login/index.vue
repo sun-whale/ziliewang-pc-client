@@ -319,9 +319,11 @@ export default {
             localStorage.setItem('name', data.user.real_name); // 用户名缓存
             localStorage.setItem('realAvatar', data.user.avatar); // 用户头像缓存
             localStorage.setItem('realUid', data.user.uid); // 用户uid缓存
+            localStorage.setItem('user_number', data.user.user_number); // 用户id 编号
+            localStorage.setItem('userVipRank', data.user.vip_rank); // 用户会员等级
+
             that.$store.dispatch('user/set_realAvatar', data.user.avatar); // vuex
             that.$store.dispatch('user/SET_NAME', data.user.real_name);
-            localStorage.setItem('userVipRank', data.user.vip_rank); // 用户会员等级
 
             setTimeout(() => {
               that.$router.push('/talentSide');
@@ -409,6 +411,8 @@ export default {
           localStorage.setItem('staffUid', data.user.id); // 用户uid缓存
           localStorage.setItem('staffVipRank', data.user.vip_rank); // 用户会员等级
           localStorage.setItem('company_id', data.user.company_id); // 企业id缓存
+          localStorage.setItem('staff_number', data.user.staff_number); // 企业id编号
+          
           setTimeout(() => {
             that.$router.push('/dashboard');
           }, 1000);

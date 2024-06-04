@@ -12,16 +12,17 @@
     <div class="job-list-box">
       <div v-for="(item,index) in jobList" :key="index" class="jobList-items m-box margin-top-20" @click.stop="clickItems(item)">
         <div class="items-left-box">
-          <div class="avatar-box">
-            <img :src="item.avatar?item.avatar:require('../../../assets/image/bossSide/img-user.png')" alt="" />
-            <span class="span-id">ID: {{ item.uid }}</span>
-          </div>
-          
           <div class="left-info-box">
             <div class="left-info-t">
-              <span class="left-info-name">{{ item.is_name_protect == 1? item.name: item.real_name }}</span>
-              <img :src="require(`../../../assets/image/bossSide/sex-${item.sex == 2? 2 : 1}.png`)" alt="" >
-              <span class="icon-span">今日活跃</span>
+              <img class="avatar-box" :src="item.avatar?item.avatar:require('../../../assets/image/bossSide/img-user.png')" alt="" />
+              <div class="name-id-box">
+                <div class="left-info-name">
+                  <span class="span-name">{{ item.is_name_protect == 1? item.name: item.real_name }}</span>
+                  <img :src="require(`../../../assets/image/bossSide/sex-${item.sex == 2? 2 : 1}.png`)" alt="" >
+                  <span class="icon-span">今日活跃</span>
+                </div>
+                <span class="span-id">ID: {{ item.user_number }}</span>
+              </div>
             </div>
             <div class="sub-title" v-if="item.birth_year_month">生日：{{ item.birth_year_month }}</div>
             
@@ -318,23 +319,6 @@ export default {
       .items-left-box{
         width: 20rem;
         display: flex;
-        .avatar-box{
-          width: auto;
-          height: auto;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          &>img{
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-          }
-          .span-id{
-            padding-top: 4px;
-            font-size: 14px;
-            font-weight: bold;
-          }
-        }
         .left-info-box{
           padding-left: 14px;
           &>div{
@@ -342,28 +326,47 @@ export default {
             align-items: center;
           }
           .left-info-t{
-            .left-info-name{
-              font-size: 16px;
-              color: $g_textColor;
-              line-height: 24px;
+            img.avatar-box{
+              width: 42px;
+              height: 42px;
+              border-radius: 50%;
             }
-            img{
-              width: 16px;
-              height: 16px;
-              margin: 0 2px;
+            .name-id-box{
+              padding-left: 6px;
+              .left-info-name{
+                display: flex;
+                align-items: center;
+                .span-name{
+                  font-size: 16px;
+                  color: $g_textColor;
+                  line-height: 24px;
+                }
+                &>img{
+                  width: 16px;
+                  height: 16px;
+                  margin: 0 2px;
+                }
+                .icon-span{
+                  width: 62px;
+                  height: 20px;
+                  line-height: 20px;
+                  text-align: center;
+                  font-size: 10px;
+                  background: #F6FFED;
+                  border-radius: 2px;
+                  color: #B7EB8F;
+                  border: 1px solid #B7EB8F;
+                  margin-left: 6px;
+                }
+              }
+              .span-id{
+                padding-top: 4px;
+                font-size: 14px;
+                font-weight: bold;
+              }
             }
-            .icon-span{
-              width: 64px;
-              height: 22px;
-              line-height: 22px;
-              text-align: center;
-              font-size: 12px;
-              background: #F6FFED;
-              border-radius: 2px;
-              color: #B7EB8F;
-              border: 1px solid #B7EB8F;
-              margin-left: 6px;
-            }
+          
+            
 
           }
           .sub-title{
