@@ -238,6 +238,7 @@ export default {
         position: relative;
         display: flex;
         align-items: center;
+        cursor: pointer;
         .user-avatar {
           cursor: pointer;
           width: 2rem;
