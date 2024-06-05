@@ -73,6 +73,12 @@
                     <img :src="message.payload.url" :style="{height:getImageHeight(message.payload.width,message.payload.height)+'px'}"/>
                   </div>
                   <!-- 图片 结束 -->
+                  <!-- 素质测评 开始 -->
+                  <div v-if="message.type === 'quality'">
+                    <h4 class="message-phone-universal-card-header">已向对方发送素质测评邀请</h4>
+                    <div class="message-phone-box view-btn" @click.stop="clickQuality(message)">查看素质测评结果</div>
+                  </div>
+                  <!-- 素质测评 结束 -->
                   <!-- 发送的面试邀请 开始 -->
                   <div v-if="message.type === 'interview' &&  message.payload.way_status == 1" class="message-phone-universal-card">
                     <h4 class="message-phone-universal-card-header">已向对方发送面试邀请</h4>
@@ -348,6 +354,13 @@
             </div>
           </div>
           <div class="items-box">
+            <div class="title">素质测评：</div>
+            <el-switch
+              style="display: block"
+              v-model="qualityVal"
+              active-color="#1ec5d8" />
+          </div>
+          <div class="items-box">
             <div class="title">面试准备事项：</div>
             <el-input type="textarea" :autosize="{ minRows: 5, maxRows: 12}" placeholder="请您准备好个人纸质简历，正装参加面试、女士淡妆，请准时到达" v-model="interviewData.remark"></el-input>
           </div>
@@ -455,6 +468,7 @@
         '[傲慢]': 'emoji_8@2x.png',
       };
       return {
+        qualityVal: false,
         leftX: 0,
         topY: 0,
         userProfile:{}, // 个人信息
@@ -1191,6 +1205,27 @@
           }
         })
       },
+      clickQuality(){
+        this.$router.push({path:'/qualityResult'})
+      },
+      // 设置自定义消息 - 素质问答消息
+      setQuality(){
+        const payload = {
+          contentType: "quality",
+          url: "",
+        };
+        this.goEasy.im.createCustomMessage({
+          type: 'quality',  // 自定义类型,不能添加image 
+          payload,
+          to: this.to,
+          onSuccess: (message) => {
+            this.sendMessage(message);
+          },
+          onFailed: (err) => {
+            console.log("创建消息err:", err);
+          }
+        });
+      },
        // 点击面试邀请
       clickInterviewInvitation(){
         let that = this;
@@ -1200,6 +1235,10 @@
             message: '请先添加面试邀请信息！'
           })
           return
+        }
+        // 校验是否勾选素质问答
+        if(that.qualityVal){
+          this.setQuality();
         }
         let p = {
           company_id: localStorage.getItem('company_id') || '',

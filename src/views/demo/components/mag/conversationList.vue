@@ -48,6 +48,7 @@
                 <span v-else-if="item.lastMessage.type === 'resume'">[简历消息]</span>
                 <span v-else-if="item.lastMessage.type === 'phone'">[交换联系方式消息]</span>
                 <span v-else-if="item.lastMessage.type === 'interview'">[邀请面试消息]</span>
+                  <span v-else-if="item.lastMessage.type === 'quality'">[素质测评]</span>
               </div>
             </div>
           </div>

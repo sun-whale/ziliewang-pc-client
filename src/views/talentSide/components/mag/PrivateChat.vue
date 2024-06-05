@@ -134,6 +134,12 @@
                     <div class="message-phone-box">您已同意对方交换联系方式</div>
                   </div>
                   <!-- 人才 同意对方索要联系方式  ↑ -->
+                  <!-- 素质测评 开始 -->
+                  <div v-if="item.type === 'quality'">
+                    <h4 class="message-phone-universal-card-header">对方请求填写素质测评邀请</h4>
+                    <div class="message-phone-box view-btn" style="cursor: pointer;" @click.stop="clickQuality(message)">立即填写</div>
+                  </div>
+                  <!-- 素质测评 结束 -->
                   <!-- boss 索要手机号 ↓ -->
                   <div class="message-phone-universal-card" v-if="item.type === 'phone' && item.payload.way_status == 4">
                     <h4 class="message-phone-universal-card-header">对方请求交换联系方式</h4>
@@ -581,6 +587,10 @@
             message: "系统繁忙，请稍后重试"
           })
         })
+      },
+      // 测评
+      clickQuality(){
+        this.$router.push({path:'/qualityTest'})
       },
       // 截图
       clickScreenShot() {

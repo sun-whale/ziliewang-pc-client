@@ -474,6 +474,23 @@ export const constantRoutes = [
           title: '直播间',
         },
       },
+      {
+        path: '/qualityTest',
+        name: 'qualityTest',
+        component: () => import('@/views/talentSide/qualityTest'),
+        meta: { 
+          title: '素质评测'
+        },
+      },
+      {
+        path: '/qualityResult',
+        name: 'qualityResult',
+        component: () => import('@/views/talentSide/qualityTest/qualityResult'),
+        meta: { 
+          title: '评测结果'
+        },
+      },
+      
       // {
       //   path: 'liveBroadcast',
       //   name: 'talentSide_liveBroadcast',
