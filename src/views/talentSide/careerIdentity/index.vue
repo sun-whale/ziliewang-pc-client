@@ -10,7 +10,7 @@
             <div class="pv-top-card__photo-wrapper">
               <img :src="infoData.avatar?infoData.avatar:require('../../../assets/image/img-user.jpg' )" alt="" />
             </div>
-            <div class="div-id">ID: {{ infoData.uid }}</div>
+            <div class="div-id">ID: {{ infoData.user_number }}</div>
           </div>
           <div class="gz-sx-btn" v-if="uid != see_uid">
             <div>

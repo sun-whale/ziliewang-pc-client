@@ -3,8 +3,22 @@
     <div class="dynamicState-box view-box">
       <div class="dynamicState-top">
         <div class="dynamicState-title">推荐语</div>
-        <div class="fb-btn" @click="clickPublishBtn">评价</div>
+        <!-- <div class="fb-btn" @click="clickPublishBtn">评价</div> -->
       </div>
+
+      <div class="publish-box">
+
+        <div class="dialog-bodybox">
+          <div class="dialog-content-box">
+            <el-input type="textarea" :rows="5" placeholder="请输入内容" v-model="textarea"></el-input>
+          </div>
+        </div>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="clickMaskBtn">发布</el-button>
+        </div>
+
+      </div>
+
       <div class="dynamicState-container">
         <!-- 列表项 开始 -->
         <div class="container-items-box" v-for="(item,index) in evaluateList" :key="index">
@@ -14,7 +28,7 @@
                 <img :src="item.evaluate_user_avatar?item.evaluate_user_avatar:require('../../../../assets/image/img-user.jpg' )" alt="" />
                 <div class="name-id-box">
                   <span>{{ item.evaluate_user_name }}</span>
-                  <span class="span-id">ID: {{ item.uid }}</span>
+                  <span class="span-id">ID: {{ item.user_number }}</span>
                 </div>
               </div>
               <div class="title-t">{{ item.createtime }}</div>
@@ -67,72 +81,9 @@
       </div>
     </div>
     
-    <!-- 、、、、 发布弹窗 、、、、 -->
-    <el-dialog :visible.sync="dialogVisible" width="640px" :before-close="handleClose">
-      <!-- <div class="login-type-box">
-        <span :class=" tag == 2?'hover':'' " @click="clickTab(2)">图片</span>
-        <span :class=" tag == 1?'hover':'' " @click="clickTab(1)">视频</span>
-      </div> -->
-      <div class="dialog-bodybox">
-        <!-- 发图片 开始-->
-        <!-- <div class="dialog-img-box" v-if="tag == 2">
-          <div class="img-item" v-for="(item,index) in upImgList" :key="index">
-            <img :src="item.upload_files" alt="" />
-          </div>
-          <div class="img-item add">
-            <el-upload class="avatar-uploader" 
-              ref="upload" 
-              action= "none"
-              multiple
-              :limit="3"
-              :show-file-list="false"
-              :before-upload="beforeAvatarUpload"
-              :data="uploadData"
-              :http-request="uploadArticleCover" 
-              >
-              <i class="el-icon-plus"></i>
-            </el-upload>
-          </div>
-        </div> -->
-        <!-- 发图片 结束-->
-        <!-- 发视频 开始-->
-        <!-- <div class="dialog-img-box" v-if="tag == 1">
-          <div class="img-item" v-for="(item,index) in video_files_path" :key="index">
-            <video :src="item.upload_files" style="object-fit: fill;" width="100%" height="100%" ></video>
-          </div>
-          <div class="img-item add">
-            <el-upload class="avatar-uploader"  drag ref="upload_video" action= "none" :limit="1" :show-file-list="false" multiple :before-upload="beforeVideoUpload" :http-request="up_video" :on-exceed='limitCheck'>
-              <i class="el-icon-plus"></i>
-            </el-upload>
-          </div>
-        </div> -->
-        <!-- 发视频 结束-->
-        <div class="dialog-content-box">
-          <el-input type="textarea" :rows="8" placeholder="请输入内容" v-model="textarea"></el-input>
-        </div>
-      </div>
-      
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="clickMaskBtn">发布</el-button>
-      </div>
-    </el-dialog>
 
      <!-- 视频弹窗 -->
      <videoDialog :infoData="video_url"  ref="video" />
-    <!-- 回复弹窗 -->
-    <div class="recoverVisible">
-      <el-dialog title="回复评论" :visible.sync="recoverVisible" width="482px" :before-close="recoverValueClose">
-        <div class="cententinfo-box">
-          <div class="demo-input-suffix">
-            <el-input v-model="recover_value" type="text" name="recover_value" placeholder="回复评论"></el-input>
-          </div>
-        </div>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="recoverVisible = false">取 消</el-button>
-          <el-button type="primary" @click="clickInfoVerifyBtn(2)">确 定</el-button>
-        </span>
-      </el-dialog>
-    </div>
 
   </div>
 </template>
@@ -218,14 +169,21 @@ export default {
         page: that.page,
         pagesize: that.pagesize
       }
-      this.$axios.get('/api/user-evaluate/list',p).then( res =>{
+      this.$axios.get('/api/user-evaluate/list?page=' + p.page + '&pagesize=' + p.pagesize,{}).then( res =>{
         if(res.code == 0){
-          let dataList = that.evaluateList.concat(res.data.list);
-          this.evaluateList = dataList;
-          // dataList.forEach( ele =>{
-          //   ele.show_review = false
-          // })
-          // this.evaluateList = dataList;
+          if(res.data.list.length <= 0){
+            this.$message.error({
+              message: "暂无更多数据..."
+            })
+          }else{
+            let dataList = that.evaluateList.concat(res.data.list);
+            this.evaluateList = dataList;
+            // dataList.forEach( ele =>{
+            //   ele.show_review = false
+            // })
+            // this.evaluateList = dataList;
+          }
+          
         }else{
           this.$message.error({
             message:res.msg
@@ -377,49 +335,6 @@ export default {
           this.detailData = res.data;
         }else{
           this.$message.error({
-            message:res.msg
-          })
-        }
-      }).catch( e =>{
-        console.log(e)
-      })
-    },
-    // 发布评论
-    clickInfoVerifyBtn(n){
-      let that = this;
-      let num = n; // 1 评论职圈； 2、回复评论
-      let p = {
-        profession_circle_id: that.id,
-      }
-      if( num == 1){
-        p.content= that.content;
-      }
-      if( num == 2){
-        p.reply_id = that.reply_id;
-        p.content = that.recover_value;
-      }
-      that.$axios.post('/api/profession-circle/comment',p).then( res =>{
-        console.log(res)
-        if( res.code == 0 ){
-          let text = '';
-          if(num == 1){
-            text = '评论成功！';
-            that.content = '';
-          }
-          if(num == 2){
-            text = '回复成功！';
-            that.recoverVisible = false;
-            that.recover_value = '';
-          }
-          that.$message.success(text);
-          setTimeout( ()=>{
-            // this.is_content = false;
-            //获取职圈详情
-            that.getInfoData();
-          },1500)
-          
-        }else{
-          that.$message.error({
             message:res.msg
           })
         }
@@ -633,10 +548,11 @@ export default {
       background: #FFFFFF;
       border-radius: 4px 4px 4px 4px;
       position: relative;
-      padding: 10px 20px 0 20px;
+      padding: 10px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      border-bottom: 1px solid #dedfe0;
       .dynamicState-title{
         font-size: 20px;
         font-weight: bold;
@@ -819,16 +735,12 @@ export default {
       
     }
   }
-  #myProfessionalCircle /deep/ .el-dialog{
-    top: 50%;
-    transform: translateY(-50%);
-    margin-top: 0 !important;
+  .publish-box{
+    width: 100%;
+    padding: 0 10px;
     .dialog-bodybox{
       width: 100%;
-      border-radius: 8px;
-      border: 1px solid #E5E6EB;
       padding: 12px;
-      margin-top: 10px;
       .dialog-img-box{
         width: 100%;
         display: -webkit-box;
@@ -899,147 +811,35 @@ export default {
       .dialog-content-box{
         width: 100%;
         height: 100%;
-        margin-top: 16px;
         .el-textarea__inner{
           font-size: 14px;
           padding: 0;
           border: none;
-          &:focus{
-            border-color: $g_color;
-          }
+          
+        }
+        /deep/ .el-textarea__inner:focus{
+          border-color: $g_color;
         }
       }
 
     }
-    .login-type-box{
-        width: 100%;
-        display: flex;
-        align-items: center;
-        span{
-          text-align: center;
-          font-size: 16px;
-          font-family: PingFang SC-Regular, PingFang SC;
-          font-weight: 400;
-          color: #4E5969;
-          line-height: 28px;
-          position: relative;
-          padding: 4px 20px;
-          cursor: pointer;
-        }
-        span.hover{
-          font-weight: bold;
-          color: $g_textColor;
-          &::after{
-            content: '';
-            width: 44px;
-            height: 3px;
-            background: $g_color;
-            position: absolute;
-            left: 50%;
-            bottom: 0;
-            transform: translateX(-50%);
-          }
-        }
-      }
-    .el-dialog__body{
-      padding: 0 20px;
-    }
-    .el-button{
-      padding: 0;
-      width: 100px;
-      height: 40px;
-      line-height: 40px;
-    }
-    .el-button--primary{
-      background-color: $g_color;
-      border-color: $g_color;
-    }
-  }
-
-    // 评论回复弹窗
-    .recoverVisible{
-    /deep/ .el-dialog{
-      min-width: 420px;
-      top: 50%;
-      transform: translateY(-50%);
-      margin-top: 0 !important;
-      .el-dialog__header{
-        text-align: left;
-        .el-dialog__title{
-          font-size: 15px;
-          color: $g_textColor;
-        }
-      }
-      .el-dialog__body{
-        height: auto;
-        overflow: hidden;
-        padding: 20px;
-        .cententinfo-box{
-          width: 100%;
-          margin-top: 10px;
-          .cententinfo-title{
-            font-size: 14px;
-            font-weight: 400;
-            color: $g_textColor;
-            line-height: 22px;
-            text-align: left;
-          }
-          .demo-input-suffix{
-            width: 100%;
-            display: flex;
-            align-items: center;
-            span{
-              width: auto;
-              font-size: 14px;
-              font-weight: 400;
-              color: #000000;
-              line-height: 22px;
-            }
-            .el-input {
-              position: relative;
-              font-size: 14px;
-              flex: 1;
-              margin-left: 10px;
-            }
-            .el-input__inner {
-              font-size: 14px;
-              padding: 14px 10px;
-              width: 100%;
-              border: 1px solid #e9e9e9;
-              border-radius: 4px;
-              outline: none;
-              box-sizing: border-box;
-              display: block;
-              box-shadow: none;
-              transition: border .3s;
-              background-color: #fff;
-              resize: none;
-            }
-            .el-input__inner:hover{
-              border-color: $g_color;
-            }
-            .el-input.is-active .el-input__inner, .el-input__inner:focus{
-              border-color: $g_color;
-              outline: 0;
-            }
-
-          }
-
-        }
-      }
+    .dialog-footer{
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 10px;
       .el-button{
         padding: 0;
         width: 100px;
-        height: 40px;
-        line-height: 40px;
+        height: 35px;
+        line-height: 35px;
       }
       .el-button--primary{
         background-color: $g_color;
         border-color: $g_color;
       }
-
-      
     }
+    
   }
   .sec-footer{
     width: 100%;
