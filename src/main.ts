@@ -33,6 +33,11 @@ import '@/utils/dialogDrag'
 // import 'vue-video-player/src/custom-theme.css'
 // ==============  引入视频直播  ↑  ================
 
+// ==============  引入echart  ↓   ================
+import * as echarts from 'echarts';
+Vue.prototype.$echarts = echarts
+// ==============  引入echart  ↑  ================
+
 // ==============  引入 实时通讯  ↓   ================
 import GoEasy from 'goeasy';
 const goEasy = GoEasy.getInstance({

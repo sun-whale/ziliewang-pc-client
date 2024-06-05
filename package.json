@@ -19,6 +19,7 @@
     "@vue/composition-api": "^1.7.2",
     "axios": "0.18.0",
     "dplayer": "^1.27.1",
+    "echarts": "^5.5.0",
     "element-ui": "^2.15.13",
     "goeasy": "^2.10.14",
     "hls.js": "^1.4.12",
