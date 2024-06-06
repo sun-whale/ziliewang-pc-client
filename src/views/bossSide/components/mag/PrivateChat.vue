@@ -274,6 +274,8 @@
             <div class="btn-resume toolbar-btn unable" title="交换联系方式" @click="clickPhoneWechatBtn(1,4,'phone')">联系方式</div>
             <div class="btn-resume toolbar-btn unable" title="邀请面试" @click="clickYqms(1)">邀面试</div>
             <div class="btn-resume toolbar-btn unable" title="交换微信" @click="clickPhoneWechatBtn(1,4,'wechat')">换微信</div>
+            <div class="btn-resume toolbar-btn unable" title="面试评估" @click="clickAssessment(1,4,'wechat')">面试评估</div>
+            
           </div>
           <div class="action-bar-right">
             <div class="action-item" style="position: relative; z-index: 999;">
@@ -317,6 +319,33 @@
     <!-- 预览在线简历 弹窗  -->
     <onlineResume ref="onlineResume" :infoData="userData" :basic_info="basic_info" :is_type="is_type" />
 
+    
+    <!-- 邀请面试评估弹窗 -->
+    <div class="yqms-popup">
+      <el-dialog title="面试评估" :visible.sync="isAssessment" width="580px">
+        <div class="assessment-content">
+          <div class="assessment-box" v-for="(items, index) in assessmentList" :key="index">
+            <div class="title-content">
+              <el-input @blur="blurTopic(index)" v-if="items.isInput" v-model="items.title" class="assessment-title" placeholder="请输入内容"></el-input>
+              <div v-else class="assessment-title">{{items.title}}</div>
+              <div class="assessment-operator">
+                <i class="el-icon-edit" @click="blurTopic(index)"></i>
+                <i class="el-icon-delete" @click="remTopic(index)"></i>
+              </div>
+            </div>
+            <div class="assessment-tip">请选择回答方式。</div>
+            <div class="assessment-option">
+              <el-radio v-model="items.selTopic" label="1">视频</el-radio>
+              <el-radio v-model="items.selTopic" label="2">录音</el-radio>
+            </div>
+          </div>
+          <div class="button—content">
+            <el-button type="primary" plain icon="el-icon-plus" @click="clickTopic(0)" class="assessment-add">添加评估测试题</el-button>
+            <el-button type="primary" plain @click="clickTopic(1)" class="assessment-sub">确认</el-button>
+          </div>
+        </div>
+      </el-dialog>
+    </div>
     <!-- 邀请面试信息弹窗 -->
     <div class="yqms-popup">
       <el-dialog title="邀请面试" :visible.sync="yqmsVisible" width="580px">
@@ -468,6 +497,7 @@
         '[傲慢]': 'emoji_8@2x.png',
       };
       return {
+        assessmentList:[],
         qualityVal: false,
         leftX: 0,
         topY: 0,
@@ -522,6 +552,7 @@
         basic_info:{},
         is_type:'',
         yqmsVisible: false,
+        isAssessment:false,
         interviewData: {
           interview_address:'',
           time:'',
@@ -725,6 +756,10 @@
         // this.$bus.$emit('clickYqms');
         this.yqmsVisible = true;
         return
+      },
+      // 面试评估
+      clickAssessment(type,n,tag,i){
+        this.isAssessment = !this.isAssessment;
       },
       // 交换联系方式
       clickPhoneWechatBtn(type,n,tag,i){
@@ -1224,6 +1259,26 @@
             console.log("创建消息err:", err);
           }
         });
+      },
+      blurTopic(i){
+        this.assessmentList[i].isInput = !this.assessmentList[i].isInput;
+      },
+      remTopic(i){
+        this.assessmentList.splice(i,1);
+      },
+      // 添加评估单个问题
+      clickTopic(i){
+        if(i == 0){
+          let topic = {
+            title:"",
+            isInput:true,
+            selTopic:""
+          }
+          this.assessmentList = [topic,...this.assessmentList];
+          console.log(this.assessmentList);
+        } else {
+          console.log(this.assessmentList);
+        }
       },
        // 点击面试邀请
       clickInterviewInvitation(){
@@ -2366,6 +2421,52 @@
             }
           }
         }
+      }
+    }
+  }
+  .assessment-content{
+    max-height: 60vh;
+    scrollbar-width: none;
+    overflow: auto;
+    .button—content{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .assessment-sub,
+    .assessment-add{
+      color: #fff;
+      margin: 0 20px;
+      width: 200px!important;
+    }
+    .title-content{
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      .assessment-operator{
+        display: flex;
+        align-items: center;
+        i {
+          margin-left: 18px;
+          width: 20px;
+          height: 20px;
+        }
+      }
+    }
+    .assessment-box{    
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f9f9f9;
+      .assessment-title{
+        font-size: 16px;
+        color: #555;
+        font-weight: bold;
+        margin-bottom: 8px;
+      }
+      .assessment-tip{
+        color: #959595;
+        font-size: 12px;
+        margin-bottom: 20px;
       }
     }
   }
