@@ -490,6 +490,14 @@ export const constantRoutes = [
           title: '评测结果'
         },
       },
+      {
+        path: '/interviewAssess',
+        name: 'interviewAssess',
+        component: () => import('@/views/talentSide/interviewAssess'),
+        meta: { 
+          title: '面试评估'
+        },
+      },
       
       // {
       //   path: 'liveBroadcast',
