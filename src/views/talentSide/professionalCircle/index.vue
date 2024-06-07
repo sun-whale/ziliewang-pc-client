@@ -25,14 +25,14 @@
                   <img :src=" item.users.avatar ? item.users.avatar : require('../../../assets/image/img-user.jpg' )" alt="" />
                   <div class="name-id-box">
                     <span>{{ item.users.real_name }}</span>
-                    <span class="span-id">ID: {{ item.users.uid }}</span>
+                    <span class="span-id">ID: {{ item.users.user_number }}</span>
                   </div>
                 </div>
                 <div class="title-left" v-else>
                   <img :src="myInfoData.avatar?myInfoData.avatar:require('../../../assets/image/img-user.jpg' )" alt="" />
                   <div class="name-id-box">
                     <span>{{ myInfoData.real_name }}</span>
-                    <span class="span-id">ID: {{ myInfoData.uid }}</span>
+                    <span class="span-id">ID: {{ myInfoData.user_number }}</span>
                   </div>
                 </div>
                 <div class="title-t">{{ item.createtime }}</div>

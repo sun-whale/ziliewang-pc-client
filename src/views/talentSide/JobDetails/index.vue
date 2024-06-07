@@ -73,12 +73,12 @@
             <div class="boss-info-left">
               <div class="img-box">
                 <img :src="infoData.avatar?infoData.avatar:require('../../../assets/image/img-user.jpg')" alt="" />
-                <span class="span-id">ID: {{ infoData.publish_uid }}</span>
+                <div class="info-text">
+                  <div class="info-text-1"><span class="name">{{ infoData.publish_name?infoData.publish_name:'' }}</span><span class="status">当前在线</span><span class="aptitude">已认证</span></div>
+                  <div class="info-text-2"><span>{{ infoData.role_desc }}·</span><span class="company-span" v-if="infoData.company" @click="clickCompany">{{ infoData.company.company_name }}</span></div>
+                </div>
               </div>
-              <div class="info-text">
-                <div class="info-text-1"><span class="name">{{ infoData.publish_name?infoData.publish_name:'' }}</span><span class="status">当前在线</span><span class="aptitude">已认证</span></div>
-                <div class="info-text-2"><span>{{ infoData.role_desc }}·</span><span class="company-span" v-if="infoData.company" @click="clickCompany">{{ infoData.company.company_name }}</span></div>
-              </div>
+              <span class="span-id">ID: {{ infoData.staff_number }}</span>
             </div>
             <div class="boss-info-btn">
               <el-button class="chat" :class="infoData.check_is_position == 1?'hover':'' " @click="clickChat" >聊一聊</el-button>
@@ -466,13 +466,10 @@ export default {
         justify-content: space-between;
         .boss-info-left{
           flex: 1;
-          display: flex;
-          align-items: center;
           .img-box{
             width: auto;
             height: auto;
             display: flex;
-            flex-direction: column;
             align-items: center;
             img{
               display: inline-block;
@@ -481,12 +478,6 @@ export default {
               border-radius: 50%;
               border: 2px solid #F7F8FA;
             }
-            .span-id{
-              font-size: 14px;
-              font-weight: bold;
-              padding-top: 4px;
-            }
-
           }
           .info-text{
             flex: 1;
@@ -536,23 +527,23 @@ export default {
                   margin-left: 0.5rem;
                 }
               }
-              &.info-text-2{
-                margin-top: 0.5rem;
-   
-              }
             }
           }
-
+          .span-id{
+            font-size: 14px;
+            font-weight: bold;
+            padding-top: 4px;
+          }
         }
         .boss-info-btn{
           width: auto;
-          padding: 0 0.8rem;
+          padding: 0 15px;
           button{
             width: 90px;
-            height: 36px;
-            line-height: 36px;
+            height: 35px;
+            line-height: 35px;
             text-align: center;
-            font-size: 0.8rem;
+            font-size: 15px;
             border: none;
             color: #fff;
             border-radius: 20px !important;

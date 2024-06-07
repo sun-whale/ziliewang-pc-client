@@ -167,6 +167,7 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
         uid:localStorage.getItem('realUid'),
         name: this.$store.state.user.name,
         avatar: this.$store.state.user.realAvatar,
+        user_number: localStorage.getItem('user_number'),
         tag: 'user'
       }
       //连接goeasy
@@ -200,6 +201,7 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
             name: this.currentUser.name,
             avatar: this.currentUser.avatar,
             uid: this.currentUser.uid,
+            user_number: this.currentUser.user_number,
           },
           onSuccess: function () { 
             console.log("连接成功.")

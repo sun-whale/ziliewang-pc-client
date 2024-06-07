@@ -4,15 +4,16 @@
       <div class="users-box">
         <div class="avatar-box">
           <img :src="basic_info.avatar?basic_info.avatar:require('../../../assets/image/img-user.jpg')" alt="" class="img-user" />
-          <span class="span-id">ID: {{ basic_info.uid }}</span>
-        </div>
-        <div class="users-right">
-          <div class="users-name">
-            <span class="span-1" v-if="basic_info">{{basic_info.real_name}}</span>
-            <img src="../../../assets/image/sex-1.png" alt="" class="img-sex"/>
+          <div class="users-right">
+            <div class="users-name">
+              <span class="span-1" v-if="basic_info">{{basic_info.real_name}}</span>
+              <img src="../../../assets/image/sex-1.png" alt="" class="img-sex"/>
+            </div>
+            <div class="wcd-box">简历完整度{{ perfection_degree.degree_num }}%</div>
           </div>
-          <div class="wcd-box">简历完整度{{ perfection_degree.degree_num }}%</div>
         </div>
+        <span class="span-id">ID: {{ basic_info.user_number }}</span>
+
       </div>
       <div class="infoTab-box">
         <div class="infoTab-items" @click="goTomyProfessionalCircle">
@@ -216,12 +217,9 @@ export default {
   text-align: left;
   .users-box{
     width: 100%;
-    display: flex;
-    align-items: center;
     .avatar-box{
-      width: 62px;
+      width: auto;
       display: flex;
-      flex-direction: column;
       align-items: center;
       img.img-user {
         width: 54px;
@@ -229,41 +227,39 @@ export default {
         border-radius: 50%;
         border: 3px solid #F2F3F5;
       }
-      .span-id{
-        font-size: 14px;
-        font-weight: bold;
-        padding-top: 4px;
-      }
-    }
-    
-    .users-right{
-      flex: 1;
-      padding-left: 8px;
-      .users-name{
-        display: flex;
-        align-items: center;
-        .span-1{
-          font-size: 1rem;
-          font-weight: bold;
-          color: $g_textColor;
-          line-height: 1.4rem;
-        }
-        .img-sex{
-          width: 0.9rem;
-          height: 0.9rem;
-          margin-left: 0.8rem;
-        }
+      .users-right{
+        flex: 1;
+        padding-left: 8px;
+        .users-name{
+          display: flex;
+          align-items: center;
+          .span-1{
+            font-size: 15px;
+            font-weight: bold;
+            color: $g_textColor;
+            line-height: 32px;
+          }
+          .img-sex{
+            width: 0.9rem;
+            height: 0.9rem;
+            margin-left: 0.8rem;
+          }
 
+        }
       }
+    
+    }
+    .span-id{
+      font-size: 14px;
+      font-weight: bold;
+      padding-top: 4px;
     }
 
   }
   .wcd-box{
-    margin-top: 8px;
-    font-size: 0.7rem;
+    font-size: 14px;
     font-weight: 400;
     color: #86909C;
-    line-height: 1.1rem;
   }
   .infoTab-box{
     width: 100%;

@@ -41,11 +41,11 @@
               <!-- 头像 开始 -->
               <div class="sender-info" v-if="currentUser.id === item.senderId">
                 <img :src="currentUser.avatar?currentUser.avatar:require('../../../../assets/image/img-user.jpg')" class="sender-avatar"/>
-                <span class="span-id">ID: {{ uid  }}</span>
+                <!-- <span class="span-id">ID: {{ user_number  }}</span> -->
               </div>
               <div class="sender-info" v-else>
                 <img :src="friend.avatar?friend.avatar:require('../../../../assets/image/img-user.jpg')" class="sender-avatar"/>
-                <span class="span-id">ID: {{ friend.uid }}</span>
+                <!-- <span class="span-id">ID: {{ friend.user_number }}</span> -->
               </div>
               <!-- 头像 结束 -->
 
@@ -429,6 +429,7 @@
         currentUser: null,
         friend: null,
         uid: localStorage.getItem('realUid'),
+        user_number: localStorage.getItem('user_number'),
         to: {},//用于创建消息时传入
 
         history: {

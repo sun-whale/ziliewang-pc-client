@@ -47,7 +47,6 @@ const permission = {
     },
     actions: {
         generateRoutes({ commit }, role) {
-            console.log(111)
             return new Promise(resolve => {
                 let accessedRoutes
                 //如果角色是admin

@@ -167,6 +167,7 @@ export default {
       uid: localStorage.getItem('staffUid'),
       name: this.$store.state.user.staffName,
       avatar: this.$store.state.user.staffAvatar,
+      user_number: localStorage.getItem('staff_number'),
     }
     if (this.goEasy.getConnectionStatus() === 'disconnected') {
       this.connectGoEasy();  //连接goeasy
@@ -202,6 +203,7 @@ export default {
           uid: localStorage.getItem('staffUid'),
           name: that.currentUser.name,
           avatar: that.currentUser.avatar,
+          user_number: localStorage.getItem('staff_number'),
           tag:'company'
         },
         onSuccess: function () { 

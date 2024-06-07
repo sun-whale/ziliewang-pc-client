@@ -54,7 +54,7 @@
             </div>
           </div>
           
-          <div class="span-id">ID:{{ item.data.uid }}</div>
+          <div class="span-id">ID:{{ item.data.user_number }}</div>
         </div>
 
       </div>

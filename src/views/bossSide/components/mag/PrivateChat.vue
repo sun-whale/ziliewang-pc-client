@@ -39,11 +39,11 @@
               <!-- 头像 开始 -->
               <div class="sender-info" v-if="currentUser.id === message.senderId">
                 <img :src="currentUser.avatar?currentUser.avatar:require('../../../../assets/image/img-user.jpg')" class="sender-avatar"/>
-                <span class="span-id">ID: {{ currentUser.uid }}</span>
+                <!-- <span class="span-id">ID: {{ currentUser.user_number }}</span> -->
               </div>
               <div class="sender-info" v-else>
                 <img :src="friend.avatar?friend.avatar:require('../../../../assets/image/img-user.jpg')" class="sender-avatar"/>
-                <span class="span-id">ID: {{ friend.uid }}</span>
+                <!-- <span class="span-id">ID: {{ friend.user_number }}</span> -->
               </div>
               <!-- 头像 结束 -->
               <div class="message-content" @contextmenu.prevent.stop="e => showActionPopup(message,$event)">
@@ -601,6 +601,7 @@
           uid: this.infoData.uid,
           name: this.infoData.name,
           avatar: this.infoData.avatar,
+          user_number: this.infoData.user_number,
           position_id: this.infoData.position_id, // 岗位id
           company_id: this.infoData.company_id,// 公司id
           position_name: this.infoData.position_name,

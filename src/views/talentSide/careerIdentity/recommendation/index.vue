@@ -3,20 +3,32 @@
     <div class="dynamicState-box view-box">
       <div class="dynamicState-top">
         <div class="dynamicState-title">推荐语</div>
-        <div class="fb-btn" @click="clickPublishBtn">评价</div>
+        <!-- <div class="fb-btn" @click="clickPublishBtn">评价</div> -->
       </div>
+
+      <div class="publish-box">
+
+        <div class="dialog-bodybox">
+          <div class="dialog-content-box">
+            <el-input type="textarea" :rows="5" placeholder="请输入内容" v-model="textarea"></el-input>
+          </div>
+        </div>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="clickMaskBtn">发布</el-button>
+        </div>
+
+      </div>
+
       <div class="dynamicState-container">
         <!-- 列表项 开始 -->
-        <div class="container-items-box" v-for="(item,index) in dataList" :key="index">
-          <!-- <div class="right-container-title"><span>回忆那么真</span><span>发布了动态</span></div> -->
+        <div class="container-items-box" v-for="(item,index) in evaluateList" :key="index">
           <div class="right-container-item">
             <div class="title list-title-box">
               <div class="title-left">
-                <img :src="infoData.avatar?infoData.avatar:require('../../../../assets/image/img-user.jpg' )" alt="" />
-                <span>{{ infoData.real_name }}</span>
+                <img :src="item.evaluate_user_avatar?item.evaluate_user_avatar:require('../../../../assets/image/img-user.jpg' )" alt="" />
                 <div class="name-id-box">
-                  <span>{{ infoData.real_name }}</span>
-                  <span class="span-id">ID: {{ infoData.uid }}</span>
+                  <span>{{ item.evaluate_user_name }}</span>
+                  <span class="span-id">ID: {{ item.user_number }}</span>
                 </div>
               </div>
               <div class="title-t">{{ item.createtime }}</div>
@@ -24,8 +36,8 @@
 
             <div class="items-dt-box">
               <div>
-                <div class="items-dt-p">{{ item.content }}</div>
-                <div class="tu-box">
+                <div class="items-dt-p" v-html="item.content"></div>
+                <!-- <div class="tu-box">
                   <div class="items-img-box" v-if="item.images.length>0">
                     <img :src="items" alt="" title="图片" @click="$preview(idx,item.images)" v-for="(items,idx) in item.images" :key="idx"/>
                   </div>
@@ -34,11 +46,10 @@
                       <video :src="item.video" style="object-fit: fill;" width="100%" height="100%" ></video>
                     </a>
                   </div>
-                </div>
-                
+                </div> -->
               </div>
               <div class="items-bottom-btn">
-                <div class="bottom-btn-items">
+                 <!-- <div class="bottom-btn-items">
                   <img src="../../../../assets/image/preview-open.png" alt="" />
                   <span>{{ item.read_num?item.read_num:0 }}阅读</span>
                 </div>
@@ -50,155 +61,29 @@
                   <img src="../../../../assets/image/thumbs-up.png" alt="" />
                   <span class="point-hover">{{ item.point_num?item.point_num:0 }} 已赞</span>
                 </div>
-                <div class="bottom-btn-items" @click.stop="clickReview(item,index)">
+               <div class="bottom-btn-items" @click.stop="clickReview(item,index)">
                   <img src="../../../../assets/image/comment.png" alt="" />
                   <span>{{ item.comment_num?item.comment_num:0 }}评论</span>
-                </div>
-                <img src="../../../../assets/image/icon-copy.png" alt="删除"  class="item-delete-img" @click.stop="clickItemDelete(item,index)"  v-if="uid == infoData.uid"/>
+                </div> -->
+                <img src="../../../../assets/image/icon-copy.png" alt="删除"  class="item-delete-img" @click.stop="clickItemDelete(item,index)"  v-if="uid == item.uid"/>
               </div>
-
-              <!-- 评论区域 开始 -->
-              <div class="items-review-box" :class="item.show_review?'show-box':''">
-                <div class="fabu-box">
-                  <el-input type="text" v-model="content" placeholder="评论千万条，友善第一条"></el-input>
-                  <el-button type="primary" @click="clickInfoVerifyBtn(1)">评论</el-button>
-                </div>
-                <!-- 评论列表模块 开始 -->
-                <div class="comment-box">
-                  <div class="comment-title-box"><span>{{ detailData.comment_num }}</span>评论</div>
-
-                  <div class="comment-list-box">
-                    <ul>
-                      <li v-for="(items,c_index) in detailData.comment_list" :key="c_index">
-                        <div class="title">
-                          <div class="title-left" @click.stop="clickName(items)">
-                            <img :src="items.avatar?items.avatar:require('../../../../assets/image/img-user.jpg')" alt="" class="avatar-img"/>
-                            <span>{{ items.name }}</span>
-                            <img src="../../../../assets/image/right-one.png" alt="" class="right-one" v-if="items.reply_id"/>
-                            <span v-if="items.reply_id">{{ items.publish_name }}</span>
-                          </div>
-                          <div class="title-t">{{ items.createtime }}</div>
-                        </div>
-                        <div class="items-c-box">
-
-                          <div class="items-c-p">{{ items.content }}</div>
-
-                          <div class="items-bottom-btn">
-                            <div class="bottom-btn-items" @click="clickPoint('commentID',item.id,c_index,items.id)" v-if="items.is_point == 2">
-                              <img src="../../../../assets/image/thumbs-up.png" alt="" />
-                              <span>{{ items.point_num }} 赞</span>
-                            </div>
-                            <div class="bottom-btn-items" @click="clickCancelPoint('commentID',item.id,c_index,items.id) " v-else>
-                              <img src="../../../../assets/image/thumbs-up.png" alt="" />
-                              <span class="point-hover">{{ items.point_num }} 已赞</span>
-                            </div>
-                            <div class="bottom-btn-items" @click.stop="clickRecover(items)">
-                              <img src="../../../../assets/image/comment.png" alt="" />
-                              <span>{{ items.comment_num }} 回复</span>
-                            </div>
-                            <div class="bottom-btn-items" @click.stop="clickitemsDelt(items,c_index)" v-if="uid == infoData.uid">
-                              <img src="../../../../assets/image/icon-copy.png" alt="" />
-                              <span>删除</span>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
-
-                </div>
-                <!-- 评论列表模块 结束 -->
-              </div>
-              <!-- 评论区域 结束 -->
             </div>
           </div>
         </div>
+        <div class="sec-footer" v-if="evaluateList.length != 0">
+          <div class="sec-content--more" @click="clickMore">
+            <span>查看更多</span>
+            <i class="el-icon-arrow-down"></i>
+          </div>
+        </div>
         <!-- 列表项 结束 -->
-        <el-empty description="暂无数据..." v-if="dataList.length == 0"></el-empty>
+        <el-empty description="暂无数据..." v-if="evaluateList.length == 0"></el-empty>
       </div>
     </div>
     
-    <!-- 、、、、 发布弹窗 、、、、 -->
-    <el-dialog :visible.sync="dialogVisible" width="640px" :before-close="handleClose">
-      <div class="login-type-box">
-        <span :class=" tag == 2?'hover':'' " @click="clickTab(2)">图片</span>
-        <span :class=" tag == 1?'hover':'' " @click="clickTab(1)">视频</span>
-      </div>
-      <div class="dialog-bodybox">
-        <!-- 发图片 开始-->
-        <div class="dialog-img-box" v-if="tag == 2">
-          <div class="img-item" v-for="(item,index) in upImgList" :key="index">
-            <img :src="item.upload_files" alt="" />
-          </div>
-          <div class="img-item add">
-            <el-upload class="avatar-uploader" 
-              ref="upload" 
-              action= "none"
-              multiple
-              :limit="3"
-              :show-file-list="false"
-              :before-upload="beforeAvatarUpload"
-              :data="uploadData"
-              :http-request="uploadArticleCover" 
-              >
-              <i class="el-icon-plus"></i>
-            </el-upload>
-          </div>
-        </div>
-        <!-- 发图片 结束-->
-        <!-- 发视频 开始-->
-        <div class="dialog-img-box" v-if="tag == 1">
-          <div class="img-item" v-for="(item,index) in video_files_path" :key="index">
-            <video :src="item.upload_files" style="object-fit: fill;" width="100%" height="100%" ></video>
-          </div>
-          <div class="img-item add">
-              <el-upload class="avatar-uploader" 
-                drag ref="upload_video" 
-                action= "none"
-                :limit="1"
-                :show-file-list="false"
-                multiple
-                :before-upload="beforeVideoUpload"
-                :http-request="up_video" 
-                :on-exceed='limitCheck'
-              >
-              <i class="el-icon-plus"></i>
-            </el-upload>
-          </div>
-        </div>
-        <!-- 发视频 结束-->
-        <div class="dialog-content-box">
-          <el-input
-            type="textarea"
-            :rows="8"
-            placeholder="请输入内容"
-            v-model="textarea">
-          </el-input>
-        </div>
-      </div>
-      
-      <div slot="footer" class="dialog-footer">
-        <!-- <div><span>1</span><span>2</span><span>3</span></div> -->
-        <el-button type="primary" @click="clickMaskBtn">发布</el-button>
-      </div>
-    </el-dialog>
 
      <!-- 视频弹窗 -->
      <videoDialog :infoData="video_url"  ref="video" />
-    <!-- 回复弹窗 -->
-    <div class="recoverVisible">
-      <el-dialog title="回复评论" :visible.sync="recoverVisible" width="482px" :before-close="recoverValueClose">
-        <div class="cententinfo-box">
-          <div class="demo-input-suffix">
-            <el-input v-model="recover_value" type="text" name="recover_value" placeholder="回复评论"></el-input>
-          </div>
-        </div>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="recoverVisible = false">取 消</el-button>
-          <el-button type="primary" @click="clickInfoVerifyBtn(2)">确 定</el-button>
-        </span>
-      </el-dialog>
-    </div>
 
   </div>
 </template>
@@ -238,7 +123,11 @@ export default {
       tag: 2,
       infoData: {},
       count_list: {},
-      dataList: [], //动态列表
+      evaluateList: [], //推荐语列表
+      page: 1,
+      pagesize: 10,
+
+
       // 点击选中的列表项
       seltItemInfoData: {},
       detailData:{}, // 动态获取详情
@@ -258,8 +147,8 @@ export default {
     this.uid = localStorage.getItem('realUid');
   },
   created(){
-    // 获取用户职圈信息
-    this.getUserProfile();
+    // 获取推荐语列表
+    this.getEevaluateList();
   },
   methods: {
     recoverValueClose(){
@@ -268,29 +157,33 @@ export default {
     clickTab(n){
       this.tag = n;
     },
-    // 点击列表
-    // clicklistItems(i){
-    //   this.$router.push({
-    //     path:'/professionalCircle/circleDetails',   //跳转的路径
-    //     query:{           //路由传参时push和query搭配使用 ，作用时传递参数
-    //       id:i.id,
-    //     }
-    //   })
-    // },
+    clickMore(){
+      this.page = this.page+1;
+      this.getEevaluateList();
+    },
 
-    // 获取用户职圈信息
-    getUserProfile(){
-      this.$axios.post('/api/profession-circle/my',{
-        see_uid: this.see_uid
-      }).then( res =>{
+    // 获取推荐语列表
+    getEevaluateList(){
+      let that = this;
+      let p = {
+        page: that.page,
+        pagesize: that.pagesize
+      }
+      this.$axios.get('/api/user-evaluate/list?page=' + p.page + '&pagesize=' + p.pagesize,{}).then( res =>{
         if(res.code == 0){
-          this.infoData = res.data.users;
-          this.count_list = res.data.count_list;
-          let dataList = res.data.list;
-          dataList.forEach( ele =>{
-            ele.show_review = false
-          })
-          this.dataList = dataList;
+          if(res.data.list.length <= 0){
+            this.$message.error({
+              message: "暂无更多数据..."
+            })
+          }else{
+            let dataList = that.evaluateList.concat(res.data.list);
+            this.evaluateList = dataList;
+            // dataList.forEach( ele =>{
+            //   ele.show_review = false
+            // })
+            // this.evaluateList = dataList;
+          }
+          
         }else{
           this.$message.error({
             message:res.msg
@@ -305,7 +198,7 @@ export default {
       console.log('clickPoint')
       let that = this;
       let index = idx;
-      let dataList =that.dataList;
+      let evaluateList =that.evaluateList;
       let p = {
         profession_circle_id: it_id,
       }
@@ -323,10 +216,10 @@ export default {
                 that.getInfoData();
               },1000)
             }else{
-              dataList[index].point_num++;
-              dataList[index].is_point = 1;
-              that.dataList = dataList;
-              console.log(that.dataList)
+              evaluateList[index].point_num++;
+              evaluateList[index].is_point = 1;
+              that.evaluateList = evaluateList;
+              console.log(that.evaluateList)
             }
            
            
@@ -343,7 +236,7 @@ export default {
     clickCancelPoint(s,it_id,idx,c_id){
       let that = this;
       let index = idx;
-      let dataList =that.dataList;
+      let evaluateList =that.evaluateList;
       let p = {
         profession_circle_id: it_id,
       }
@@ -361,10 +254,10 @@ export default {
               that.getInfoData();
               },1000)
             }else{
-              dataList[index].point_num--;
-              dataList[index].is_point = 2;
-              that.dataList = dataList;
-              console.log(that.dataList)
+              evaluateList[index].point_num--;
+              evaluateList[index].is_point = 2;
+              that.evaluateList = evaluateList;
+              console.log(that.evaluateList)
             }
         }else{
           that.$message.error({
@@ -421,17 +314,17 @@ export default {
       that.seltItemInfoData = i;
       that.id = i.id;
       that.getInfoData();
-      let dataList = that.dataList;
-      if(dataList[idx].show_review == true){
-        dataList[idx].show_review = false;
-        that.dataList = dataList;
+      let evaluateList = that.evaluateList;
+      if(evaluateList[idx].show_review == true){
+        evaluateList[idx].show_review = false;
+        that.evaluateList = evaluateList;
         return
       }
-      dataList.forEach( ele =>{
+      evaluateList.forEach( ele =>{
         ele.show_review = false;
       })
-      dataList[idx].show_review = true;
-      that.dataList = dataList;
+      evaluateList[idx].show_review = true;
+      that.evaluateList = evaluateList;
     },
     // 获取详情
    async getInfoData(){
@@ -449,49 +342,6 @@ export default {
         console.log(e)
       })
     },
-    // 发布评论
-    clickInfoVerifyBtn(n){
-      let that = this;
-      let num = n; // 1 评论职圈； 2、回复评论
-      let p = {
-        profession_circle_id: that.id,
-      }
-      if( num == 1){
-        p.content= that.content;
-      }
-      if( num == 2){
-        p.reply_id = that.reply_id;
-        p.content = that.recover_value;
-      }
-      that.$axios.post('/api/profession-circle/comment',p).then( res =>{
-        console.log(res)
-        if( res.code == 0 ){
-          let text = '';
-          if(num == 1){
-            text = '评论成功！';
-            that.content = '';
-          }
-          if(num == 2){
-            text = '回复成功！';
-            that.recoverVisible = false;
-            that.recover_value = '';
-          }
-          that.$message.success(text);
-          setTimeout( ()=>{
-            // this.is_content = false;
-            //获取职圈详情
-            that.getInfoData();
-          },1500)
-          
-        }else{
-          that.$message.error({
-            message:res.msg
-          })
-        }
-      }).catch( e =>{
-        console.log(e)
-      })
-    },
 
     // 点击发布
     clickPublishBtn(){
@@ -502,41 +352,43 @@ export default {
       let that = this;
       let p = {
         content: that.textarea,
+        evaluate_user_type: 1,  // 评价用户类型 1.人才用户 2.企业用户
+        uid: that.see_uid, // 	被评价人才ID
       }
-      let upImgList = that.upImgList;
-      let video_files_path = that.video_files_path;
-      let video = [];
-      let images = [];
+      // let upImgList = that.upImgList;
+      // let video_files_path = that.video_files_path;
+      // let video = [];
+      // let images = [];
 
-      if(upImgList.length > 0){
-        upImgList.forEach( ele =>{
-          images.push(ele.upload_files_path)
-        })
-        let str = images.toString(',');
-        p.images = str;
+      // if(upImgList.length > 0){
+      //   upImgList.forEach( ele =>{
+      //     images.push(ele.upload_files_path)
+      //   })
+      //   let str = images.toString(',');
+      //   p.images = str;
         
-      }
-      if(video_files_path.length > 0){
-        video_files_path.forEach( ele =>{
-          video.push(ele.upload_files_path)
-        })
-        let video_str = video.toString(',');
-        p.video = video_str;
-      }
+      // }
+      // if(video_files_path.length > 0){
+      //   video_files_path.forEach( ele =>{
+      //     video.push(ele.upload_files_path)
+      //   })
+      //   let video_str = video.toString(',');
+      //   p.video = video_str;
+      // }
       console.log(p)
       if( !that.is_return ){
         return
       }
       that.is_return = false;
-      that.$axios.post('/api/profession-circle/create',p).then( res =>{
+      that.$axios.post('/api/user-evaluate/create',p).then( res =>{
         if(res.code == 0){
           that.$message.success('发布成功！');
           that.dialogVisible = false;
           this.textarea = '';
-          that.upImgList = [];
-          that.video_files_path = [];
-          // 获取用户职圈信息
-          that.getUserProfile();
+          // that.upImgList = [];
+          // that.video_files_path = [];
+          // 获取推荐语列表
+          that.getEevaluateList();
         } else{
           that.$message.error({
             message:res.msg
@@ -554,16 +406,16 @@ export default {
       let that = this;
       let item = i;
       let index = idx;
-      let dataList = that.dataList;
+      let evaluateList = that.evaluateList;
       console.log(item)
       let p = {
         id: item.id,
       }
-      that.$axios.post('/api/profession-circle/delete',p).then( res =>{
+      that.$axios.post('/api/user-evaluate/delete',p).then( res =>{
         if(res.code == 0){
           that.$message.success('删除成功！');
-          dataList.splice(index,1);
-          that.dataList = dataList;
+          evaluateList.splice(index,1);
+          that.evaluateList = evaluateList;
         } else{
           that.$message.error({
             message:res.msg
@@ -688,7 +540,7 @@ export default {
   }
   .dynamicState-box{
     width: 100%;
-    margin-top: 20px;    
+    margin-top: 10px;    
     box-shadow: 0 0 0 1px rgba(0, 0, 0, .15), 0 2px 3px rgba(0, 0, 0, .2);
 
     .dynamicState-top{
@@ -696,10 +548,11 @@ export default {
       background: #FFFFFF;
       border-radius: 4px 4px 4px 4px;
       position: relative;
-      padding: 10px 20px 0 20px;
+      padding: 10px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      border-bottom: 1px solid #dedfe0;
       .dynamicState-title{
         font-size: 20px;
         font-weight: bold;
@@ -736,7 +589,7 @@ export default {
 
         }
         .right-container-item{
-          padding: 10px 30px;
+          padding: 10px 20px;
           margin-top: 0;
           &:nth-child(1){
             margin-top: 0;
@@ -839,85 +692,6 @@ export default {
             .items-img-box:nth-of-type(1){
               margin-left: 0;
             }
-            // 评论展示
-            .items-review-box{
-              transition: all 0.5s;
-              padding-left: 16px;
-              padding-right: 16px;
-              background: #f6f6f694;
-              margin-top: 10px;
-              height: 0;
-              overflow: auto;
-              &.show-box{
-                height: auto;
-                padding-top: 16px;
-                padding-bottom: 16px;
-                max-height: 450px;
-              }
-              .fabu-box{
-                width: 100%;
-                height: auto;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                /deep/ .el-button{
-                  padding: 0;
-                  width: 100px;
-                  height: 35px;
-                  line-height: 35px;
-                  margin-left: 20px;
-                }
-                /deep/ .el-button--primary{
-                  background-color: $g_color;
-                  border-color: $g_color;
-                }
-                /deep/ .el-input__inner{
-                  height: 35px;
-                  line-height: 35px;
-                  font-size: 13px;
-                }
-              }
-              .comment-box{
-                width: 100%;
-                margin-top: 20px;
-                .comment-title-box{
-                  font-size: 14px;
-                  font-weight: bold;
-                  color: $g_textColor;
-                  line-height: 24px;
-                  position: relative;
-                  display: flex;
-                  align-items: center;
-                  &::after{
-                    width: 3px;
-                    height: 70%;
-                    content: '';
-                    background: $g_bg;
-                    position: absolute;
-                    left: 0;
-                    top: 50%;
-                    transform: translateY(-50%);
-                  }
-                  span{
-                    padding: 0 0.5rem;
-                  }
-                }
-                .comment-list-box{
-                  width: 100%;
-                  margin-top: 14px;
-                  ul{
-                    width: 100%;
-                    li{
-                      width: 100%;
-                      margin-top: 10px;
-                      .items-bottom-btn{
-                        margin-top: 6px;
-                      }
-                    }
-                  }
-                }
-              }
-            }
 
           }
           .items-bottom-btn{
@@ -961,16 +735,12 @@ export default {
       
     }
   }
-  #myProfessionalCircle /deep/ .el-dialog{
-    top: 50%;
-    transform: translateY(-50%);
-    margin-top: 0 !important;
+  .publish-box{
+    width: 100%;
+    padding: 0 10px;
     .dialog-bodybox{
       width: 100%;
-      border-radius: 8px;
-      border: 1px solid #E5E6EB;
       padding: 12px;
-      margin-top: 10px;
       .dialog-img-box{
         width: 100%;
         display: -webkit-box;
@@ -1041,146 +811,56 @@ export default {
       .dialog-content-box{
         width: 100%;
         height: 100%;
-        margin-top: 16px;
         .el-textarea__inner{
           font-size: 14px;
           padding: 0;
           border: none;
-          &:focus{
-            border-color: $g_color;
-          }
+          
+        }
+        /deep/ .el-textarea__inner:focus{
+          border-color: $g_color;
         }
       }
 
     }
-    .login-type-box{
-        width: 100%;
-        display: flex;
-        align-items: center;
-        span{
-          text-align: center;
-          font-size: 16px;
-          font-family: PingFang SC-Regular, PingFang SC;
-          font-weight: 400;
-          color: #4E5969;
-          line-height: 28px;
-          position: relative;
-          padding: 4px 20px;
-          cursor: pointer;
-        }
-        span.hover{
-          font-weight: bold;
-          color: $g_textColor;
-          &::after{
-            content: '';
-            width: 44px;
-            height: 3px;
-            background: $g_color;
-            position: absolute;
-            left: 50%;
-            bottom: 0;
-            transform: translateX(-50%);
-          }
-        }
-      }
-    .el-dialog__body{
-      padding: 0 20px;
-    }
-    .el-button{
-      padding: 0;
-      width: 100px;
-      height: 40px;
-      line-height: 40px;
-    }
-    .el-button--primary{
-      background-color: $g_color;
-      border-color: $g_color;
-    }
-  }
-
-    // 评论回复弹窗
-    .recoverVisible{
-    /deep/ .el-dialog{
-      min-width: 420px;
-      top: 50%;
-      transform: translateY(-50%);
-      margin-top: 0 !important;
-      .el-dialog__header{
-        text-align: left;
-        .el-dialog__title{
-          font-size: 15px;
-          color: $g_textColor;
-        }
-      }
-      .el-dialog__body{
-        height: auto;
-        overflow: hidden;
-        padding: 20px;
-        .cententinfo-box{
-          width: 100%;
-          margin-top: 10px;
-          .cententinfo-title{
-            font-size: 14px;
-            font-weight: 400;
-            color: $g_textColor;
-            line-height: 22px;
-            text-align: left;
-          }
-          .demo-input-suffix{
-            width: 100%;
-            display: flex;
-            align-items: center;
-            span{
-              width: auto;
-              font-size: 14px;
-              font-weight: 400;
-              color: #000000;
-              line-height: 22px;
-            }
-            .el-input {
-              position: relative;
-              font-size: 14px;
-              flex: 1;
-              margin-left: 10px;
-            }
-            .el-input__inner {
-              font-size: 14px;
-              padding: 14px 10px;
-              width: 100%;
-              border: 1px solid #e9e9e9;
-              border-radius: 4px;
-              outline: none;
-              box-sizing: border-box;
-              display: block;
-              box-shadow: none;
-              transition: border .3s;
-              background-color: #fff;
-              resize: none;
-            }
-            .el-input__inner:hover{
-              border-color: $g_color;
-            }
-            .el-input.is-active .el-input__inner, .el-input__inner:focus{
-              border-color: $g_color;
-              outline: 0;
-            }
-
-          }
-
-        }
-      }
+    .dialog-footer{
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 10px;
       .el-button{
         padding: 0;
         width: 100px;
-        height: 40px;
-        line-height: 40px;
+        height: 35px;
+        line-height: 35px;
       }
       .el-button--primary{
         background-color: $g_color;
         border-color: $g_color;
       }
-
-      
+    }
+    
+  }
+  .sec-footer{
+    width: 100%;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .sec-content--more{
+      width: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      padding: 10px 20px;
+      cursor: pointer;
+      i{
+        margin-left: 10px;
+      }
+    }
+    .sec-content--more:hover{
+      color: $g_color;
     }
   }
 </style>
