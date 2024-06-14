@@ -20,7 +20,7 @@
             v-for="item in complaintType"
             :key="item.value"
             :label="item.label"
-            :value="item.value"
+            :value="item.label"
           >
           </el-option>
         </el-select>
@@ -60,7 +60,7 @@
           </el-upload>
         </div>
         <div class="service">
-          您也可以练习线上客服(<span @click="clickService">点击线上客服</span>)
+          您也可以联系线上客服(<span @click="clickService">点击线上客服</span>)
         </div>
         <div class="tips">
           注：1.您提交得举报投诉信息将在五个工作日内反馈，请留意系统消息或在“自猎网APP”，“我的举报”中查看举报详情及反馈。2.请谨慎选择举报类型和举报内容，所选类型与举报内容不一致讲影响举报结果。3.经核查举报成功后，会根据举报类型对人才进行对应的处置，如举报失败原因有可能选择内容错误，可重新选择投诉类型发起举报。谨防诈骗，遵纪守法。
@@ -273,8 +273,26 @@ export default {
   methods: {
     // 投诉提交
     clickComplaint() {
-      this.clickClose();
-      console.log(this.params);
+      const that = this;
+      let params = {
+        complaint_type: this.states == 0 ? 1 : this.states == 1 ? 2 : 3, //投诉类型 1.企业投诉人才 2.人才投诉企业 3.其他投诉
+        receive_complaint_uid: this.uId, //被投诉用户ID
+        company_id: this.states == 1 ? this.id : "", // 企业ID 备注：人才投诉企业的时候传
+        images: this.params.complaintImage.join(),
+        content: this.params.complaintVal + " - " + this.params.complaintText,
+      };
+      that.$axios
+        .post("/api/complaint/create", params)
+        .then((res) => {
+          if (res.code == 0) {
+            this.clickClose();
+            return;
+          }
+          this.$message.error(res.msg);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
     // 上传文件得校验
     beforeAvatarUpload(file) {
