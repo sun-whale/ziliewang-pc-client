@@ -132,10 +132,11 @@
               <el-button @click="getContactMthod(infoData,'wechat_number')">获取微信</el-button>
             </div>
             <div class="icon-box">
-              <div>
+              <!-- <div>
                 <img src="../../../assets/image/bossSide/icon-shareAlt-1.png" alt="" />
                 <span>转发给同事</span>
-              </div>
+              </div> -->
+              
               <div @click="collection">
                 <img src="../../../assets/image/bossSide/icon-star-1.png" alt="" />
                 <span :class="infoData.is_collection == 1?'hover':''"> {{ infoData.is_collection == 1?"已收藏":'收藏' }}</span>
@@ -143,6 +144,10 @@
               <div @click.stop="clickShare()">
                 <img src="../../../assets/image/bossSide/icon-shareAlt-1.png" alt="" />
                 <span>分享</span>
+              </div>
+              <div @click.stop="clickComplaint()">
+                <i class="el-icon-s-release"></i>
+                <span>举报</span>
               </div>
             </div>
             
@@ -181,15 +186,16 @@
       </el-dialog>
     </div>
 
+    <Complaint ref="complaint" :id="complaintData.id" :uId="complaintData.uId" sstates="0" zIndex="1000"/>
   </div>
 </template>
 
 <script>
 
+import Complaint from "@/components/complaint"
 export default {
 
-  components: {
-  },
+  components:{Complaint},
   props:{
     infoData: {
       type: Object,
@@ -222,7 +228,11 @@ export default {
       zx_dialogVisible: false,
       positionList:[], // 岗位列表
       position_dialogVisible: false,
-      seltPositionData: {}
+      seltPositionData: {},
+      complaintData:{
+        id:'',
+        uId:''
+      }
     }
   },
   computed: {
@@ -231,6 +241,15 @@ export default {
   mounted() {
   },
   methods: {
+    // 举报人才
+    clickComplaint(){
+      // 当前登录人id
+      this.complaintData.id = localStorage.getItem('user_number');
+      // 人才id
+      this.complaintData.uId = this.basic_info.user_number;
+      this.zx_dialogVisible = false;
+      this.$refs.complaint._data.isComplaint = true;
+    },
     // 是否显示分享
     clickShare(){
       this.show_share = this.show_share ? false : true;
