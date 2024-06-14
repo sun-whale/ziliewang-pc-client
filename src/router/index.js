@@ -116,6 +116,19 @@ export const constantRoutes = [
       },
     ]
   },
+  {
+    path: '/agentPublish',
+    component: Layout,
+    redirect: '/agentPublish',
+    children: [
+      {
+        path: '/agentPublish',
+        name: 'AgentPublish',
+        component: () => import('@/views/bossSide/agentPublish/index'),
+        meta: { title: 'Agent招聘', icon: 'example' },
+      },
+    ]
+  },
   // {
   //   path: '/talentManagement',
   //   component: Layout,
