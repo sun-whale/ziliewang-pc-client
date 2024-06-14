@@ -219,12 +219,15 @@
         </div>
       </el-dialog>
     </div>
+    <Complaint id="123" uId="12345" />
   </div>
 </template>
 
 <script>
+import Complaint from "@/components/complaint"
 export default {
   name: 'Dashboard',
+  components:{Complaint},
   data(){
     return{
       role: localStorage.getItem('role'),

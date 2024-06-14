@@ -39,6 +39,10 @@
               <i class="el-icon-share" style="color:#86909C;padding-right: 2px;"></i>
               <span>分享</span>
             </span>
+            <span class="tag-items" @click="clickComplaint()">
+              <i class="el-icon-s-release" style="color:#86909C;padding-right: 2px;"></i>
+              <span>举报</span>
+            </span>
           </div>
           
             <!-- 分享区域 开始 -->
@@ -113,6 +117,7 @@
       </div>
     </div>
     <!-- 主题部分 结束 -->
+    <Complaint ref="complaint" :id="complaintData.id" :uId="complaintData.uId" sstates="1" zIndex="1000"/>
 
   </div>
 
@@ -123,6 +128,7 @@ import JobDescription from "./components/jobDescription";
 import CompanyProfile from "./components/companyProfile";
 import CompanyInfo from "./components/companyInfo"
 import OtherPositions from "./components/otherPositions"
+import Complaint from "@/components/complaint"
 
 export default {
   name: 'JobDetails',
@@ -131,9 +137,14 @@ export default {
     CompanyProfile,
     CompanyInfo,
     OtherPositions,
+    Complaint,
   },
   data(){
     return{
+      complaintData:{
+        id:"",
+        uId:""
+      },
       show_share: false,
       infoData: {},
       company:{},
@@ -151,6 +162,15 @@ export default {
     
   },
   methods: {
+    // 举报
+    clickComplaint(){
+      // 当前登录人id
+      this.complaintData.id = localStorage.getItem('user_number');
+      // 人才id
+      this.complaintData.uId = this.infoData.staff_number;
+      // this.zx_dialogVisible = false;
+      this.$refs.complaint._data.isComplaint = true;
+    },
     // 是否显示分享
     clickShare(){
       this.show_share = this.show_share ? false : true;
