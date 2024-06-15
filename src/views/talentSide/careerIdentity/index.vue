@@ -196,7 +196,7 @@ export default {
         path:'/attentionFans',   //跳转的路径
         query:{           //路由传参时push和query搭配使用 ，作用时传递参数
           tag:name,
-          see_uid: this.see_uid
+          see_uid: this.see_uid + ''
         }
       })
     },

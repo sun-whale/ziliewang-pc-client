@@ -147,6 +147,8 @@ export default {
     this.uid = localStorage.getItem('realUid');
   },
   created(){
+    this.page = 1;
+    this.pagesize = 10;
     // 获取推荐语列表
     this.getEevaluateList();
   },
@@ -169,7 +171,14 @@ export default {
         page: that.page,
         pagesize: that.pagesize
       }
-      this.$axios.get('/api/user-evaluate/list?page=' + p.page + '&pagesize=' + p.pagesize,{}).then( res =>{
+      let url = '';
+      if(that.see_uid != that.uid){
+        p.see_uid = that.see_uid;
+        url = `/api/user-evaluate/list?page=${p.page}&pagesize=${p.pagesize}&see_uid=${that.see_uid}`
+      }else{
+        url = `/api/user-evaluate/list?page=${p.page}&pagesize=${p.pagesize}`
+      }
+      this.$axios.get(url,{}).then( res =>{
         if(res.code == 0){
           if(res.data.list.length <= 0){
             this.$message.error({

@@ -350,6 +350,7 @@ export default {
         return
       }
       that.seltPositionData = i;
+      console.log(that.seltPositionData)
       that.getPositionList(); // 获取职位
       
     },
@@ -392,7 +393,7 @@ export default {
       }
       that.zx_dialogVisible = false;
       that.position_dialogVisible = false;
-      that.createPositionChatRecord(i.id,seltPositionData.uid);
+      that.createPositionChatRecord(i.id,seltPositionData.basic_info.uid);
       that.$bus.$emit('receiveParams', {type:'searchTalent',laiyuan:'nav',infoData });
     },
     position_handleClose(){
