@@ -76,7 +76,7 @@
             </el-form-item>
             <el-form-item label="新资范围" required>
               <el-col :span="5" class="xzfw-box">
-                <el-select v-model="ruleForm.xz_status" placeholder="最低月薪">
+                <el-select @change="changeMoney" v-model="ruleForm.xz_status" placeholder="最低月薪">
                   <el-option label="1K" value="1"></el-option>
                   <el-option label="2K" value="2"></el-option>
                   <el-option label="3K" value="3"></el-option>
@@ -106,7 +106,7 @@
                 </el-select>
               </el-col>
               <el-col :span="5" class="xzfw-box">
-                <el-select v-model="ruleForm.xz_end" placeholder="最高月薪">
+                <el-select @change="changeMoney" v-model="ruleForm.xz_end" placeholder="最高月薪">
                   <el-option label="2K" value="2"></el-option>
                   <el-option label="3K" value="3"></el-option>
                   <el-option label="4K" value="4"></el-option>
@@ -220,6 +220,66 @@
                 <el-checkbox label="提供实习证明" name="提供实习证明"></el-checkbox>
               </el-checkbox-group>
             </el-form-item>
+
+            <el-form-item label="素质评估">
+              <el-col :span="5">
+                <el-switch
+                  style="margin-top: 5px"
+                  v-model="ruleForm.qualityVal"
+                  active-color="#1ec5d8"
+                />
+              </el-col>
+            </el-form-item>
+
+            <el-form-item label="面试评估">
+              <el-col :span="24">
+                <el-table
+                  :data="ruleForm.assessList"
+                  :border="true"
+                  style="width: 100%"
+                >
+                  <el-table-column label="问题描述">
+                    <template slot-scope="scope">
+                      <el-input
+                        v-model="scope.row.question"
+                        placeholder="请输入问题描述"
+                      ></el-input>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="回答方式" width="180">
+                    <template slot-scope="scope">
+                      <el-select
+                        v-model="scope.row.answer"
+                        placeholder="请选择回答方式"
+                        style="width: 100%"
+                      >
+                        <el-option label="录音" value="录音"></el-option>
+                        <el-option label="视频" value="视频"></el-option>
+                      </el-select>
+                    </template>
+                  </el-table-column>
+                  <el-table-column fixed="right" label="操作" width="100">
+                    <template slot-scope="scope">
+                      <el-button
+                        @click="handleClickAssess(scope.row, scope.$index)"
+                        type="text"
+                        size="small"
+                        class="assess-del"
+                        >删除</el-button
+                      >
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </el-col>
+              <el-col :span="24">
+                <el-button
+                  @click="addAssess"
+                  type="primary"
+                  class="assess-button"
+                  >添加面试评估</el-button
+                >
+              </el-col>
+            </el-form-item>
             
             <el-form-item class="btn-box">
               <el-button type="primary" @click="submitForm">{{position_id?'修改':'发布'}}</el-button>
@@ -247,6 +307,8 @@ export default {
       selt_industry_item: '',  // 选中的行业名称
       selt_positionType_item: '',  // 选中的职位名称
       ruleForm: {
+        assessList: [], // 面试评估
+        qualityVal: false, // 素质评估
         position_name: '', // 职位名称
         work_type: '', // 工作性质
         position_desc: '', // 职位描述
@@ -360,6 +422,31 @@ export default {
     
   },
   methods:{
+    // 最大薪资不能小于最低薪资
+    changeMoney(){
+      if (this.ruleForm.xz_status != "" && this.ruleForm.xz_end != "") {
+          if (this.ruleForm.xz_status > this.ruleForm.xz_end) {
+              this.ruleForm.xz_end = ""
+              this.$message.error({
+                  message: "最低薪资不能大于最高薪资！"
+              })
+          }
+      }
+    },
+    // 删除一条面试评估
+    handleClickAssess(item, index) {
+      this.ruleForm.assessList.splice(index, 1);
+    },
+    // 添加一条面试评估
+    addAssess() {
+      const that = this;
+      let assessObj = {
+        question: "",
+        answer: "",
+      };
+      that.ruleForm.assessList = [...that.ruleForm.assessList, assessObj];
+    },
+
     // 点击选择行业要求
     changeIndustry(e){
       this.selt_industry_item = e;
@@ -444,12 +531,15 @@ export default {
           ruleForm.xz_end = salary[1];
           ruleForm.age_status = limit_age[0];
           ruleForm.age_end = limit_age[1];
-          ruleForm.job_benefits = res.data.job_benefits.split(',');
+          ruleForm.job_benefits = res.data.job_benefits.length > 0 ? res.data.job_benefits.split(',') : "";
           ruleForm.supplementary_information = res.data.supplementary_information.split(',');
-          ruleForm.sync_workmate = res.data.sync_workmate.split(',');
-          ruleForm.resume_demand = res.data.resume_demand.split(',');
-          ruleForm.work_type = res.data.work_type+'';
-          ruleForm.months = res.data.months?res.data.months:'12';
+          ruleForm.sync_workmate = res.data.sync_workmate.length > 0 ? res.data.sync_workmate.split(',') : "";
+          ruleForm.resume_demand = res.data.resume_demand.length > 0 ? res.data.resume_demand.split(',') : "";
+          ruleForm.work_type = res.data.work_type + '';
+          ruleForm.months = res.data.months ? res.data.months : '12';
+          ruleForm.qualityVal = res.data.quality_assessment == 1 ? true : false;
+          ruleForm.assessList = res.data.interview_evaluation;
+
           that.ruleForm = ruleForm;
           return f(id);
         }else{
@@ -471,6 +561,8 @@ export default {
     // 点击重置
     resetForm(){
       this.ruleForm= {
+        assessList: [], // 面试评估
+        qualityVal: false, // 素质评估
         position_name: '', // 职位名称
         work_type: '', // 工作性质
         position_desc: '', // 职位描述
@@ -503,6 +595,8 @@ export default {
       let that = this;
       let ruleForm = that.ruleForm;
       let p = {
+        interview_evaluation: JSON.stringify(ruleForm.assessList), // 面试评估
+        quality_assessment: ruleForm.qualityVal ? 1 : 2, // 素质评估 1.开启 2.关闭
         position_name: ruleForm.position_name,
         work_type: ruleForm.work_type,
         position_desc: ruleForm.position_desc,
@@ -559,6 +653,17 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.assess-del {
+  color: $g_bg;
+}
+.assess-button {
+  width: 100%;
+  margin-top: 20px;
+  border: 1px dashed $g_bg;
+  color: $g_bg;
+  border-radius: 6px;
+  background-color: #fff;
+}
   .postJob-box{
     width: 880px;
     padding: 16px 30px;

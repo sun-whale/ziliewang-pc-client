@@ -131,7 +131,7 @@
 
             <el-form-item label="新资范围" required>
               <el-col :span="5" class="xzfw-box">
-                <el-select v-model="ruleForm.xz_status" placeholder="最低月薪">
+                <el-select @change="changeMoney" v-model="ruleForm.xz_status" placeholder="最低月薪">
                   <el-option label="1K" value="1"></el-option>
                   <el-option label="2K" value="2"></el-option>
                   <el-option label="3K" value="3"></el-option>
@@ -161,7 +161,7 @@
                 </el-select>
               </el-col>
               <el-col :span="5" class="xzfw-box">
-                <el-select v-model="ruleForm.xz_end" placeholder="最高月薪">
+                <el-select @change="changeMoney" v-model="ruleForm.xz_end" placeholder="最高月薪">
                   <el-option label="2K" value="2"></el-option>
                   <el-option label="3K" value="3"></el-option>
                   <el-option label="4K" value="4"></el-option>
@@ -340,7 +340,7 @@
                   <el-table-column label="问题描述">
                     <template slot-scope="scope">
                       <el-input
-                        v-model="scope.row.problem"
+                        v-model="scope.row.question"
                         placeholder="请输入问题描述"
                       ></el-input>
                     </template>
@@ -516,6 +516,17 @@ export default {
     }
   },
   methods: {
+    // 最大薪资不能小于最低薪资
+    changeMoney(){
+      if (this.ruleForm.xz_status != "" && this.ruleForm.xz_end != "") {
+          if (this.ruleForm.xz_status > this.ruleForm.xz_end) {
+              this.ruleForm.xz_end = ""
+              this.$message.error({
+                  message: "最低薪资不能大于最高薪资！"
+              })
+          }
+      }
+    },
     // 删除一条面试评估
     handleClickAssess(item, index) {
       this.ruleForm.assessList.splice(index, 1);
@@ -524,7 +535,7 @@ export default {
     addAssess() {
       const that = this;
       let assessObj = {
-        problem: "",
+        question: "",
         answer: "",
       };
       that.ruleForm.assessList = [...that.ruleForm.assessList, assessObj];
@@ -674,9 +685,11 @@ export default {
     submitForm() {
       let that = this;
       let ruleForm = that.ruleForm;
+      console.log();
+
       let p = {
-        assessList: ruleForm.assessList, // 面试评估
-        qualityVal: ruleForm.qualityVal, // 素质评估
+        interview_evaluation: JSON.stringify(ruleForm.assessList), // 面试评估
+        quality_assessment: ruleForm.qualityVal ? 1 : 2, // 素质评估 1.开启 2.关闭
         position_name: ruleForm.position_name,
         work_type: ruleForm.work_type,
         position_desc: ruleForm.position_desc,
@@ -707,25 +720,18 @@ export default {
         url = "/api/company-position/publish";
       }
       console.log(p);
-      //   that.$axios.post(url, p).then((res) => {
-      //     if (res.code == 0) {
-      //       if (position_id) {
-      //         that.$message.success(" 修改成功！");
-      //         // setTimeout( ()=>{
-      //         //   that.resetForm();
-      //         // },1500)
-      //       } else {
-      //         that.$message.success(" 发布成功！");
-      //       }
-      //       setTimeout(() => {
-      //         that.$router.push("/jobCenter");
-      //       }, 1500);
-      //     } else {
-      //       that.$message.error({
-      //         message: res.msg,
-      //       });
-      //     }
-      //   });
+      that.$axios.post(url, p).then((res) => {
+        if (res.code == 0) {
+          that.$message.success(" 发布成功！");
+          setTimeout(() => {
+            that.$router.push("/jobCenter");
+          }, 1500);
+        } else {
+          that.$message.error({
+            message: res.msg,
+          });
+        }
+      });
     },
   },
 };
