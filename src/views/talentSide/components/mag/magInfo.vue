@@ -70,9 +70,12 @@ export default {
   },
   created(){
     this.currentUser = {
-      id: localStorage.getItem('realUid'),
+      id: 'u_'+ localStorage.getItem('realUid'),
+      uid:localStorage.getItem('realUid'),
       name: this.$store.state.user.name,
-      avatar: this.$store.state.user.realAvatar
+      avatar: this.$store.state.user.realAvatar,
+      user_number: localStorage.getItem('user_number'),
+      tag: 'user'
     }
    
     this.goEasy.im.on(this.GoEasy.IM_EVENT.CONVERSATIONS_UPDATED, this.setUnreadNumber);

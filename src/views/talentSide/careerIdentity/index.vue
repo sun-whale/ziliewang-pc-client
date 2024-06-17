@@ -243,13 +243,13 @@ export default {
         page: that.page,
         pagesize: that.pagesize
       }
-      let url = '';
-      if(that.see_uid != that.uid){
-        p.see_uid = that.see_uid;
-        url = `/api/user-evaluate/list?page=${p.page}&pagesize=${p.pagesize}&see_uid=${that.see_uid}`
-      }else{
-        url = `/api/user-evaluate/list?page=${p.page}&pagesize=${p.pagesize}`
-      }
+      let url = `/api/user-evaluate/list?page=${p.page}&pagesize=${p.pagesize}&see_uid=${that.see_uid}`
+      // if(that.see_uid != that.uid){
+      //   p.see_uid = that.see_uid;
+      //   url = `/api/user-evaluate/list?page=${p.page}&pagesize=${p.pagesize}&see_uid=${that.see_uid}`
+      // }else{
+      //   url = `/api/user-evaluate/list?page=${p.page}&pagesize=${p.pagesize}`
+      // }
       this.$axios.get(url,{}).then( res =>{
         if(res.code == 0){
           if(res.data.list.length <= 0){
@@ -292,6 +292,9 @@ export default {
           that.$message.success('发布成功！');
           that.dialogVisible = false;
           this.textarea = '';
+          this.page = 1;
+          this.pagesize = 10;
+          this.evaluateList = [];
           that.getEevaluateList();
         } else{
           that.$message.error({

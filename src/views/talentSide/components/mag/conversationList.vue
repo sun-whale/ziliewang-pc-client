@@ -237,10 +237,11 @@
           uid: conversation.data.uid,
           name: conversation.data.name,
           avatar: conversation.data.avatar,
+          is_friend: conversation.data.is_friend,
           tag: conversation.data.tag?conversation.data.tag: 'user'
         };
         
-        if(friend.tag == 'user'){
+        if(friend.is_friend){
           that.profile.friend = friend;
           that.$emit( 'chatLocation',friend );
           that.$bus.$emit( 'click_conversationList_item_getInfoData',friend );
