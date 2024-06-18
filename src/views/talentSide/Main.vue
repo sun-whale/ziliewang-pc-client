@@ -195,6 +195,7 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
     methods:{
       //连接goeasy
        connectGoEasy() {
+        let that = this;
         this.goEasy.connect({
           id: this.currentUser.id,
           data: {
@@ -203,8 +204,8 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
             uid: this.currentUser.uid,
             user_number: this.currentUser.user_number,
           },
-          onSuccess: function () { 
-            console.log("连接成功.")
+          onSuccess: function (res) { 
+            console.log("连接成功.",that.currentUser)
           },
           onFailed: function (error) { //连接失败
             console.log("连接失败, code:" + error.code + ",error:" + error.content);
