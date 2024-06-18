@@ -131,7 +131,11 @@
 
             <el-form-item label="新资范围" required>
               <el-col :span="5" class="xzfw-box">
-                <el-select @change="changeMoney" v-model="ruleForm.xz_status" placeholder="最低月薪">
+                <el-select
+                  @change="changeMoney"
+                  v-model="ruleForm.xz_status"
+                  placeholder="最低月薪"
+                >
                   <el-option label="1K" value="1"></el-option>
                   <el-option label="2K" value="2"></el-option>
                   <el-option label="3K" value="3"></el-option>
@@ -161,7 +165,11 @@
                 </el-select>
               </el-col>
               <el-col :span="5" class="xzfw-box">
-                <el-select @change="changeMoney" v-model="ruleForm.xz_end" placeholder="最高月薪">
+                <el-select
+                  @change="changeMoney"
+                  v-model="ruleForm.xz_end"
+                  placeholder="最高月薪"
+                >
                   <el-option label="2K" value="2"></el-option>
                   <el-option label="3K" value="3"></el-option>
                   <el-option label="4K" value="4"></el-option>
@@ -320,6 +328,25 @@
               </el-checkbox-group>
             </el-form-item>
 
+            <el-form-item label="上传入职offer">
+              <el-col :span="20"
+                ><el-upload
+                  class="upload-demo"
+                  action="none"
+                  :http-request="uploadArticleCover"
+                  :file-list="fileList"
+                >
+                  <el-button size="small" type="primary">点击上传</el-button>
+                  <div slot="tip" class="el-upload__tip">
+                    <a
+                      href="https://zlw0720.oss-cn-beijing.aliyuncs.com/avatar/20240618/61d3be0077537fd904391b0d04c66042.docx"
+                      >点击下载入职offer模板</a
+                    >
+                  </div>
+                </el-upload></el-col
+              >
+            </el-form-item>
+
             <el-form-item label="素质评估">
               <el-col :span="5">
                 <el-switch
@@ -398,6 +425,7 @@ import pcas from "../../../assets/json/pc-code.json";
 export default {
   data() {
     return {
+      fileList: [],
       position_id: "",
       staffList: [], // 员工列表
       industryList: [], //行业列表
@@ -516,15 +544,41 @@ export default {
     }
   },
   methods: {
+    // 上传图片文件
+    uploadArticleCover(param) {
+      console.log(param.file);
+      const that = this;
+      const formData = new FormData();
+      formData.append("file[]", param.file);
+      formData.append("pictureCategory", "articleCover");
+      formData.append("up_tag", "avatar");
+      this.$axios
+        .post("/api/upload", formData, {
+          "Content-Type": "multipart/form-data",
+        })
+        .then((res) => {
+          let file = [
+            {
+              name: "文件已上传",
+              url: res.data.upload_files,
+            },
+          ];
+          that.fileList = file;
+        })
+        .catch((e) => {
+          console.log("erro");
+          this.$refs["upload"].clearFiles();
+        });
+    },
     // 最大薪资不能小于最低薪资
-    changeMoney(){
+    changeMoney() {
       if (this.ruleForm.xz_status != "" && this.ruleForm.xz_end != "") {
-          if (this.ruleForm.xz_status > this.ruleForm.xz_end) {
-              this.ruleForm.xz_end = ""
-              this.$message.error({
-                  message: "最低薪资不能大于最高薪资！"
-              })
-          }
+        if (this.ruleForm.xz_status > this.ruleForm.xz_end) {
+          this.ruleForm.xz_end = "";
+          this.$message.error({
+            message: "最低薪资不能大于最高薪资！",
+          });
+        }
       }
     },
     // 删除一条面试评估
@@ -824,6 +878,11 @@ export default {
   & /deep/ .el-button--primary {
     background-color: $g_bg;
     border-color: $g_color;
+  }
+}
+.el-upload__tip {
+  a {
+    color: $g_bg;
   }
 }
 </style>
