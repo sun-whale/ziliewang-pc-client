@@ -663,7 +663,7 @@
           contentType: "image/jpeg",
           url: image,
         };
-        
+        console.log(this.to);
         this.goEasy.im.createCustomMessage({
           type: 'images',  // 自定义类型,不能添加image 
           payload,
