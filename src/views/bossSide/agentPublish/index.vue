@@ -412,6 +412,7 @@
                 position_id ? "修改" : "发布"
               }}</el-button>
               <el-button @click="resetForm">重置</el-button>
+              <!-- <el-button @click="liaot">聊天</el-button> -->
             </el-form-item>
           </el-form>
         </div>
@@ -434,6 +435,8 @@ export default {
       selt_industry_item: "", // 选中的行业名称
       selt_positionType_item: "", // 选中的职位名称
       ruleForm: {
+        entry_offer: "", //offer存放入口
+        is_automation: "2", // 1.手动 2.自动
         assessList: [], // 面试评估
         qualityVal: false, // 素质评估
         position_name: "", // 职位名称
@@ -533,6 +536,8 @@ export default {
     // console.log(this.$root.positionItems);
     // 获取员工列表
     this.getStaffList();
+    let uids = [10, 20, 31, 36];
+    this.setAssessMessage(63, uids);
   },
   created() {
     if (this.$route.query.id) {
@@ -544,6 +549,33 @@ export default {
     }
   },
   methods: {
+    setAssessMessage(positionId, uids) {
+      console.log(positionId);
+      console.log(uids);
+    },
+
+    liaot() {
+      let infoData = {
+        avatar:
+          "https://zlw0720.oss-cn-beijing.aliyuncs.com/avatar/20240417/9f8f0f393c4179b1e4359661acb7e888.png",
+        company_id: 22,
+        id: "u_33",
+        name: "仇登耀",
+        position_id: 43,
+        position_name: "python开发",
+        uid: 33,
+        assessShow: true,
+        assessList: this.ruleForm.assessList,
+      };
+
+      this.$bus.$emit("receiveParams", {
+        type: "searchTalent",
+        laiyuan: "nav",
+        infoData,
+      });
+
+      // 发送消息
+    },
     // 上传图片文件
     uploadArticleCover(param) {
       console.log(param.file);
@@ -563,6 +595,9 @@ export default {
               url: res.data.upload_files,
             },
           ];
+          console.log(res.data);
+          console.log(res.data.upload_files);
+          that.ruleForm.entry_offer = res.data.upload_files;
           that.fileList = file;
         })
         .catch((e) => {
@@ -705,7 +740,9 @@ export default {
     },
     // 点击重置
     resetForm() {
+      this.fileList = [];
       this.ruleForm = {
+        entry_offer: "",
         assessList: [],
         qualityVal: false, // 素质评估
         position_name: "", // 职位名称
@@ -739,9 +776,10 @@ export default {
     submitForm() {
       let that = this;
       let ruleForm = that.ruleForm;
-      console.log();
 
       let p = {
+        is_automation: "2",
+        entry_offer: ruleForm.entry_offer, // offer 存放地址
         interview_evaluation: JSON.stringify(ruleForm.assessList), // 面试评估
         quality_assessment: ruleForm.qualityVal ? 1 : 2, // 素质评估 1.开启 2.关闭
         position_name: ruleForm.position_name,
@@ -777,6 +815,10 @@ export default {
       that.$axios.post(url, p).then((res) => {
         if (res.code == 0) {
           that.$message.success(" 发布成功！");
+          // if (res.data.length > 0) {
+          //   that.setAssessMessage(res.data.position_id, res.data.uids);
+          //   return;
+          // }
           setTimeout(() => {
             that.$router.push("/jobCenter");
           }, 1500);

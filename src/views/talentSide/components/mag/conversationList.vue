@@ -49,6 +49,7 @@
                   <span v-else-if="item.lastMessage.type === 'phone'">[交换联系方式消息]</span>
                   <span v-else-if="item.lastMessage.type === 'interview'">[邀请面试消息]</span>
                   <span v-else-if="item.lastMessage.type === 'quality'">[素质测评]</span>
+                  <span v-else-if="item.lastMessage.type === 'assess'">[面试评估]</span>
                 </div>
               </div>
             </div>

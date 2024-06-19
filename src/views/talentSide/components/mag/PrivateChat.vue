@@ -137,9 +137,20 @@
                   <!-- 素质测评 开始 -->
                   <div v-if="item.type === 'quality'">
                     <h4 class="message-phone-universal-card-header">对方请求填写素质测评邀请</h4>
-                    <div class="message-phone-box view-btn" style="cursor: pointer;" @click.stop="clickQuality(message)">立即填写</div>
+                    <div class="message-phone-box view-btn" style="cursor: pointer;" @click.stop="clickQuality()">立即填写</div>
                   </div>
                   <!-- 素质测评 结束 -->
+                   
+                  <!-- 面试评估 开始 -->
+                  <div v-if="item.type === 'assess'">
+                    <h4 class="message-phone-universal-card-header">对方请求填写面试评估邀请</h4>
+                    <div class="message-phone-universal-card-content">
+                      <div v-for="(items,index) in item.payload.assessList" :key="index"><span>问题{{ index + 1 }}：</span>{{items.question?items.question:items.title || ""}}</div>
+                      <div class="message-phone-box view-btn" style="cursor: pointer;" @click.stop="clickAssess()">立即填写</div>
+                    </div>
+                  </div>
+                  <!-- 面试评估 结束 -->
+
                   <!-- boss 索要手机号 ↓ -->
                   <div class="message-phone-universal-card" v-if="item.type === 'phone' && item.payload.way_status == 4">
                     <h4 class="message-phone-universal-card-header">对方请求交换联系方式</h4>
@@ -588,7 +599,11 @@
           })
         })
       },
-      // 测评
+      // 面试评估
+      clickAssess(){
+        this.$router.push({path:'/interviewAssess'})
+      },
+      // 素质测评
       clickQuality(){
         this.$router.push({path:'/qualityTest'})
       },

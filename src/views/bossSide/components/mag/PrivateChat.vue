@@ -79,6 +79,16 @@
                     <div class="message-phone-box view-btn" @click.stop="clickQuality(message)">查看素质测评结果</div>
                   </div>
                   <!-- 素质测评 结束 -->
+                  <!-- 面试评估 开始 -->
+                  <div v-if="message.type === 'assess'">
+                    <h4 class="message-phone-universal-card-header">已向对方发送面试评估邀请</h4>
+                    <div class="message-phone-universal-card-content">
+                      <div v-for="(item,index) in message.payload.assessList" :key="index"><span>问题{{ index + 1 }}：</span>{{item.question?item.question:item.title || ""}}</div>
+                    <!-- <div class="message-phone-box " @click.stop="clickQuality(message)">查看素质测评结果</div> -->
+                    </div>
+                  </div>
+                  <!-- 面试评估 结束 -->
+                  
                   <!-- 发送的面试邀请 开始 -->
                   <div v-if="message.type === 'interview' &&  message.payload.way_status == 1" class="message-phone-universal-card">
                     <h4 class="message-phone-universal-card-header">已向对方发送面试邀请</h4>
@@ -580,7 +590,6 @@
       },
     },
     mounted(){
-
     },
     created() {
       this.userVipRank = localStorage.getItem('staffVipRank');
@@ -615,11 +624,39 @@
       // 获取职位
       this.getPositionList();
       this.goEasy.im.on(this.GoEasy.IM_EVENT.PRIVATE_MESSAGE_RECEIVED, this.onReceivedPrivateMessage);
+      
+      // 校验是否需要发送面试评估
+      if(!this.infoData.assessShow){
+        return;
+      }
+      if(this.infoData.assessList.length > 0){
+        this.setAssessMessage();
+      }
     },
     beforeDestroy() {
       this.goEasy.im.off(this.GoEasy.IM_EVENT.PRIVATE_MESSAGE_RECEIVED, this.onReceivedPrivateMessage);
     },
     methods: {
+      // 发送面试评估
+      setAssessMessage(){
+        const that = this;
+        var payload = {
+          contentType: "assess",
+          assessList: this.infoData.assessList
+        };
+        console.log(payload);
+        this.goEasy.im.createCustomMessage({
+          type: 'assess',
+          payload,
+          to: that.to,
+          onSuccess: (message) => {
+            that.sendMessage(message);
+          },
+          onFailed: (err) => {
+            console.log("创建消息err:", err);
+          }
+        });
+      },
       // 发送截图消息
       async screenshotMessage(image){
         var payload = {
@@ -1269,6 +1306,7 @@
       },
       // 添加评估单个问题
       clickTopic(i){
+        const that = this;
         if(i == 0){
           let topic = {
             title:"",
@@ -1278,6 +1316,23 @@
           this.assessmentList = [topic,...this.assessmentList];
           console.log(this.assessmentList);
         } else {
+          var payload = {
+            contentType: "assess",
+            assessList: this.assessmentList
+          };
+          console.log(payload);
+          this.goEasy.im.createCustomMessage({
+            type: 'assess',
+            payload,
+            to: this.to,
+            onSuccess: (message) => {
+              that.sendMessage(message);
+            },
+            onFailed: (err) => {
+              console.log("创建消息err:", err);
+            }
+          });
+          that.isAssessment = !that.isAssessment;
           console.log(this.assessmentList);
         }
       },

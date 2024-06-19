@@ -145,6 +145,8 @@ export default {
         position_id: i.id,  // 岗位id
         position_name: i.position_name,
       }
+      console.log(infoData);
+      debugger
       that.zx_dialogVisible = false;
       that.position_dialogVisible = false;
       that.createPositionChatRecord(i.id,seltPositionData.uid);

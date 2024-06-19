@@ -594,6 +594,8 @@ export default {
     submitForm(){
       let that = this;
       let ruleForm = that.ruleForm;
+      console.log(that.ruleForm.sync_workmate);
+
       let p = {
         interview_evaluation: JSON.stringify(ruleForm.assessList), // 面试评估
         quality_assessment: ruleForm.qualityVal ? 1 : 2, // 素质评估 1.开启 2.关闭
@@ -609,11 +611,11 @@ export default {
         work_address: ruleForm.selectedOptions.join('/'),
         salary: ruleForm.xz_status + '-' + ruleForm.xz_end,
         limit_age: ruleForm.age_status + '-' + ruleForm.age_end,
-        job_benefits: ruleForm.job_benefits.join(','),
+        job_benefits: ruleForm.job_benefits!=""?ruleForm.job_benefits.join(','):"",
         need_nums: ruleForm.need_nums,
         supplementary_information: ruleForm.supplementary_information.join(','),
-        sync_workmate: ruleForm.sync_workmate.join(','),
-        resume_demand: ruleForm.resume_demand.join(','),
+        sync_workmate: ruleForm.sync_workmate!= ""?ruleForm.sync_workmate.join(','):"",
+        resume_demand: ruleForm.resume_demand != ""?ruleForm.resume_demand.join(','):"",
         work_times: ruleForm.work_times,
 
       };
