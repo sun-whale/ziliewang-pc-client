@@ -412,7 +412,6 @@
                 position_id ? "修改" : "发布"
               }}</el-button>
               <el-button @click="resetForm">重置</el-button>
-              <!-- <el-button @click="liaot">聊天</el-button> -->
             </el-form-item>
           </el-form>
         </div>
@@ -426,6 +425,13 @@ import pcas from "../../../assets/json/pc-code.json";
 export default {
   data() {
     return {
+      userGoEasy: {},
+      history: {
+        messages: [],
+        allLoaded: false,
+        loading: true,
+      },
+
       fileList: [],
       position_id: "",
       staffList: [], // 员工列表
@@ -532,12 +538,11 @@ export default {
         `,
     };
   },
+  components: {},
   mounted() {
     // console.log(this.$root.positionItems);
     // 获取员工列表
     this.getStaffList();
-    let uids = [10, 20, 31, 36];
-    this.setAssessMessage(63, uids);
   },
   created() {
     if (this.$route.query.id) {
@@ -549,33 +554,63 @@ export default {
     }
   },
   methods: {
-    setAssessMessage(positionId, uids) {
-      console.log(positionId);
-      console.log(uids);
-    },
-
-    liaot() {
-      let infoData = {
-        avatar:
-          "https://zlw0720.oss-cn-beijing.aliyuncs.com/avatar/20240417/9f8f0f393c4179b1e4359661acb7e888.png",
-        company_id: 22,
-        id: "u_33",
-        name: "仇登耀",
-        position_id: 43,
-        position_name: "python开发",
-        uid: 33,
-        assessShow: true,
-        assessList: this.ruleForm.assessList,
-      };
-
-      this.$bus.$emit("receiveParams", {
-        type: "searchTalent",
-        laiyuan: "nav",
-        infoData,
+    sendMessage(message, userName) {
+      this.history.messages.push(message);
+      this.goEasy.im.sendMessage({
+        message: message,
+        onSuccess: (message) => {
+          console.log("发送成功", message);
+          that.$message.success({
+            message: "已向候选人" + userName + "发送面试测试",
+          });
+        },
+        onFailed: function (error) {
+          if (error.code === 507) {
+            alert("发送失败，没有配置OSS存储");
+            console.log("发送失败，没有配置OSS存储");
+          } else {
+            console.log("发送失败:", error);
+          }
+        },
       });
-
-      // 发送消息
     },
+    // 发送面试评估
+    setAssessMessage(positionId, uids) {
+      const that = this;
+      uids.forEach((item) => {
+        that.userGoEasy = {
+          type: this.GoEasy.IM_SCENE.PRIVATE,
+          id: "u_" + item.uid,
+          data: {
+            uid: item.uid,
+            name: item.name,
+            avatar: item.avatar,
+            user_number: item.user_number,
+            position_id: positionId, // 岗位id
+            company_id: localStorage.getItem("company_id"), // 公司id
+            position_name: this.ruleForm.position_name, // 职位名称
+          },
+        };
+
+        var payload = {
+          contentType: "assess",
+          assessList: this.ruleForm.assessList,
+        };
+
+        this.goEasy.im.createCustomMessage({
+          type: "assess",
+          payload,
+          to: that.userGoEasy,
+          onSuccess: (message) => {
+            that.sendMessage(message, item.name);
+          },
+          onFailed: (err) => {
+            console.log("创建消息err:", err);
+          },
+        });
+      });
+    },
+
     // 上传图片文件
     uploadArticleCover(param) {
       console.log(param.file);
@@ -815,10 +850,10 @@ export default {
       that.$axios.post(url, p).then((res) => {
         if (res.code == 0) {
           that.$message.success(" 发布成功！");
-          // if (res.data.length > 0) {
-          //   that.setAssessMessage(res.data.position_id, res.data.uids);
-          //   return;
-          // }
+          if (res.data) {
+            that.setAssessMessage(res.data.position_id, res.data.users);
+            return;
+          }
           setTimeout(() => {
             that.$router.push("/jobCenter");
           }, 1500);

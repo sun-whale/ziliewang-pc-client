@@ -231,56 +231,6 @@
               </el-col>
             </el-form-item>
 
-            <el-form-item label="面试评估">
-              <el-col :span="24">
-                <el-table
-                  :data="ruleForm.assessList"
-                  :border="true"
-                  style="width: 100%"
-                >
-                  <el-table-column label="问题描述">
-                    <template slot-scope="scope">
-                      <el-input
-                        v-model="scope.row.question"
-                        placeholder="请输入问题描述"
-                      ></el-input>
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="回答方式" width="180">
-                    <template slot-scope="scope">
-                      <el-select
-                        v-model="scope.row.answer"
-                        placeholder="请选择回答方式"
-                        style="width: 100%"
-                      >
-                        <el-option label="录音" value="录音"></el-option>
-                        <el-option label="视频" value="视频"></el-option>
-                      </el-select>
-                    </template>
-                  </el-table-column>
-                  <el-table-column fixed="right" label="操作" width="100">
-                    <template slot-scope="scope">
-                      <el-button
-                        @click="handleClickAssess(scope.row, scope.$index)"
-                        type="text"
-                        size="small"
-                        class="assess-del"
-                        >删除</el-button
-                      >
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </el-col>
-              <el-col :span="24">
-                <el-button
-                  @click="addAssess"
-                  type="primary"
-                  class="assess-button"
-                  >添加面试评估</el-button
-                >
-              </el-col>
-            </el-form-item>
-            
             <el-form-item class="btn-box">
               <el-button type="primary" @click="submitForm">{{position_id?'修改':'发布'}}</el-button>
               <el-button @click="resetForm">重置</el-button>
@@ -307,7 +257,6 @@ export default {
       selt_industry_item: '',  // 选中的行业名称
       selt_positionType_item: '',  // 选中的职位名称
       ruleForm: {
-        assessList: [], // 面试评估
         qualityVal: false, // 素质评估
         position_name: '', // 职位名称
         work_type: '', // 工作性质
@@ -433,19 +382,6 @@ export default {
           }
       }
     },
-    // 删除一条面试评估
-    handleClickAssess(item, index) {
-      this.ruleForm.assessList.splice(index, 1);
-    },
-    // 添加一条面试评估
-    addAssess() {
-      const that = this;
-      let assessObj = {
-        question: "",
-        answer: "",
-      };
-      that.ruleForm.assessList = [...that.ruleForm.assessList, assessObj];
-    },
 
     // 点击选择行业要求
     changeIndustry(e){
@@ -538,7 +474,6 @@ export default {
           ruleForm.work_type = res.data.work_type + '';
           ruleForm.months = res.data.months ? res.data.months : '12';
           ruleForm.qualityVal = res.data.quality_assessment == 1 ? true : false;
-          ruleForm.assessList = res.data.interview_evaluation;
 
           that.ruleForm = ruleForm;
           return f(id);
@@ -561,7 +496,6 @@ export default {
     // 点击重置
     resetForm(){
       this.ruleForm= {
-        assessList: [], // 面试评估
         qualityVal: false, // 素质评估
         position_name: '', // 职位名称
         work_type: '', // 工作性质
@@ -597,7 +531,6 @@ export default {
       console.log(that.ruleForm.sync_workmate);
 
       let p = {
-        interview_evaluation: JSON.stringify(ruleForm.assessList), // 面试评估
         quality_assessment: ruleForm.qualityVal ? 1 : 2, // 素质评估 1.开启 2.关闭
         position_name: ruleForm.position_name,
         work_type: ruleForm.work_type,
