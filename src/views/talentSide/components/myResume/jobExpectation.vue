@@ -173,11 +173,16 @@ export default {
       selt_item: 0,
       option_salary_st: ['1K','2K','3K','4K','5k','6K','7K','8K','9K','10k','11K','12K','13K','14K','15k','16K','17K','18K','19K','20K','30K','50K','100K','150K','200K'],
       option_salary_end: [],
-      options: pcas,
+      options: [],
       expected_salary_st:'',
       expected_salary_end:'',
       selectedOptions: [],
     }
+  },
+  created(){
+    let options = JSON.parse(JSON.stringify(pcas));
+    options.splice(0,1);
+    this.options =options;
   },
   mounted(){
     // 点击所属行业项

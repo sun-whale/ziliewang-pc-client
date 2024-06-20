@@ -222,7 +222,7 @@ export default {
       input_name:'', // 搜索框value
       hotJob_options: [],
       dialogVisible: false,
-      position: pcas,
+      position: [],
       showCityList:[
         {label:'北京',code:'010'},
         {label:'上海',code:'020'},
@@ -262,9 +262,11 @@ export default {
     }
   },
   async created(){
+    let position = JSON.parse(JSON.stringify(pcas));
+    position.splice(0,1);
+    this.position =position;
+    this.position_list = position[this.selt_item].children;
     this.gethotJobList();
-
-     this.position_list = this.position[this.selt_item].children;
      let res = await this.$axios.post('/api/user/at/city',{});
      if(res.code == 0){
      let ipCity = res.data.current_city || '北京';

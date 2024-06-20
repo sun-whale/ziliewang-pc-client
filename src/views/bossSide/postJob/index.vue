@@ -65,8 +65,7 @@
          
             <el-form-item label="工作地址" prop="work_address">
               <!-- <el-input v-model="ruleForm.work_address" placeholder="请输入工作地址"></el-input> -->
-              <el-cascader
-                :options="options"
+              <el-cascader :options="options"
                 ref="cascaderAddr" 
                 v-model="ruleForm.selectedOptions"
                 :props="{ value: 'label' }"
@@ -582,6 +581,10 @@ export default {
             message:res.msg
           })
         }
+      }).catch( e =>{
+        that.$message.error({
+          message: e.message
+        })
       })
     },
   },

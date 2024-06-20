@@ -195,7 +195,7 @@
           <span>清空筛选条件</span>
         </div>
       </div>
-      <!-- 选择城市弹窗 -->
+      <!-- 选择目前城市弹窗 -->
       <div class="dialogVisible-pop-box" v-if="dialogVisible && cityData.length >=0 ">
         <div class="mask-box"></div>
         <div class="dialog-container">
@@ -236,7 +236,7 @@
           </span>
         </div>
       </div>
-      <!-- 选择城市弹窗 -->
+      <!-- 选择期望城市弹窗 -->
       <div class="dialogVisible-pop-box" v-if="expect_dialogVisible && cityData.length >=0 ">
         <div class="mask-box"></div>
         <div class="dialog-container">
@@ -337,7 +337,7 @@ export default {
       search_value:'',
       ipCity: localStorage.getItem('ipCity') || '',
       dialogVisible: false,
-      cityData: pcas, // 城市信息
+      cityData: [], // 城市信息
       showCityList:[
         {label:'北京',code:'010'},
         {label:'上海',code:'020'},
@@ -394,7 +394,10 @@ export default {
     }
   },
   async created(){
-    this.city_list = this.cityData[this.selt_province_item].children;
+    let cityData = JSON.parse(JSON.stringify(pcas));
+    cityData.splice(0,1);
+    this.cityData =cityData;
+    this.city_list = cityData[this.selt_province_item].children;
      // 获取行业列表信息
     this.getIndustryList();
     // 获取职位列表信息

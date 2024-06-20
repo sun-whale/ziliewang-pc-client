@@ -195,7 +195,10 @@ export const constantRoutes = [
         path: '/postJob',
         name: 'PostJob',
         component: () => import('@/views/bossSide/postJob/index'),
-        meta: { title: '发布职位' },
+        meta: { 
+          title: '发布职位',
+          keepAlive: true,
+        },
       },
     ]
   },
