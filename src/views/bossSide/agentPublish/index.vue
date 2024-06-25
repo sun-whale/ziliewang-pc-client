@@ -357,6 +357,23 @@
               </el-col>
             </el-form-item>
 
+            <el-form-item label="评估题目选择">
+              <el-col :span="15">
+                <el-select
+                  v-model="ruleForm.question_types"
+                  placeholder="请选择"
+                  style="width: 100%"
+                >
+                  <el-option
+                    :label="item.label"
+                    :value="item.label"
+                    v-for="(item, index) in questionList"
+                    :key="index"
+                  ></el-option>
+                </el-select>
+              </el-col>
+            </el-form-item>
+
             <el-form-item label="面试评估">
               <el-col :span="24">
                 <el-table
@@ -425,6 +442,20 @@ import pcas from "../../../assets/json/pc-code.json";
 export default {
   data() {
     return {
+      questionList: [
+        {
+          value: "全部",
+          label: "全部",
+        },
+        {
+          value: "语言测试",
+          label: "语言测试",
+        },
+        {
+          value: "职场性格测试",
+          label: "职场性格测试",
+        },
+      ],
       userGoEasy: {},
       history: {
         messages: [],
@@ -441,6 +472,7 @@ export default {
       selt_industry_item: "", // 选中的行业名称
       selt_positionType_item: "", // 选中的职位名称
       ruleForm: {
+        question_types: "",
         entry_offer: "", //offer存放入口
         is_automation: "2", // 1.手动 2.自动
         assessList: [], // 面试评估
@@ -574,7 +606,7 @@ export default {
         },
       });
     },
-    // 发送面试评估
+    // 发送面试评估/素质评估
     setAssessMessage(positionId, uids) {
       const that = this;
       uids.forEach((item) => {
@@ -592,22 +624,43 @@ export default {
           },
         };
 
-        var payload = {
-          contentType: "assess",
-          assessList: this.ruleForm.assessList,
-        };
+        // 面试评估
+        if (this.ruleForm.assessList.length > 0) {
+          var payload = {
+            contentType: "assess",
+            assessList: this.ruleForm.assessList,
+          };
+          this.goEasy.im.createCustomMessage({
+            type: "assess",
+            payload,
+            to: that.userGoEasy,
+            onSuccess: (message) => {
+              that.sendMessage(message, item.name);
+            },
+            onFailed: (err) => {
+              console.log("创建消息err:", err);
+            },
+          });
+        }
 
-        this.goEasy.im.createCustomMessage({
-          type: "assess",
-          payload,
-          to: that.userGoEasy,
-          onSuccess: (message) => {
-            that.sendMessage(message, item.name);
-          },
-          onFailed: (err) => {
-            console.log("创建消息err:", err);
-          },
-        });
+        // 素质评估
+        if (this.ruleForm.qualityVal) {
+          payload = {
+            contentType: "quality",
+            url: "",
+          };
+          this.goEasy.im.createCustomMessage({
+            type: "assess",
+            payload,
+            to: that.userGoEasy,
+            onSuccess: (message) => {
+              that.sendMessage(message, item.name);
+            },
+            onFailed: (err) => {
+              console.log("创建消息err:", err);
+            },
+          });
+        }
       });
     },
 
@@ -852,6 +905,7 @@ export default {
           that.$message.success(" 发布成功！");
           if (res.data) {
             that.setAssessMessage(res.data.position_id, res.data.users);
+            that.messageShow(res.data.users);
             return;
           }
           setTimeout(() => {
@@ -862,6 +916,15 @@ export default {
             message: res.msg,
           });
         }
+      });
+    },
+    // 发送显示消息
+    messageShow(userList) {
+      userList.forEach((item) => {
+        this.$notify({
+          title: "Agtnt招聘",
+          message: "已向" + item.name + "发送面试邀请",
+        });
       });
     },
   },
