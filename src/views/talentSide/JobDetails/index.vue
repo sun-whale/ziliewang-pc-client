@@ -26,6 +26,14 @@
             <el-button class="deliver-2" @click="clickDeliver" v-else>投简历</el-button>
             <!-- <el-button class="chat" @click="clickChat">聊一聊</el-button> -->
           </div>
+          <div class="btn-box" style="display: flex;justify-content: flex-end;margin-top: 10px;">
+            <el-rate
+              disabled
+              show-score
+              text-color="#ff9900"
+              score-template="{value}">
+            </el-rate>
+          </div>
           <div class="tag-box">
             <span class="tag-items" @click="collection">
               <img src="../../../assets/image/icon-collect.png" alt="" />

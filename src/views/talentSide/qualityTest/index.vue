@@ -6,7 +6,7 @@
         <el-card class="box-card topic-content">
           <div class="topic-title">
             <span>单选题</span>
-            <div>{{ topicAt.index + 1 }}、{{ topicAt.title }}</div>
+            <div>{{ topicAt.title }}</div>
           </div>
           <div
             class="topic-answer"
@@ -25,6 +25,7 @@
       </el-col>
       <el-col :span="6">
         <el-card class="box-card">
+          <div class="countdown">{{ countdown || "00:00" }}</div>
           <div class="operate-content">
             <div
               :class="item.states == 1 ? 'topic-card active' : 'topic-card'"
@@ -61,17 +62,77 @@ export default {
   name: "qualityTest",
   data() {
     return {
+      categoryId: "",
       topicChecked: "-1",
       nextSubVal: "下一题",
       topicList: [], // 所以题目
       topicAt: {}, // 当前题目
       topicAtIndex: 0,
+      timer: null,
+      countdownTime: 30 * 60 * 1000, // 30分钟
     };
   },
-  mounted() {
-    this.getTopicList();
+  computed: {
+    countdown() {
+      // const hours = this.zeroFill((this.countdownTime / (1000 * 60 * 60)) % 24);
+      const minutes = this.zeroFill((this.countdownTime / (1000 * 60)) % 60);
+      const seconds = this.zeroFill((this.countdownTime / 1000) % 60);
+      return `${minutes}:${seconds}`;
+    },
+  },
+  created() {
+    if(this.$route.query.id){
+      this.categoryId = this.$route.query.id
+    }
+
+    this.startCountdown();
+    // this.getTopicList();
+    this.getTopic();
+  },
+  beforeDestroy() {
+    this.clearCountdown();
   },
   methods: {
+    // 获取数据
+    getTopic() {
+      const that = this;
+      console.log(this.categoryId);
+      that.$axios
+        .get(
+          "api/company-appraisal-title/list?company_appraisal_category_id=" +
+            that.categoryId
+        )
+        .then((res) => {
+          for (let j = 0; j < res.data.length; j++) {
+            for (let i = 0; i < res.data[j].question_list.length; i++) {
+              if (i == 30) {
+                return;
+              }
+              let obj = {
+                id: res.data[j].question_list[i].id,
+                index: i,
+                title: res.data[j].question_list[i].question,
+                states: 0,
+                checked: "",
+                option: [],
+              };
+              for (
+                let k = 0;
+                k < res.data[j].question_list[i].answer_list.length;
+                k++
+              ) {
+                obj.option.push(
+                  res.data[j].question_list[i].answer_list[k].option +
+                    "、" +
+                    res.data[j].question_list[i].answer_list[k].answer
+                );
+              }
+              that.topicList.push(obj);
+            }
+          }
+          that.clickSelOperate(0);
+        });
+    },
     // 设置默认数据
     getTopicList() {
       for (let i = 0; i < 30; i++) {
@@ -82,10 +143,10 @@ export default {
           states: 0,
           checked: "",
           option: [
-           (i + 1) + " A 向朋友或家人寻求建议",
-           (i + 1) + " B 仔细思考并权衡利弊",
-           (i + 1) + " C 凭直觉做出决定",
-           (i + 1) + " D 依据个人原则和价值观做出决定",
+            i + 1 + " A 向朋友或家人寻求建议",
+            i + 1 + " B 仔细思考并权衡利弊",
+            i + 1 + " C 凭直觉做出决定",
+            i + 1 + " D 依据个人原则和价值观做出决定",
           ],
         };
         this.topicList.push(obj);
@@ -117,6 +178,28 @@ export default {
         return;
       }
       this.$router.push({ path: "/qualityResult" });
+    },
+    // 时间格式化
+    zeroFill(num) {
+      num = parseInt(num);
+      return num < 10 ? "0" + num : num == 0 ? "00" : num;
+    },
+    // 倒计时
+    startCountdown() {
+      this.timer = setInterval(() => {
+        this.countdownTime -= 1000;
+        if (this.countdownTime <= 0) {
+          this.clearCountdown();
+        }
+      }, 1000);
+    },
+    // 倒计时结束
+    clearCountdown() {
+      if (this.timer) {
+        console.log("结束");
+        clearInterval(this.timer);
+        this.timer = null;
+      }
     },
   },
 };
@@ -235,5 +318,11 @@ export default {
 }
 .box-card {
   width: 100%;
+}
+.countdown {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: center;
 }
 </style>

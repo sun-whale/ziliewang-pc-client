@@ -131,6 +131,14 @@
               <el-button @click="getContactMthod(infoData,'phone')">电话沟通</el-button>
               <el-button @click="getContactMthod(infoData,'wechat_number')">获取微信</el-button>
             </div>
+            <div class="form-btns" style="display: flex;align-items: flex-end;margin-top: 10px;">
+              <el-rate
+                disabled
+                show-score
+                text-color="#ff9900"
+                score-template="{value}">
+              </el-rate>
+            </div>
             <div class="icon-box">
               <!-- <div>
                 <img src="../../../assets/image/bossSide/icon-shareAlt-1.png" alt="" />
@@ -177,9 +185,9 @@
 
     <!-- 选择岗位 弹窗 -->
     <div class="positionList-dialogbox">
-      <el-dialog title="选择岗位" :center="false" :visible.sync="position_dialogVisible" width="300px" :before-close="position_handleClose">
-        <div class="positionList-box">
-          <ul>
+      <el-dialog title="选择岗位1" :center="false" :visible.sync="position_dialogVisible" width="300px" :before-close="position_handleClose">
+        <div class="positionList-box" >
+          <ul style="max-height:400px;overflow-y: auto;">
             <li v-for="(item,index) in positionList" :key="index" @click="clickpositionList(item)">{{ item.position_name }}</li>
           </ul>
         </div>

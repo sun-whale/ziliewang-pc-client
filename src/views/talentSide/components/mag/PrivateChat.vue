@@ -137,7 +137,7 @@
                   <!-- 素质测评 开始 -->
                   <div v-if="item.type === 'quality'">
                     <h4 class="message-phone-universal-card-header">对方请求填写素质测评邀请</h4>
-                    <div class="message-phone-box view-btn" style="cursor: pointer;" @click.stop="clickQuality()">立即填写</div>
+                    <div class="message-phone-box view-btn" style="cursor: pointer;" @click.stop="clickQuality(item)">立即填写</div>
                   </div>
                   <!-- 素质测评 结束 -->
                    
@@ -604,8 +604,9 @@
         this.$router.push({path:'/interviewAssess'})
       },
       // 素质测评
-      clickQuality(){
-        this.$router.push({path:'/qualityTest'})
+      clickQuality(item){
+        console.log(item);
+        this.$router.push({path:'/qualityTest?id' + item.payload.id})
       },
       // 截图
       clickScreenShot() {
