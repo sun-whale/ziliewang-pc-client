@@ -375,53 +375,77 @@
             </el-form-item>
 
             <el-form-item label="面试评估">
-              <el-col :span="24">
-                <el-table
-                  :data="ruleForm.assessList"
-                  :border="true"
-                  style="width: 100%"
-                >
-                  <el-table-column label="问题描述">
-                    <template slot-scope="scope">
-                      <el-input
-                        v-model="scope.row.question"
-                        placeholder="请输入问题描述"
-                      ></el-input>
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="回答方式" width="180">
-                    <template slot-scope="scope">
-                      <el-select
-                        v-model="scope.row.answer"
-                        placeholder="请选择回答方式"
-                        style="width: 100%"
-                      >
-                        <el-option label="录音" value="录音"></el-option>
-                        <el-option label="视频" value="视频"></el-option>
-                      </el-select>
-                    </template>
-                  </el-table-column>
-                  <el-table-column fixed="right" label="操作" width="100">
-                    <template slot-scope="scope">
-                      <el-button
-                        @click="handleClickAssess(scope.row, scope.$index)"
-                        type="text"
-                        size="small"
-                        class="assess-del"
-                        >删除</el-button
-                      >
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </el-col>
-              <el-col :span="24">
-                <el-button
-                  @click="addAssess"
-                  type="primary"
-                  class="assess-button"
-                  >添加面试评估</el-button
-                >
-              </el-col>
+              <div
+                class="assess-list"
+                v-for="(item, index) in ruleForm.assessList"
+                :key="index"
+              >
+                <el-col :span="24">
+                  <div class="assess-title">
+                    请选择{{ assessValList[index] }}面问题
+                    <el-tooltip
+                      v-if="ruleForm.assessList.length < 10"
+                      class="item"
+                      effect="dark"
+                      :content="
+                        '添加' + assessValList[index + 1] + '次面试问题'
+                      "
+                      placement="top-start"
+                    >
+                      <i @click="addAssessItem(index)" class="el-icon-plus"></i>
+                    </el-tooltip>
+                  </div>
+                </el-col>
+                <el-col :span="24">
+                  <el-table
+                    :data="ruleForm.assessList[index]"
+                    :border="true"
+                    style="width: 100%"
+                  >
+                    <el-table-column label="问题描述">
+                      <template slot-scope="scope">
+                        <el-input
+                          v-model="scope.row.question"
+                          placeholder="请输入问题描述"
+                        ></el-input>
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="回答方式" width="180">
+                      <template slot-scope="scope">
+                        <el-select
+                          v-model="scope.row.answer"
+                          placeholder="请选择回答方式"
+                          style="width: 100%"
+                        >
+                          <el-option label="录音" value="录音"></el-option>
+                          <el-option label="视频" value="视频"></el-option>
+                        </el-select>
+                      </template>
+                    </el-table-column>
+                    <el-table-column fixed="right" label="操作" width="100">
+                      <template slot-scope="scope">
+                        <el-button
+                          @click="
+                            handleClickAssess(scope.row, scope.$index, index)
+                          "
+                          type="text"
+                          size="small"
+                          class="assess-del"
+                          >删除</el-button
+                        >
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </el-col>
+                <el-col :span="24">
+                  <el-button
+                    @click="addAssess(index)"
+                    type="primary"
+                    class="assess-button"
+                    >添加面试评估</el-button
+                  >
+                </el-col>
+              </div>
             </el-form-item>
 
             <el-form-item class="btn-box">
@@ -462,6 +486,18 @@ export default {
         allLoaded: false,
         loading: true,
       },
+      assessValList: [
+        "一",
+        "二",
+        "三",
+        "四",
+        "五",
+        "六",
+        "七",
+        "八",
+        "九",
+        "十",
+      ],
       company_appraisal_category_id: "",
       fileList: [],
       position_id: "",
@@ -475,7 +511,7 @@ export default {
         question_types: "",
         entry_offer: "", //offer存放入口
         is_automation: "2", // 1.手动 2.自动
-        assessList: [], // 面试评估
+        assessList: [[]], // 面试评估
         qualityVal: false, // 素质评估
         position_name: "", // 职位名称
         work_type: "", // 工作性质
@@ -708,17 +744,33 @@ export default {
       }
     },
     // 删除一条面试评估
-    handleClickAssess(item, index) {
-      this.ruleForm.assessList.splice(index, 1);
+    handleClickAssess(item, index, i) {
+      this.ruleForm.assessList[i].splice(index, 1);
+      // this.ruleForm.assessList.splice(index, 1);
     },
     // 添加一条面试评估
-    addAssess() {
+    addAssess(index) {
       const that = this;
+      let assessList = that.ruleForm.assessList;
       let assessObj = {
         question: "",
         answer: "",
       };
-      that.ruleForm.assessList = [...that.ruleForm.assessList, assessObj];
+      assessList[index].push(assessObj);
+      // assessList[index] = [...assessList[index], assessObj];
+      // that.ruleForm.assessList = assessList;
+    },
+    // 添加面试评估
+    addAssessItem(index) {
+      const that = this;
+      if (that.ruleForm.assessList.length >= 10) {
+        that.$message.success({
+          message: "最多添加十条面试次数",
+        });
+        return;
+      }
+      let array = [];
+      that.ruleForm.assessList.push(array);
     },
     // 点击选择行业要求
     changeIndustry(e) {
@@ -961,7 +1013,7 @@ export default {
 }
 .assess-button {
   width: 100%;
-  margin-top: 20px;
+  margin: 20px 0;
   border: 1px dashed $g_bg;
   color: $g_bg;
   border-radius: 6px;
@@ -1048,6 +1100,19 @@ export default {
 .el-upload__tip {
   a {
     color: $g_bg;
+  }
+}
+.assess-title {
+  width: 100%;
+  font-size: 15px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  i {
+    font-size: 22px;
   }
 }
 </style>
