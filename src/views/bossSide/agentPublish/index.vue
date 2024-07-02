@@ -15,7 +15,20 @@
               <el-input
                 v-model="ruleForm.position_name"
                 placeholder="请输入"
+                style="width: 95%"
               ></el-input>
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="Agent一件代填"
+                placement="top-end"
+              >
+                <i
+                  @click="agent"
+                  class="el-icon-s-platform"
+                  style="font-size: 20px; color: #999; margin-left: 10px"
+                ></i>
+              </el-tooltip>
             </el-form-item>
 
             <el-form-item label="工作性质" prop="work_type">
@@ -462,6 +475,7 @@
 </template>
   <script>
 import pcas from "../../../assets/json/pc-code.json";
+import axios from "axios";
 
 export default {
   data() {
@@ -624,6 +638,50 @@ export default {
     }
   },
   methods: {
+    agent() {
+      const that = this;
+      let position_name = that.ruleForm.position_name;
+      let position_desc = that.ruleForm.position_desc;
+      if (position_name == "") {
+        that.$message.warning({
+          message: "请先填写职位名称",
+        });
+        return;
+      }
+      let kimiUrl = "https://api.moonshot.cn/v1/chat/completions";
+      let kimiHeader = {
+        "Content-Type": "application/json",
+        Authorization: "sk-bg5hWvn56MdLPKZ3iZ8NBJ2JpAfq2XGSSCmM7ybHqQ5lZ7Vx",
+      };
+      let kimiData = {
+        model: "moonshot-v1-8k",
+        messages: [
+          {
+            role: "user",
+            content: "写一个" + position_name + "的职位描述",
+          },
+        ],
+        temperature: 0.3,
+      };
+      let jsonString = JSON.stringify(kimiData);
+      that.ruleForm.position_desc = "正在获取中...";
+      axios({
+        method: "post",
+        url: kimiUrl,
+        headers: kimiHeader,
+        data: jsonString,
+      })
+        .then(function (response) {
+          // 请求成功，处理响应数据
+          that.ruleForm.position_desc =
+            response.data.choices[0].message.content; // 职位描述
+            console.log(response.data.choices);
+        })
+        .catch(function (error) {
+          // 请求失败，处理错误
+          console.error(error);
+        });
+    },
     sendMessage(message, userName) {
       this.history.messages.push(message);
       this.goEasy.im.sendMessage({
@@ -886,7 +944,7 @@ export default {
       this.fileList = [];
       this.ruleForm = {
         entry_offer: "",
-        assessList: [],
+        assessList: [[]],
         qualityVal: false, // 素质评估
         position_name: "", // 职位名称
         work_type: "", // 工作性质
