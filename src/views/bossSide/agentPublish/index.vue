@@ -664,6 +664,7 @@ export default {
         temperature: 0.3,
       };
       let jsonString = JSON.stringify(kimiData);
+
       that.ruleForm.position_desc = "正在获取中...";
       axios({
         method: "post",
@@ -675,7 +676,40 @@ export default {
           // 请求成功，处理响应数据
           that.ruleForm.position_desc =
             response.data.choices[0].message.content; // 职位描述
-            console.log(response.data.choices);
+
+          that.ruleForm.position_lightspot = "正在获取中...";
+          that.setLightspotAgent(kimiUrl, kimiHeader);
+        })
+        .catch(function (error) {
+          // 请求失败，处理错误
+          console.error(error);
+        });
+    },
+    setLightspotAgent(kimiUrl, kimiHeader) {
+      const that = this;
+      let position_name = that.ruleForm.position_name;
+      let kimiData = {
+        model: "moonshot-v1-8k",
+        messages: [
+          {
+            role: "user",
+            content: "写一个" + position_name + "的职位亮点",
+          },
+        ],
+        temperature: 0.3,
+      };
+      let jsonString = JSON.stringify(kimiData);
+      axios({
+        method: "post",
+        url: kimiUrl,
+        headers: kimiHeader,
+        data: jsonString,
+      })
+        .then(function (response) {
+          // 请求成功，处理响应数据
+          that.ruleForm.position_lightspot =
+            response.data.choices[0].message.content; // 职位亮点
+          console.log(response.data.choices);
         })
         .catch(function (error) {
           // 请求失败，处理错误
