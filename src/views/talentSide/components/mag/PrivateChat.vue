@@ -388,6 +388,20 @@
       </el-dialog>
     </div>
     
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogAssess"
+      width="30%"
+      :before-close="handleClose">
+      <span style="font-size: 15px;color: #666;line-height: 24px;">
+        请在开始后30分钟内完成测评，中途不能暂停，测评过程中需要打开摄像头，系统会自动录像和录制电脑操作的测评过程中的屏幕，请注意个人隐私保护，并认真阅读个人隐私政策，测评完成系统会将录制的视频和测评结果上传发送至招聘企业
+      </span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogAssess = false">取 消</el-button>
+        <el-button type="primary" @click="clickGoAssess">确 定</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -432,6 +446,8 @@
       return {
         leftX: 0,
         topY: 0,
+        payloadId:"",
+        dialogAssess: false,
         userVipRank: localStorage.getItem('userVipRank') || 0,
         sessionList:[], // 会话记录列表
         detailData:{}, // 职位信息
@@ -603,10 +619,15 @@
       clickAssess(){
         this.$router.push({path:'/interviewAssess'})
       },
+      clickGoAssess(){
+        this.dialogAssess = false;
+        this.$router.push({path:'/qualityTest?id' + this.payloadId})
+      },
       // 素质测评
       clickQuality(item){
-        console.log(item);
-        this.$router.push({path:'/qualityTest?id' + item.payload.id})
+        // 提示
+        this.dialogAssess = !this.dialogAssess;
+        this.payloadId = item.payload.id
       },
       // 截图
       clickScreenShot() {

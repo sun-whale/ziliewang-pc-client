@@ -46,6 +46,14 @@
           <div class="hover" @click.stop="clickChat(item)">打招呼</div>
           <!-- <div>电话沟通</div> -->
         </div>
+        <div class="item-rate">
+          <el-rate
+            disabled
+            show-score
+            text-color="#ff9900"
+            score-template="{value}">
+          </el-rate>
+        </div>
       </div>
       <el-empty description="暂无数据..." v-if="jobList.length == 0"></el-empty>
 
@@ -318,6 +326,11 @@ export default {
       justify-content: space-between;
       position: relative;
       cursor: pointer;
+      .item-rate{
+        position: absolute;
+        top: 20px;
+        right: 2.3rem;
+      }
       .items-left-box{
         width: 20rem;
         display: flex;

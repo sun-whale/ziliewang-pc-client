@@ -177,7 +177,14 @@ export default {
         that.clickSelOperate(that.topicAtIndex + 1);
         return;
       }
-      this.$router.push({ path: "/qualityResult" });
+      const loading = this.$loading({
+          lock: true,
+          text: '请不要关闭电脑，正在上传测评内容，预计10分钟内完成',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+      this.clearCountdown();
+      // this.$router.push({ path: "/qualityResult" });
     },
     // 时间格式化
     zeroFill(num) {
