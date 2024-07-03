@@ -20,7 +20,7 @@
               <el-tooltip
                 class="item"
                 effect="dark"
-                content="Agent一件代填"
+                content="Agent一键代填"
                 placement="top-end"
               >
                 <i
@@ -360,6 +360,52 @@
               >
             </el-form-item>
 
+            <el-form-item label="入职资料选择">
+              <el-col :span="15">
+                <el-select
+                  v-model="ruleForm.prepare_material"
+                  multiple
+                  placeholder="请选择"
+                  style="width: 100%"
+                >
+                  <el-option
+                    :label="item.label"
+                    :value="item.value"
+                    v-for="(item, index) in materialList"
+                    :key="index"
+                  ></el-option>
+                </el-select>
+              </el-col>
+            </el-form-item>
+
+            <el-form-item label="背景调查">
+              <el-col :span="5">
+                <el-switch
+                  style="margin-top: 5px"
+                  v-model="ruleForm.investigation"
+                  active-color="#1ec5d8"
+                />
+              </el-col>
+            </el-form-item>
+
+            <el-form-item v-if="ruleForm.investigation" label="背景调查选择">
+              <el-col :span="15">
+                <el-select
+                  v-model="ruleForm.investigationVal"
+                  multiple
+                  placeholder="请选择"
+                  style="width: 100%"
+                >
+                  <el-option
+                    :label="item.label"
+                    :value="item.value"
+                    v-for="(item, index) in investigationList"
+                    :key="index"
+                  ></el-option>
+                </el-select>
+              </el-col>
+            </el-form-item>
+
             <el-form-item label="素质评估">
               <el-col :span="5">
                 <el-switch
@@ -426,6 +472,7 @@
                     <el-table-column label="回答方式" width="180">
                       <template slot-scope="scope">
                         <el-select
+                          disabled
                           v-model="scope.row.answer"
                           placeholder="请选择回答方式"
                           style="width: 100%"
@@ -480,6 +527,55 @@ import axios from "axios";
 export default {
   data() {
     return {
+      // 入职资料列表
+      materialList: [
+        {
+          value: "最近6个月银行流水",
+          label: "最近6个月银行流水",
+        },
+        {
+          value: "二级以上医院的体检报告",
+          label: "二级以上医院的体检报告",
+        },
+        {
+          value: "学历学位证书",
+          label: "学历学位证书",
+        },
+        {
+          value: "身份证原件照片",
+          label: "身份证原件照片",
+        },
+        {
+          value: "离职证明",
+          label: "离职证明",
+        },
+        {
+          value: "两寸白底证件照",
+          label: "两寸白底证件照",
+        },
+      ],
+      // 背景调查列表
+      investigationList: [
+      {
+          value: "学历",
+          label: "学历",
+        },{
+          value: "身份核实",
+          label: "身份核实",
+        },{
+          value: "劳动仲裁记录",
+          label: "劳动仲裁记录",
+        },{
+          value: "涉案判决",
+          label: "涉案判决",
+        },{
+          value: "法律文书",
+          label: "法律文书",
+        },{
+          value: "工商信息",
+          label: "工商信息",
+        },
+      ],
       questionList: [
         {
           value: "全部",
@@ -527,6 +623,7 @@ export default {
         is_automation: "2", // 1.手动 2.自动
         assessList: [[]], // 面试评估
         qualityVal: false, // 素质评估
+        investigation: false, // 背景调查
         position_name: "", // 职位名称
         work_type: "", // 工作性质
         position_desc: "", // 职位描述
@@ -846,7 +943,7 @@ export default {
       let assessList = that.ruleForm.assessList;
       let assessObj = {
         question: "",
-        answer: "",
+        answer: "视频",
       };
       assessList[index].push(assessObj);
       // assessList[index] = [...assessList[index], assessObj];

@@ -20,6 +20,14 @@
               </span>
             </p>
             <div class="items-tag-box">
+              <el-rate
+                disabled
+                show-score
+                text-color="#ff9900"
+                score-template="{value}">
+              </el-rate>
+            </div>
+            <div class="items-tag-box">
               <el-tag v-if="item.work_address">{{ item.work_address }}</el-tag>
               <el-tag>{{ item.educational_experience }}</el-tag>
             </div>
