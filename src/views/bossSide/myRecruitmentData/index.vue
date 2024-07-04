@@ -102,6 +102,18 @@
           </div>
         </div>
 
+        <div>
+          <div class="title">
+            <span>Agent职位</span>
+            <!-- <img src="../../../assets/image/bossSide/question-circle.png" alt=""> -->
+          </div>
+          <div class="num" @click="goToPages('/agencyRecruitment')">{{company_recruitment_count.interview_invite_num?company_recruitment_count.interview_invite_num:0}}</div>
+          <div class="sm-box">
+            <img src="../../../assets/image/bossSide/caret-right.png" alt="">
+            <span class="sm-n">0</span>
+            <span class="sm-t">相比上周期</span>
+          </div>
+        </div>
 
       </div>
     </div>
