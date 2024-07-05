@@ -342,6 +342,35 @@ export const constantRoutes = [
       }
     ]
   },
+  {
+    path: '/agencyRecruitment',
+    component: Layout,
+    hidden: true,
+    redirect: '/agencyRecruitment',
+    children: [
+      {
+        path: '/agencyRecruitment',
+        name: 'agencyRecruitment',
+        component: () => import('@/views/bossSide/agencyRecruitment/index'),
+        meta: { title: 'Agent职位列表', icon: 'example' },
+      },
+    ]
+  },
+  {
+    path: '/agentTalents',
+    component: Layout,
+    hidden: true,
+    redirect: '/agentTalents',
+    children: [
+      {
+        path: '/agentTalents',
+        name: 'agentTalents',
+        component: () => import('@/views/bossSide/agentTalents/index'),
+        meta: { title: 'Agent职位列表-人才列表', icon: 'example' },
+      },
+    ]
+  },
+  
   
   //-------------------- 人才端
   {
