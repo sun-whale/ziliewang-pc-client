@@ -37,7 +37,6 @@
 
 <script>
 let pcas = require('../../assets/json/pc-code.json');
-console.log(pcas)
 export default {
   props: {
    
@@ -45,8 +44,13 @@ export default {
   data() {
     return {
       dialogVisible: true,
-      position: pcas,
+      position: [],
     }
+  },
+  created(){
+    let position = JSON.parse(JSON.stringify(pcas));
+    position.splice(0,1);
+    this.position =position;
   },
   methods: {
     clickClose(){

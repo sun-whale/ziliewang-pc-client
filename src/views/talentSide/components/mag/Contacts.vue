@@ -83,6 +83,7 @@
           avatar: friend.avatar,
           real_phone: friend.real_phone,
           real_email: friend.real_email,
+          user_number: friend.user_number,
         } ;
       },
       privateChat () {

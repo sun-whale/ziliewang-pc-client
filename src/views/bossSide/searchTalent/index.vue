@@ -68,7 +68,7 @@
     <onlineResume ref="onlineResume" :infoData="infoData" :basic_info="basic_info" :is_type="is_type" />
     <!-- 选择岗位 弹窗 -->
     <div class="positionList-dialogbox">
-      <el-dialog title="选择岗位" :center="false" :visible.sync="position_dialogVisible" width="300px" :before-close="position_handleClose">
+      <el-dialog title="选择岗位" :center="false" :visible.sync="position_dialogVisible" width="380px" :before-close="position_handleClose">
         <div class="positionList-box">
           <ul>
             <li v-for="(item,index) in positionList" :key="index" @click="clickpositionList(item)">{{ item.position_name }}</li>
@@ -152,9 +152,9 @@ export default {
         company_id: i.company_id, // 企业id
         position_id: i.id,  // 岗位id
         position_name: i.position_name,
+        user_number: i.user_number,
       }
       console.log(infoData);
-      debugger
       that.zx_dialogVisible = false;
       that.position_dialogVisible = false;
       that.createPositionChatRecord(i.id,seltPositionData.uid);
@@ -568,6 +568,7 @@ export default {
         padding: 0 0 20px 0;
         margin: 0 10px;
         border-top: 1px solid #F2F3F5;
+        overflow-y: auto;
         .positionList-box{
           height: auto;
           width: 100%;

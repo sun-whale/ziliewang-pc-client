@@ -21,18 +21,6 @@ const service = axios.create({
 // 请求拦截器
 service.interceptors.request.use(
   config => {
-    if ( (loadingCount == 0 && !config.data.order_no) || (loadingCount == 0 && !config.data.no_looding) ) {
-      // loadingInstance = Loading.service({
-      //   lock: false,
-      //   customClass: 'z-index999',
-      //   text: '加载中，请稍后...',
-      //   spinner: 'ui-icon-loading',
-      //   background: 'rgba(0, 0, 0, 0.7)',
-      // });
-    }
-    // if (store.getters.getToken) {
-    //   config.headers['token'] = getToken();
-    // }
     config.headers['token'] = getToken();
 
     loadingCount++;

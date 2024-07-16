@@ -229,9 +229,14 @@ export default {
         {value: 4,label: '离职'},
         {value: 5,label: '交职业圈好友/寻找商业合作计划'}
       ],
-      options: pcas,
+      options: [],
       selectedOptions: ['','上海'],
     }
+  },
+  created(){
+    let options = JSON.parse(JSON.stringify(pcas));
+    options.splice(0,1);
+    this.options =options;
   },
   mounted(){
  

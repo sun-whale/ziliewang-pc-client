@@ -159,7 +159,7 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
       let getViewportSize = this.$getViewportSize();
       this.parentH = getViewportSize.height; // 组件范围
       this.parentW = getViewportSize.width; // 组件范围 
-      this.width = Number(getViewportSize.width)/2; // 可拖动div 宽度
+      this.width = Number(getViewportSize.width)/2>820?Number(getViewportSize.width)/2:820; // 可拖动div 宽度
       this.height = Number(getViewportSize.height - 80); // 可拖动div 高度
       this.left = Number(getViewportSize.width)/2 - Number(this.width)/2;
       this.currentUser = {
@@ -195,6 +195,7 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
     methods:{
       //连接goeasy
        connectGoEasy() {
+        let that = this;
         this.goEasy.connect({
           id: this.currentUser.id,
           data: {
@@ -203,8 +204,8 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
             uid: this.currentUser.uid,
             user_number: this.currentUser.user_number,
           },
-          onSuccess: function () { 
-            console.log("连接成功.")
+          onSuccess: function (res) { 
+            console.log("连接成功.",that.currentUser)
           },
           onFailed: function (error) { //连接失败
             console.log("连接失败, code:" + error.code + ",error:" + error.content);

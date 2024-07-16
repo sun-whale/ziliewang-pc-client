@@ -59,7 +59,7 @@
         <personalInfo />
 
         <div class="m-box margin-top-20">
-          <a href="https://chinese.llama.family/" target="_brak" class="zlhx-box">
+          <a href="http://59.110.24.172:8012" target="_brak" class="zlhx-box">
             <p class="p-1">cometgpt</p>
             <p class="p-2">自猎彗星</p>
           </a>

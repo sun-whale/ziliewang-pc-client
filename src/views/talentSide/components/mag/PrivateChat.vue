@@ -7,7 +7,7 @@
       </div>
       <div class="position-name">
         <!-- <span class="span-1">沟通岗位：</span> -->
-        <span class="span-2">{{ detailData.position_name }}</span>
+        <span class="span-2">{{ friend.position_name }}</span>
       </div>
     </div>
     <div class="chat-main" ref="scrollView">
@@ -536,27 +536,10 @@
           uid:that.friend.uid,
           name: that.friend.name,
           avatar: that.friend.avatar,
-          is_friend: that.friend.is_friend
+          is_friend: that.friend.is_friend,
+          user_number: that.friend.user_number,
         },
       };
-      if(that.friend.position_id){
-        that.to.data.position_id = that.friend.position_id; //职位详情id
-        that.$axios.post('/api/company-position/detail',{
-          position_id:that.friend.position_id
-        }).then( res =>{
-          if(res.code == 0){
-            let detailData = res.data;
-            detailData.job_benefits = detailData.job_benefits.split(',');
-            that.detailData = detailData;
-            that.to.data.company_id = res.data.company_id;
-            that.friend.company_id = res.data.company_id;
-          }else{
-            this.$message.error({
-              message:res.msg
-            })
-          }
-        })
-      }
       // 获取历史记录
       this.loadHistoryMessage(true);
 

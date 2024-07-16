@@ -259,10 +259,13 @@ export default {
       input_name:'', // 搜索框value
       hotJob_options: [],
       dialogVisible: false,
+
       position: pcas,
       industryList: [],
       industryCategory: [],
       ageList:['不限','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','50','51','52','53','54','55','56','57','58','59','60'],
+
+      position: [],
       showCityList:[
         {label:'北京',code:'010'},
         {label:'上海',code:'020'},
@@ -306,9 +309,11 @@ export default {
     }
   },
   async created(){
+    let position = JSON.parse(JSON.stringify(pcas));
+    position.splice(0,1);
+    this.position =position;
+    this.position_list = position[this.selt_item].children;
     this.gethotJobList();
-
-     this.position_list = this.position[this.selt_item].children;
      let res = await this.$axios.post('/api/user/at/city',{});
      if(res.code == 0){
      let ipCity = res.data.current_city || '北京';

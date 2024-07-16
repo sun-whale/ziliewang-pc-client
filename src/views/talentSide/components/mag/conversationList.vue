@@ -231,17 +231,18 @@
       },
       chatLocation(conversation) {
         let that = this;
-        let friend = that.profile.friend;
-        console.log(friend)
+        let friend = {};
         friend = {
           id:conversation.userId,
           uid: conversation.data.uid,
           name: conversation.data.name,
           avatar: conversation.data.avatar,
+          is_friend: conversation.data.is_friend,
+          user_number: conversation.data.user_number,
           tag: conversation.data.tag?conversation.data.tag: 'user'
         };
-        
-        if(friend.tag == 'user'){
+        // console.log(friend)
+        if(friend.is_friend){
           that.profile.friend = friend;
           that.$emit( 'chatLocation',friend );
           that.$bus.$emit( 'click_conversationList_item_getInfoData',friend );

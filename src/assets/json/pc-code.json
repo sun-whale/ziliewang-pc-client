@@ -1,5 +1,15 @@
 [
   {
+    "code": "0",
+    "label": "不限",
+    "children": [
+      {
+        "code": "0",
+        "label": "不限"
+      }
+    ]
+  },
+  {
     "code": "11",
     "label": "北京市",
     "children": [

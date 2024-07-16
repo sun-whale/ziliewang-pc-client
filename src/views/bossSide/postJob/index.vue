@@ -79,8 +79,7 @@
                     
             <el-form-item label="工作地址" prop="work_address">
               <!-- <el-input v-model="ruleForm.work_address" placeholder="请输入工作地址"></el-input> -->
-              <el-cascader
-                :options="options"
+              <el-cascader :options="options"
                 ref="cascaderAddr" 
                 v-model="ruleForm.selectedOptions"
                 :props="{ value: 'label' }"
@@ -557,12 +556,12 @@ export default {
         educational_experience:ruleForm.educational_experience,
         job_preference: ruleForm.job_preference,
         months: ruleForm.months,
-        work_address: ruleForm.selectedOptions.join('/'),
+        work_address: ruleForm.selectedOptions!=""?ruleForm.selectedOptions.join('/'):"",
         salary: ruleForm.xz_status + '-' + ruleForm.xz_end,
         limit_age: ruleForm.age_status + '-' + ruleForm.age_end,
         job_benefits: ruleForm.job_benefits!=""?ruleForm.job_benefits.join(','):"",
         need_nums: ruleForm.need_nums,
-        supplementary_information: ruleForm.supplementary_information.join(','),
+        supplementary_information: ruleForm.supplementary_information!= ""?ruleForm.supplementary_information.join(","):"",
         sync_workmate: ruleForm.sync_workmate!= ""?ruleForm.sync_workmate.join(','):"",
         resume_demand: ruleForm.resume_demand != ""?ruleForm.resume_demand.join(','):"",
         work_times: ruleForm.work_times,
@@ -599,6 +598,10 @@ export default {
             message:res.msg
           })
         }
+      }).catch( e =>{
+        that.$message.error({
+          message: e.message
+        })
       })
     },
   },

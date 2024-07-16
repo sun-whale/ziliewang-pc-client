@@ -245,6 +245,7 @@
           name: conversation.data.name,
           avatar: conversation.data.avatar,
           company_id: localStorage.getItem('company_id'), 
+          user_number: conversation.data.user_number,
           tag: conversation.data.tag?conversation.data.tag: 'user'
         };
         let p = {

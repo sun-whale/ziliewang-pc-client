@@ -471,6 +471,7 @@ export default {
         return;
       }
       that.seltPositionData = i;
+      console.log(that.seltPositionData)
       that.getPositionList(); // 获取职位
     },
     // 创建岗位会话信息
@@ -511,15 +512,12 @@ export default {
         company_id: i.company_id, // 企业id
         position_id: i.id, // 岗位id
         position_name: i.position_name,
-      };
+        user_number: i.user_number,
+      }
       that.zx_dialogVisible = false;
       that.position_dialogVisible = false;
-      that.createPositionChatRecord(i.id, seltPositionData.uid);
-      that.$bus.$emit("receiveParams", {
-        type: "searchTalent",
-        laiyuan: "nav",
-        infoData,
-      });
+      that.createPositionChatRecord(i.id,seltPositionData.basic_info.uid);
+      that.$bus.$emit('receiveParams', {type:'searchTalent',laiyuan:'nav',infoData });
     },
     position_handleClose() {
       this.position_dialogVisible = false;

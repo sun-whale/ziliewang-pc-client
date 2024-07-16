@@ -195,7 +195,10 @@ export const constantRoutes = [
         path: '/postJob',
         name: 'PostJob',
         component: () => import('@/views/bossSide/postJob/index'),
-        meta: { title: '发布职位' },
+        meta: { 
+          title: '发布职位',
+          keepAlive: true,
+        },
       },
     ]
   },
@@ -419,6 +422,7 @@ export const constantRoutes = [
         component: () => import('@/views/talentSide/careerIdentity/index.vue'),
         meta: { 
           title: '职业身份',
+          keepAlive: false,
         },
       },
       {
