@@ -259,6 +259,12 @@ export default {
       count_list: {},
 
       infoList: [],
+      evaluateList: [], //推荐语列表
+      page: 1,
+      pagesize: 10,
+      textarea:'',
+      is_return: true,
+      dialogVisible: false,
     };
   },
   computed: {},
@@ -266,16 +272,6 @@ export default {
   created() {
     this.see_uid = this.$route.query.see_uid || localStorage.getItem("realUid");
     this.uid = localStorage.getItem("realUid");
-
-      infoList:[],
-      evaluateList: [], //推荐语列表
-      page: 1,
-      pagesize: 10,
-      textarea:'',
-      is_return: true,
-      dialogVisible: false,
-
-    }
   },
   computed: {
     
