@@ -219,7 +219,7 @@
         </div>
       </el-dialog>
     </div>
-    <Complaint id="123" uId="12345" />
+    <Complaint id="123" uId="12345" states="2" />
   </div>
 </template>
 

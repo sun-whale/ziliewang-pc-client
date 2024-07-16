@@ -75,6 +75,8 @@
 </template>
   
 <script>
+import { set } from "@vue/composition-api";
+
 export default {
   props: {
     zIndex: {
@@ -259,18 +261,21 @@ export default {
       uploadData: {
         up_tag: "avatar",
       },
+      states: "",
     };
   },
-  computed: {},
   mounted() {
-    this.complaintType =
-      this.states == 0
-        ? this.enterpriseType
-        : this.states == 1
-        ? this.personageType
-        : this.surplusType;
+    this.setComplaintType();
   },
   methods: {
+    setComplaintType() {
+      this.complaintType =
+        this.states == 0
+          ? this.enterpriseType
+          : this.states == 1
+          ? this.personageType
+          : this.surplusType;
+    },
     // 投诉提交
     clickComplaint() {
       const that = this;

@@ -1,7 +1,7 @@
 <template>
   <div class="right-box">
     <div class="m-box">
-      <div class="users-box">
+      <div class="users-box" @click="goToMyResume">
         <div class="avatar-box">
           <img :src="basic_info.avatar?basic_info.avatar:require('../../../assets/image/img-user.jpg')" alt="" class="img-user" />
           <div class="users-right">

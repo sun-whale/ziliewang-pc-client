@@ -128,6 +128,20 @@
               </el-col>
             </el-form-item>
 
+            <el-form-item label="性别" required>
+              <el-col :span="5">
+                <el-select
+                  v-model="ruleForm.gender"
+                  placeholder="性别"
+                  style="width: 100%"
+                >
+                  <el-option label="男" value="0"></el-option>
+                  <el-option label="女" value="1"></el-option>
+                  <el-option label="保密" value="2"></el-option>
+                </el-select>
+              </el-col>
+            </el-form-item>
+
             <el-form-item label="工作地址" prop="work_address">
               <!-- <el-input v-model="ruleForm.work_address" placeholder="请输入工作地址"></el-input> -->
               <el-cascader
@@ -556,22 +570,27 @@ export default {
       ],
       // 背景调查列表
       investigationList: [
-      {
+        {
           value: "学历",
           label: "学历",
-        },{
+        },
+        {
           value: "身份核实",
           label: "身份核实",
-        },{
+        },
+        {
           value: "劳动仲裁记录",
           label: "劳动仲裁记录",
-        },{
+        },
+        {
           value: "涉案判决",
           label: "涉案判决",
-        },{
+        },
+        {
           value: "法律文书",
           label: "法律文书",
-        },{
+        },
+        {
           value: "工商信息",
           label: "工商信息",
         },
@@ -636,6 +655,7 @@ export default {
         xz_status: "",
         xz_end: "",
         months: "12",
+        gender:"",
         work_times: "",
         age_status: "", // 年龄范围
         age_end: "",
@@ -1092,6 +1112,7 @@ export default {
         age_end: "",
         months: "12",
         work_times: "", // 工作要求
+        gender:"",
         supplementary_information: [], // 补充信息
         sync_workmate: "", // 同事
         need_nums: "", // 招聘人数
@@ -1143,6 +1164,8 @@ export default {
         sync_workmate: ruleForm.sync_workmate.join(","),
         resume_demand: ruleForm.resume_demand.join(","),
         work_times: ruleForm.work_times,
+        gender: ruleForm.gender,
+        
       };
       let url = "";
       let position_id = that.position_id;

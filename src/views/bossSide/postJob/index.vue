@@ -62,7 +62,21 @@
                 </el-form-item>
               </el-col>
             </el-form-item>
-         
+
+            <el-form-item label="性别" required>
+              <el-col :span="5">
+                <el-select
+                  v-model="ruleForm.gender"
+                  placeholder="性别"
+                  style="width: 100%"
+                >
+                  <el-option label="男" value="0"></el-option>
+                  <el-option label="女" value="1"></el-option>
+                  <el-option label="保密" value="2"></el-option>
+                </el-select>
+              </el-col>
+            </el-form-item>
+                    
             <el-form-item label="工作地址" prop="work_address">
               <!-- <el-input v-model="ruleForm.work_address" placeholder="请输入工作地址"></el-input> -->
               <el-cascader
@@ -283,6 +297,7 @@ export default {
         date2: '',
         delivery: false,
         type: [],
+        gender:"",
         selectedOptions: [], // 选中的地址
       },
       options: pcas,  // 地址数据
@@ -474,6 +489,7 @@ export default {
           ruleForm.work_type = res.data.work_type + '';
           ruleForm.months = res.data.months ? res.data.months : '12';
           ruleForm.qualityVal = res.data.quality_assessment == 1 ? true : false;
+          
 
           that.ruleForm = ruleForm;
           return f(id);
@@ -550,6 +566,7 @@ export default {
         sync_workmate: ruleForm.sync_workmate!= ""?ruleForm.sync_workmate.join(','):"",
         resume_demand: ruleForm.resume_demand != ""?ruleForm.resume_demand.join(','):"",
         work_times: ruleForm.work_times,
+        gender: ruleForm.gender,
 
       };
       let url = '';
