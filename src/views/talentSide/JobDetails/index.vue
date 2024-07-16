@@ -125,7 +125,7 @@
       </div>
     </div>
     <!-- 主题部分 结束 -->
-    <Complaint ref="complaint" :id="complaintData.id" :uId="complaintData.uId" sstates="1" zIndex="1000"/>
+    <Complaint ref="complaint" :id="complaintData.id" :uId="complaintData.uId" states="1" zIndex="1000"/>
 
   </div>
 
@@ -177,7 +177,10 @@ export default {
       // 人才id
       this.complaintData.uId = this.infoData.staff_number;
       // this.zx_dialogVisible = false;
+      
+      this.$refs.complaint._data.states = "1";
       this.$refs.complaint._data.isComplaint = true;
+      this.$refs.complaint.setComplaintType();
     },
     // 是否显示分享
     clickShare(){

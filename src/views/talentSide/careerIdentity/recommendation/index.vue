@@ -20,7 +20,7 @@
       </div>
 
       <div class="dynamicState-container">
-        <!-- 列表项 开始 -->
+        <!-- 列表项 开始  -->
         <div class="container-items-box" v-for="(item,index) in evaluateList" :key="index">
           <div class="right-container-item">
             <div class="title list-title-box">
@@ -66,6 +66,7 @@
                   <span>{{ item.comment_num?item.comment_num:0 }}评论</span>
                 </div> -->
                 <img src="../../../../assets/image/icon-copy.png" alt="删除"  class="item-delete-img" @click.stop="clickItemDelete(item,index)"  v-if="uid == item.uid"/>
+                <img src="../../../../assets/iconfont/link-icon.svg" alt="点赞"  class="item-link-img"  />
               </div>
             </div>
           </div>
@@ -735,9 +736,19 @@ export default {
               display: none;
               cursor: pointer;
             }
+            .item-link-img{
+              width: 22px;
+              height: 22px;
+              position: absolute;
+              right: 40px;
+              bottom: 0;
+              display: none;
+              cursor: pointer;
+            }
           }
         }
-        &:hover .items-bottom-btn .item-delete-img{
+        &:hover .items-bottom-btn .item-delete-img,
+        &:hover .items-bottom-btn .item-link-img{
           display: block;
         }
       }

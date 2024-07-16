@@ -119,6 +119,43 @@
                     </el-option>
                   </el-select>
                 </div>
+                <div class="jsx-2644757290 select-box">
+                  <el-select v-model="industry_requirement.value" placeholder="行业" @change="industry_scale_change">
+                    <el-option
+                      v-for="item in industryList"
+                      :key="item.id"
+                      :label="item.industry"
+                      :value="item.id">
+                    </el-option>
+                  </el-select>
+                </div>
+                <div class="jsx-2644757290 select-box">
+                  <el-select v-model="position_type.value" placeholder="职位" @change="company_scale_change">
+                    <el-option
+                      v-for="item in industryCategory"
+                      :key="item.id"
+                      :label="item.category_name"
+                      :value="item.id">
+                    </el-option>
+                  </el-select>
+                </div>
+                <div class="jsx-2644757290 select-box">
+                  <el-select v-model="age.value" placeholder="年龄">
+                    <el-option
+                      v-for="(item,index) in ageList"
+                      :key="index"
+                      :label="item"
+                      :value="item">
+                    </el-option>
+                  </el-select>
+                </div>
+                <div class="jsx-2644757290 select-box">
+                  <el-select v-model="gender.value" placeholder="性别" >
+                  <el-option label="男" value="0"></el-option>
+                  <el-option label="女" value="1"></el-option>
+                  <el-option label="保密" value="2"></el-option>
+                  </el-select>
+                </div>
               </div>
             </div>
           </div>
@@ -222,6 +259,12 @@ export default {
       input_name:'', // 搜索框value
       hotJob_options: [],
       dialogVisible: false,
+
+      position: pcas,
+      industryList: [],
+      industryCategory: [],
+      ageList:['不限','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','50','51','52','53','54','55','56','57','58','59','60'],
+
       position: [],
       showCityList:[
         {label:'北京',code:'010'},
@@ -254,6 +297,10 @@ export default {
       company_scale:{value:''}, // 企业规模
       corporate_finance:{value:''},// 融资阶段
       business_nature:{value:''}, // 企业性质
+      industry_requirement:{value:''}, // 行业
+      position_type:{value:''}, // 职位
+      age:{value:''}, // 年龄
+      gender:{value:''}, // 性别
       areaList:[],
       educational_experienceList:['博士','硕士','研究生','本科','大专','中专/中技','高中','初中及以下'],
       company_scaleList:['0-20','20-50','50-99','100-599','600-1999','2000人以上',],
@@ -272,8 +319,25 @@ export default {
      let ipCity = res.data.current_city || '北京';
       this.clickCity(ipCity)
      }
+     this.getPositionList();
   },
   methods:{
+    
+    // 获取职位列表信息
+    getPositionList() {
+      const that = this;
+      that.$axios
+        .post("/api/position/list", {})
+        .then((res) => {
+          that.industryList = res.data;
+          console.log(that.industryList);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+
+
     gethotJobList(){
       let that = this;
       that.$axios.post('/api/company-position/hot',{}).then( res =>{
@@ -436,6 +500,11 @@ export default {
       this.company_scale={value:''}; // 企业规模
       this.corporate_finance={value:''};// 融资阶段
       this.business_nature={value:''}; // 企业性质
+      this.industryCategory = [];
+      this.industry_requirement = {value:''}; // 行业
+      this.position_type = {value:''}; // 职位
+      this.age = {value:''}; // 年龄
+      this.gender = {value:''}; // 性别
       this.getfilterInfo();
     },
     educational_experience_change(){
@@ -443,6 +512,10 @@ export default {
     },
     company_scale_change(){
       this.getfilterInfo();
+    },
+    industry_scale_change(row){
+      let index = row -1;
+      this.industryCategory = this.industryList[index].category_list;
     },
     corporate_finance_change(){
       this.getfilterInfo();
