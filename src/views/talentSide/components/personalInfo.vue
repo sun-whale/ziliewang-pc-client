@@ -16,7 +16,7 @@
 
       </div>
       <div class="infoTab-box">
-        <div class="infoTab-items" @click="goTomyProfessionalCircle">
+        <div class="infoTab-items" @click="goTomyProfessionalCircle('谁看过我','skgw')">
           <span class="infoTab-items-num">{{ basic_info.see_me_num }}</span>
           <span class="infoTab-items-name">谁看过我</span>
         </div>
@@ -29,7 +29,20 @@
           <span class="infoTab-items-name">我的收藏</span>
         </div>
       </div>
-          
+      <div class="infoTab-box">
+        <div class="infoTab-items" @click="goTomyProfessionalCircle('谁收藏了我的简历','scwdjl')">
+          <span class="infoTab-items-num">0</span>
+          <span class="infoTab-items-name">谁收藏了我的简历</span>
+        </div>
+        <div class="infoTab-items" @click="goTomyProfessionalCircle('谁点赞了我的简历','dzwdjl')">
+          <span class="infoTab-items-num">0</span>
+          <span class="infoTab-items-name">谁点赞了我的简历</span>
+        </div>
+        <div class="infoTab-items" @click="goTomyProfessionalCircle('谁转发了我的简历','zfwdjl')">
+          <span class="infoTab-items-num">0</span>
+          <span class="infoTab-items-name">谁转发了我的简历</span>
+        </div>
+      </div>
       <div class="setTab-box">
         <div class="setTab-items" @click="clcikRefresh">
           <img src="../../../assets/image/Frame_12.png" alt="" />
@@ -108,7 +121,8 @@ export default {
       perfection_degree: {},
       cb_title:'',
       drawer: false,
-      userDefriendList: []
+      userDefriendList: [],
+      cb_type: ''
 
     }
   },
@@ -133,8 +147,9 @@ export default {
         }
       })
     },
-    goTomyProfessionalCircle(){
-      this.cb_title = '谁看过我';
+    goTomyProfessionalCircle(text,type){
+      this.cb_title = text;
+      this.cb_type = type;
       // 获取用户黑名单列表
       this.getUserDefriendList();
       // this.$router.push('/myProfessionalCircle');
@@ -273,17 +288,18 @@ export default {
       justify-content: center;
       cursor: pointer;
       .infoTab-items-num{
-        font-size: 1.4rem;
+        font-size: 24px;
         font-weight: bold;
         color: $g_textColor;
-        line-height: 1.4rem;
+        line-height: 28px;
       }
       .infoTab-items-name{
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 400;
         color: #86909C;
         line-height: 1.1rem;
         margin-top: 6px;
+        text-align: center;
       }
     }
   }

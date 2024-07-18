@@ -58,7 +58,12 @@
                   <div class="send-fail" v-if="item.status === 'fail'"></div> 
 
                   <!-- 内容 开始 -->
-                  <div v-if="item.type === 'text'" class="content-text" v-html="emoji.decoder.decode(item.payload.text)"></div>
+                  <div v-if="item.type === 'text'" class="content-text" style="flex-direction: column;">
+                    <div v-html="emoji.decoder.decode(item.payload.text)"></div>
+                    <div class="fz-box">
+                      <img src="../../../../assets/image/icon-fz.png" title="复制" alt="" @click="clickCopy(item.payload.text)"/>
+                    </div>
+                  </div>
                   <!-- 内容 结束 -->
                   <!-- 音视频 开始 -->
                   <div v-if="item.type === 'TUICallKit'" class="content-text" v-html="item.payload.text"></div>
@@ -555,6 +560,21 @@
       this.goEasy.im.off(this.GoEasy.IM_EVENT.CONVERSATIONS_UPDATED, this.renderConversations);
     },
     methods: {
+      // 点击聊天框内复制图标
+      async clickCopy(text){
+        console.log(text)
+        try {
+          const textToCopy = text;
+          await navigator.clipboard.writeText(textToCopy);
+          this.$message.success({
+            message:'复制成功!'
+          })
+        } catch (error) {
+          this.$message.error({
+            message:'复制失败!'
+          })
+        }
+      },
       // 发送截图消息
       async screenshotMessage(image){
         var payload = {
@@ -909,7 +929,7 @@
         that.$axios.post('/api/user/deliver',p).then( res =>{
           console.log(res)
           if( res.code == 0){
-            that.clickToolbarBtn();f
+            that.clickToolbarBtn();
           }else{
             that.$message.error({
               message: res.msg
@@ -1339,6 +1359,9 @@
           })
         });
       },
+      handleClose(){
+
+      },
       ms_handleClose(){
         this.ms_dialogVisible = false;
       },
@@ -1550,6 +1573,18 @@
     overflow-wrap: anywhere;
     border-radius: 8px;
     word-break: break-all;
+    .fz-box{
+      width:100%;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      &>img{
+        width: 17px;
+        height: 17px;
+        margin-right: 4px;
+        cursor: pointer;
+      } 
+    }
   }
 
   .content-image {
@@ -1672,6 +1707,13 @@
     display: flex;
     justify-content: flex-start;
     flex-direction: row-reverse;
+    .fz-box{
+      justify-content: flex-end;
+      &>img{
+        margin-right: 0;
+        margin-left: 4px;
+      }
+    }
   }
 
   .message-item .self .audio-facade {
@@ -2245,4 +2287,5 @@
       }
     }
   }
+
 </style>
