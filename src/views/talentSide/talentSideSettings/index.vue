@@ -10,6 +10,7 @@
             <li :class="setType =='set_shield'? 'hover': '' " @click="clickLeItems('set_shield')">屏蔽公司</li>
             <li :class="setType =='phone_protect'? 'hover': '' " @click="clickLeItems('phone_protect')">手机号码保护</li>
             <li :class="setType =='name_protect'? 'hover': '' " @click="clickLeItems('name_protect')">真实姓名保护</li>
+            <li :class="setType =='use_purpose'? 'hover': '' " @click="clickLeItems('use_purpose')">使用目的</li>
           </ul>
         </div>
         <div class="le-box">
@@ -80,13 +81,30 @@
               <el-switch v-model="is_phone_protect" @change="changePhoneProtect"></el-switch>
             </div>
           </div>
-          <!-- 手机号码保护 -->
+          <!-- 真实姓名保护 -->
           <div class="container-right-items" id="name_protect">
             <div class="title" :class="setType =='name_protect'? 'hover': '' ">真实姓名保护</div>
             <div class="info-box">开启后对外展示名称将展示 "张**明"</div>
             <div class="phone-protect-box">
               <span class="phone-protect-title">真实姓名保护</span>
               <el-switch v-model="is_name_protect" @change="changeNameProtect"></el-switch>
+            </div>
+          </div>
+          <!-- 使用目的 -->
+          <div class="container-right-items" id="use_purpose">
+            <div class="title" :class="setType =='use_purpose'? 'hover': '' ">使用目的</div>
+            <div class="radio-group-box">
+              <el-radio-group v-model="usePurpose" @change="usePurposeChange">
+                <el-radio :label="1">
+                  <h2>职场社交目的</h2>
+                </el-radio>
+                <el-radio :label="2">
+                  <h2>商业机会目的</h2>
+                </el-radio>
+                <el-radio :label="3">
+                  <h2>职业机会目的</h2>
+                </el-radio>
+              </el-radio-group>
             </div>
           </div>
           <!-- 手机号码 -->
@@ -333,7 +351,8 @@ export default {
       // 用户黑名单
       direction: 'rtl',
       drawer: false,
-      userDefriendList: []
+      userDefriendList: [],
+      usePurpose: 1, // 使用目的
     }
   },
   computed: {
@@ -488,6 +507,10 @@ export default {
     },
     //谁能查看我的简历
     resume_change(e){
+      console.log(e)
+    },
+    // 使用目的
+    usePurposeChange(e){
       console.log(e)
     },
     // 点击设置邮箱
