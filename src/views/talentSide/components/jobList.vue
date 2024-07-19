@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="list-items" v-for="(item,index) in infoList" :key="index">
-      <img src="../../../assets/image/agent-post.gif" v-if="!index%2" style="position: absolute;width: 60px;height: auto;top: -5px;right: -10px;">
+      <img src="../../../assets/image/agent-post.gif" v-if="item.is_automation == 2" style="position: absolute;width: 60px;height: auto;top: -5px;right: -10px;">
       <div class="items-left-box" @click.stop="clickItems(item)">
         <p class="items-title" v-if="item.companyposition">{{ item.companyposition.position_name }} <span class="items-title-span">{{ item.companyposition.salary }} K</span></p>
         <div class="items-tag-box" v-if="item.companyposition">
