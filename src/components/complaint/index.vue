@@ -7,7 +7,10 @@
     >
       <div class="content-container" :style="'z-index:' + zIndex">
         <div class="header">
-          <div class="passive"><span>投诉对象ID：</span>{{ uId }}</div>
+          <div class="passive">
+            <span>{{ states == "2" ? "举报/投诉" : "投诉对象ID：" }}</span
+            >{{ uId }}
+          </div>
           <i class="el-icon-close" @click="clickClose"></i>
         </div>
         <el-select
@@ -65,7 +68,7 @@
         <div class="tips">
           注：1.您提交得举报投诉信息将在五个工作日内反馈，请留意系统消息或在“自猎网APP”，“我的举报”中查看举报详情及反馈。2.请谨慎选择举报类型和举报内容，所选类型与举报内容不一致讲影响举报结果。3.经核查举报成功后，会根据举报类型对人才进行对应的处置，如举报失败原因有可能选择内容错误，可重新选择投诉类型发起举报。谨防诈骗，遵纪守法。
         </div>
-        <div class="passive"><span>我的ID：</span>{{ id }}</div>
+        <div class="passive" v-if="id"><span>我的ID：</span>{{ id }}</div>
         <el-button @click="clickComplaint" class="complaint-sub"
           >提交</el-button
         >

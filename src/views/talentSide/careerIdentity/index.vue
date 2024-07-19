@@ -95,7 +95,7 @@
           <div
             style="
               position: absolute;
-              right: 60px;
+              top: 30px;
               display: flex;
               align-items: center;
             "
@@ -182,65 +182,96 @@
 
     <div class="recommendation">
       <div class="dynamicState-box listview-box">
-          <div class="dynamicState-top">
-            <div class="dynamicState-title">推荐语</div>
-            <!-- <div class="fb-btn" @click="clickPublishBtn">评价</div> -->
+        <div class="dynamicState-top">
+          <div class="dynamicState-title">推荐语</div>
+          <!-- <div class="fb-btn" @click="clickPublishBtn">评价</div> -->
+        </div>
+
+        <div class="publish-box" v-if="see_uid != uid">
+          <div class="dialog-bodybox">
+            <div class="dialog-content-box">
+              <el-input
+                type="textarea"
+                :rows="5"
+                placeholder="请输入内容"
+                v-model="textarea"
+              ></el-input>
+            </div>
           </div>
-
-          <div class="publish-box" v-if="see_uid != uid">
-            <div class="dialog-bodybox">
-              <div class="dialog-content-box">
-                <el-input type="textarea" :rows="5" placeholder="请输入内容" v-model="textarea"></el-input>
-              </div>
-            </div>
-            <div slot="footer" class="dialog-footer">
-              <el-button type="primary" @click="clickMaskBtn">发布</el-button>
-            </div>
-          </div>
-
-          <div class="dynamicState-container">
-            <!-- 列表项 开始 -->
-            <div class="container-items-box" v-for="(item,index) in evaluateList" :key="index">
-              <div class="right-container-item">
-                <div class="title list-title-box">
-                  <div class="title-left">
-                    <img :src="item.evaluate_user_avatar?item.evaluate_user_avatar:require('../../../assets/image/img-user.jpg' )" alt="" />
-                    <div class="name-id-box">
-                      <span>{{ item.evaluate_user_name }}</span>
-                      <span class="span-id">ID: {{ item.user_number }}</span>
-                    </div>
-                  </div>
-                  <div class="title-t">{{ item.createtime }}</div>
-                </div>
-
-                <div class="items-dt-box">
-                  <div>
-                    <div class="items-dt-p" v-html="item.content"></div>
-                    
-                  </div>
-                  <div class="items-bottom-btn">
-                    
-                    <img src="../../../assets/image/icon-copy.png" alt="删除"  class="item-delete-img" @click.stop="clickItemDelete(item,index)"  v-if="uid == item.uid"/>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="sec-footer" v-if="evaluateList.length != 0">
-              <div class="sec-content--more" @click="clickMore">
-                <span>查看更多</span>
-                <i class="el-icon-arrow-down"></i>
-              </div>
-            </div>
-            <!-- 列表项 结束 -->
-            <el-empty description="暂无数据..." v-if="evaluateList.length == 0"></el-empty>
+          <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="clickMaskBtn">发布</el-button>
           </div>
         </div>
 
+        <div class="dynamicState-container">
+          <!-- 列表项 开始 -->
+          <div
+            class="container-items-box"
+            v-for="(item, index) in evaluateList"
+            :key="index"
+          >
+            <div class="right-container-item">
+              <div class="title list-title-box">
+                <div class="title-left">
+                  <img
+                    :src="
+                      item.evaluate_user_avatar
+                        ? item.evaluate_user_avatar
+                        : require('../../../assets/image/img-user.jpg')
+                    "
+                    alt=""
+                  />
+                  <div class="name-id-box">
+                    <span>{{ item.evaluate_user_name }}</span>
+                    <span class="span-id">ID: {{ item.user_number }}</span>
+                  </div>
+                </div>
+                <div class="title-t">{{ item.createtime }}</div>
+              </div>
+
+              <div class="items-dt-box">
+                <div>
+                  <div class="items-dt-p" v-html="item.content"></div>
+                </div>
+                <div class="items-bottom-btn">
+                  <img
+                    style="margin-right: 30px"
+                    src="../../../assets/image/icon-copy.png"
+                    alt="删除"
+                    class="item-delete-img"
+                    @click.stop="clickItemDelete(item, index)"
+                    v-if="userId == item.evaluate_uid || isUserMes"
+                  />
+                  <img
+                    src="../../../assets/iconfont/report-icon.svg"
+                    alt="举报"
+                    class="item-delete-img"
+                    @click.stop="clickItemReport(item, index)"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="sec-footer" v-if="evaluateList.length != 0">
+            <div class="sec-content--more" @click="clickMore">
+              <span>查看更多</span>
+              <i class="el-icon-arrow-down"></i>
+            </div>
+          </div>
+          <!-- 列表项 结束 -->
+          <el-empty
+            description="暂无数据..."
+            v-if="evaluateList.length == 0"
+          ></el-empty>
+        </div>
+      </div>
     </div>
+    <Complaint ref="complaint" states="0" zIndex="1000" />
   </div>
 </template>
 
 <script>
+import Complaint from "@/components/complaint";
 import videoDialog from "../components/videoDialog.vue";
 import recommendation from "./recommendation/index.vue";
 
@@ -249,9 +280,12 @@ export default {
   components: {
     videoDialog,
     recommendation,
+    Complaint,
   },
   data() {
     return {
+      isUserMes: false,
+      userId: localStorage.getItem("realUid"),
       show_share: false,
       see_uid: "",
       uid: "",
@@ -259,144 +293,158 @@ export default {
       count_list: {},
 
       infoList: [],
+      evaluateList: [], //推荐语列表
+      page: 1,
+      pagesize: 10,
+      textarea: "",
+      is_return: true,
+      dialogVisible: false,
     };
+  },
+  computed: {},
+  mounted() {
+
   },
   computed: {},
   mounted() {},
   created() {
     this.see_uid = this.$route.query.see_uid || localStorage.getItem("realUid");
     this.uid = localStorage.getItem("realUid");
-
-      infoList:[],
-      evaluateList: [], //推荐语列表
-      page: 1,
-      pagesize: 10,
-      textarea:'',
-      is_return: true,
-      dialogVisible: false,
-
+    if(!this.$route.query.see_uid){
+      this.isUserMes = true;
     }
-  },
-  computed: {
-    
-  },
-  mounted(){
-   
-  },
-  created(){
-    this.see_uid = this.$route.query.see_uid || localStorage.getItem('realUid');
-    this.uid = localStorage.getItem('realUid');
     this.page = 1;
     this.pagesize = 10;
-    console.log(this.page)
+    console.log(this.page);
     // 获取用户职圈信息
     this.getUserProfile();
     // 获取推荐语列表
     this.getEevaluateList();
   },
   methods: {
-    clickMore(){
-      this.page = this.page+1;
+    clickMore() {
+      this.page = this.page + 1;
       this.getEevaluateList();
     },
     // 获取推荐语列表
-    getEevaluateList(){
+    getEevaluateList() {
       let that = this;
       let p = {
         page: that.page,
-        pagesize: that.pagesize
-      }
-      let url = `/api/user-evaluate/list?page=${p.page}&pagesize=${p.pagesize}&see_uid=${that.see_uid}`
+        pagesize: that.pagesize,
+      };
+      let url = `/api/user-evaluate/list?page=${p.page}&pagesize=${p.pagesize}&see_uid=${that.see_uid}`;
       // if(that.see_uid != that.uid){
       //   p.see_uid = that.see_uid;
       //   url = `/api/user-evaluate/list?page=${p.page}&pagesize=${p.pagesize}&see_uid=${that.see_uid}`
       // }else{
       //   url = `/api/user-evaluate/list?page=${p.page}&pagesize=${p.pagesize}`
       // }
-      this.$axios.get(url,{}).then( res =>{
-        if(res.code == 0){
-          if(res.data.list.length <= 0){
+      this.$axios
+        .get(url, {})
+        .then((res) => {
+          if (res.code == 0) {
+            if (res.data.list.length <= 0) {
+              this.$message.error({
+                message: "暂无更多数据...",
+              });
+            } else {
+              let dataList = that.evaluateList.concat(res.data.list);
+              this.evaluateList = dataList;
+              // dataList.forEach( ele =>{
+              //   ele.show_review = false
+              // })
+              // this.evaluateList = dataList;
+            }
+          } else {
             this.$message.error({
-              message: "暂无更多数据..."
-            })
-          }else{
-            let dataList = that.evaluateList.concat(res.data.list);
-            this.evaluateList = dataList;
-            // dataList.forEach( ele =>{
-            //   ele.show_review = false
-            // })
-            // this.evaluateList = dataList;
+              message: res.msg,
+            });
           }
-          
-        }else{
-          this.$message.error({
-            message:res.msg
-          })
-        }
-      }).catch(e =>{
-        console.log(e)
-      })
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
     //点击推荐语发布按钮
-    clickMaskBtn(){
+    clickMaskBtn() {
       let that = this;
       let p = {
         content: that.textarea,
-        evaluate_user_type: 1,  // 评价用户类型 1.人才用户 2.企业用户
+        evaluate_user_type: 1, // 评价用户类型 1.人才用户 2.企业用户
         uid: that.see_uid, // 	被评价人才ID
-      }
-      console.log(p)
-      if( !that.is_return ){
-        return
+      };
+      console.log(p);
+      if (!that.is_return) {
+        return;
       }
       that.is_return = false;
-      that.$axios.post('/api/user-evaluate/create',p).then( res =>{
-        if(res.code == 0){
-          that.$message.success('发布成功！');
-          that.dialogVisible = false;
-          this.textarea = '';
-          this.page = 1;
-          this.pagesize = 10;
-          this.evaluateList = [];
-          that.getEevaluateList();
-        } else{
-          that.$message.error({
-            message:res.msg
-          })
-        }
-        that.is_return = true;
-      }).catch(e =>{
-        console.log(e)
-        that.is_return = true;
-      })
-      
+      that.$axios
+        .post("/api/user-evaluate/create", p)
+        .then((res) => {
+          if (res.code == 0) {
+            that.$message.success("发布成功！");
+            that.dialogVisible = false;
+            this.textarea = "";
+            this.page = 1;
+            this.pagesize = 10;
+            this.evaluateList = [];
+            that.getEevaluateList();
+          } else {
+            that.$message.error({
+              message: res.msg,
+            });
+          }
+          that.is_return = true;
+        })
+        .catch((e) => {
+          console.log(e);
+          that.is_return = true;
+        });
+    },
+    // 举报
+    clickItemReport(item, index) {
+      console.log(item, index);
+      // // 当前登录人id
+      // this.complaintData.id = localStorage.getItem("user_number");
+      // // 人才id
+      // this.complaintData.uId = this.basic_info.user_number;
+      this.zx_dialogVisible = false;
+      this.$refs.complaint._data.id = localStorage.getItem("realUid")
+        ? localStorage.getItem("realUid")
+        : "";
+      this.$refs.complaint._data.states = "2";
+      this.$refs.complaint._data.isComplaint = true;
+      this.$refs.complaint.setComplaintType();
     },
     // 删除
-    clickItemDelete(i,idx){
+    clickItemDelete(i, idx) {
       let that = this;
       let item = i;
       let index = idx;
       let evaluateList = that.evaluateList;
-      console.log(item)
+      console.log(item);
       let p = {
         id: item.id,
-      }
-      that.$axios.post('/api/user-evaluate/delete',p).then( res =>{
-        if(res.code == 0){
-          that.$message.success('删除成功！');
-          evaluateList.splice(index,1);
-          that.evaluateList = evaluateList;
-        } else{
-          that.$message.error({
-            message:res.msg
-          })
-        }
-        that.is_return = true;
-      }).catch(e =>{
-        console.log(e)
-        that.is_return = true;
-      })
-
+      };
+      that.$axios
+        .post("/api/user-evaluate/delete", p)
+        .then((res) => {
+          if (res.code == 0) {
+            that.$message.success("删除成功！");
+            evaluateList.splice(index, 1);
+            that.evaluateList = evaluateList;
+          } else {
+            that.$message.error({
+              message: res.msg,
+            });
+          }
+          that.is_return = true;
+        })
+        .catch((e) => {
+          console.log(e);
+          that.is_return = true;
+        });
     },
     // 是否显示分享
     clickShare() {
@@ -797,21 +845,21 @@ export default {
 }
 // 、、、、、、、、、、、、、、、   新版样式  ↑  、、、、、、、、、、、、
 
-.recommendation{
-  .listview-box{
-    background: #FFFFFF;
+.recommendation {
+  .listview-box {
+    background: #ffffff;
     border-radius: 6px;
     opacity: 1;
     overflow: hidden;
   }
-  .dynamicState-box{
+  .dynamicState-box {
     width: 100%;
-    margin-top: 10px;    
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, .15), 0 2px 3px rgba(0, 0, 0, .2);
+    margin-top: 10px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15), 0 2px 3px rgba(0, 0, 0, 0.2);
 
-    .dynamicState-top{
+    .dynamicState-top {
       width: 100%;
-      background: #FFFFFF;
+      background: #ffffff;
       border-radius: 4px 4px 4px 4px;
       position: relative;
       padding: 10px 20px;
@@ -819,11 +867,11 @@ export default {
       align-items: center;
       justify-content: space-between;
       border-bottom: 1px solid #dedfe0;
-      .dynamicState-title{
+      .dynamicState-title {
         font-size: 20px;
         font-weight: bold;
       }
-      .fb-btn{
+      .fb-btn {
         width: 96px;
         height: 35px;
         line-height: 35px;
@@ -835,155 +883,152 @@ export default {
         cursor: pointer;
       }
     }
-    .dynamicState-container{
-      .container-items-box{
+    .dynamicState-container {
+      .container-items-box {
         background: #fff;
         margin-top: 10px;
         position: relative;
-        .right-container-title{
+        .right-container-title {
           margin-top: 10px;
           width: 100%;
           height: 44px;
           line-height: 44px;
-          border-bottom: 1px solid #F2F3F5;
-          span{
+          border-bottom: 1px solid #f2f3f5;
+          span {
             margin-left: 20px;
             font-size: 14px;
-            color: #86909C;
+            color: #86909c;
             line-height: 22px;
           }
-
         }
-        .right-container-item{
+        .right-container-item {
           padding: 10px 20px;
           margin-top: 0;
-          &:nth-child(1){
+          &:nth-child(1) {
             margin-top: 0;
           }
-          .title.list-title-box{
-            .title-left{
-              img{
+          .title.list-title-box {
+            .title-left {
+              img {
                 width: 30px;
                 height: 30px;
                 border-radius: 50%;
               }
-              span{
+              span {
                 font-size: 14px;
               }
-              .name-id-box{
+              .name-id-box {
                 padding-left: 4px;
                 display: flex;
                 flex-direction: column;
-                .span-id{
+                .span-id {
                   font-weight: bold;
                 }
               }
             }
           }
-          .title{
+          .title {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            .title-left{
+            .title-left {
               display: flex;
               align-items: center;
-              img{
+              img {
                 width: 20px;
                 height: 20px;
                 border-radius: 50%;
                 margin-right: 8px;
               }
-              span{
+              span {
                 font-size: 12px;
                 font-weight: 400;
-                color: #4E5969;
+                color: #4e5969;
                 line-height: 22px;
               }
             }
-            
-            .title-t{
+
+            .title-t {
               font-size: 12px;
               font-weight: 400;
-              color: #86909C;
+              color: #86909c;
               line-height: 22px;
             }
           }
-          .items-c-box{
-            .items-c-p{
+          .items-c-box {
+            .items-c-p {
               font-weight: 400;
               line-height: 22px;
               font-size: 13px;
               color: #666;
             }
           }
-          .items-dt-box{
+          .items-dt-box {
             width: 100%;
             padding-left: 20px;
             border-bottom: 1px solid #eee;
-            .items-dt-p{
+            .items-dt-p {
               font-size: 14px;
               font-weight: 400;
-              color: #1F2E4D;
+              color: #1f2e4d;
               line-height: 28px;
             }
-            .tu-box{
+            .tu-box {
               display: flex;
               align-items: center;
               flex-wrap: wrap;
             }
-            .items-img-box{
+            .items-img-box {
               height: auto;
               display: flex;
               flex-wrap: wrap;
               margin-top: 14px;
               margin-left: 10px;
-              img{
+              img {
                 width: 140px;
                 // height: 100px;
                 margin-left: 0.5rem;
-                &:nth-child(1){
+                &:nth-child(1) {
                   margin: 0;
                 }
               }
-              &>a{
+              & > a {
                 width: 140px;
                 height: 100px;
                 margin-left: 0.5rem;
-                &:nth-child(1){
+                &:nth-child(1) {
                   margin: 0;
                 }
-                
               }
             }
-            .items-img-box:nth-of-type(1){
+            .items-img-box:nth-of-type(1) {
               margin-left: 0;
             }
-
           }
-          .items-bottom-btn{
+          .items-bottom-btn {
             display: flex;
             align-items: center;
             margin-top: 0.8rem;
             position: relative;
-            .bottom-btn-items{
+            .bottom-btn-items {
               margin-right: 16px;
               display: flex;
               align-items: center;
               cursor: pointer;
-              img{
+              img {
                 width: 14px;
                 height: 14px;
                 margin-right: 4px;
                 display: inline-block;
               }
-              span{
+              span {
                 font-size: 12px;
                 font-weight: 400;
-                color: #86909C;
+                color: #86909c;
                 line-height: 22px;
               }
             }
-            .item-delete-img{
+            .item-delete-img {
               width: 22px;
               height: 22px;
               position: absolute;
@@ -994,27 +1039,26 @@ export default {
             }
           }
         }
-        &:hover .items-bottom-btn .item-delete-img{
+        &:hover .items-bottom-btn .item-delete-img {
           display: block;
         }
       }
-      
     }
   }
-  .publish-box{
+  .publish-box {
     width: 100%;
     padding: 0 10px;
-    .dialog-bodybox{
+    .dialog-bodybox {
       width: 100%;
       padding: 12px;
-      .dialog-img-box{
+      .dialog-img-box {
         width: 100%;
         display: -webkit-box;
         display: -ms-flexbox;
         display: flex;
         -ms-flex-wrap: wrap;
         flex-wrap: wrap;
-        .img-item{
+        .img-item {
           width: 76px;
           height: 76px;
           background: #f7f8fa;
@@ -1035,12 +1079,12 @@ export default {
             object-fit: cover;
             display: block;
           }
-          &:nth-of-type(1){
+          &:nth-of-type(1) {
             margin-left: 0;
           }
         }
         .img-item.add {
-          transition: all .2s ease-in-out;
+          transition: all 0.2s ease-in-out;
           border: 1px dashed #dedfe0;
           cursor: pointer;
           display: flex;
@@ -1049,7 +1093,7 @@ export default {
           font-size: 20px;
           font-weight: bold;
           color: $g_textColor;
-          .avatar-uploader{
+          .avatar-uploader {
             width: 100%;
             height: 100%;
             display: flex;
@@ -1064,7 +1108,7 @@ export default {
               height: 100%;
               line-height: 76px;
             }
-            .el-upload-dragger{
+            .el-upload-dragger {
               width: 100%;
               height: 100%;
               background: none;
@@ -1072,48 +1116,44 @@ export default {
             }
           }
         }
-
       }
-      .dialog-content-box{
+      .dialog-content-box {
         width: 100%;
         height: 100%;
-        .el-textarea__inner{
+        .el-textarea__inner {
           font-size: 14px;
           padding: 0;
           border: none;
-          
         }
-        /deep/ .el-textarea__inner:focus{
+        /deep/ .el-textarea__inner:focus {
           border-color: $g_color;
         }
       }
-
     }
-    .dialog-footer{
+    .dialog-footer {
       display: flex;
       align-items: center;
       justify-content: flex-end;
       padding-right: 10px;
-      .el-button{
+      .el-button {
         padding: 0;
         width: 100px;
         height: 35px;
         line-height: 35px;
       }
-      .el-button--primary{
+      .el-button--primary {
         background-color: $g_color;
         border-color: $g_color;
       }
     }
-    
   }
-  .sec-footer{
+  .sec-footer {
     width: 100%;
     margin: 10px 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    .sec-content--more{
+    .sec-content--more {
       width: auto;
       display: flex;
       align-items: center;
@@ -1121,15 +1161,14 @@ export default {
       font-size: 13px;
       padding: 10px 20px;
       cursor: pointer;
-      i{
+      i {
         margin-left: 10px;
       }
     }
-    .sec-content--more:hover{
+    .sec-content--more:hover {
       color: $g_color;
     }
   }
 }
 // 、、、、、、、、、、、、、、、   新版样式  ↑  、、、、、、、、、、、、
-
 </style>

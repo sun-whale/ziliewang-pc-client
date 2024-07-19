@@ -12,7 +12,7 @@
         <!-- 列表开始 -->
         <div class="list-items" v-for="(item,index) in infoList" :key="index">
           <!-- agent 职位icon -->
-           <img src="../../../assets/image/agent-post.gif" v-if="index%2" style="position: absolute;width: 60px;height: auto;top: -5px;right: -10px;">
+           <img src="../../../assets/image/agent-post.gif" v-if="item.is_automation == 2" style="position: absolute;width: 60px;height: auto;top: -5px;right: -10px;">
           <div class="items-left-box" @click.stop="clickItems(item)">
             <p class="items-title">
               {{ item.position_name }} 
