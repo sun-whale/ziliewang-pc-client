@@ -296,7 +296,7 @@ export default {
       evaluateList: [], //推荐语列表
       page: 1,
       pagesize: 10,
-      textarea: "",
+      textarea:'',
       is_return: true,
       dialogVisible: false,
     };
@@ -307,9 +307,15 @@ export default {
   },
   computed: {},
   mounted() {},
-  created() {
-    this.see_uid = this.$route.query.see_uid || localStorage.getItem("realUid");
-    this.uid = localStorage.getItem("realUid");
+  computed: {
+    
+  },
+  mounted(){
+   
+  },
+  created(){
+    this.see_uid = this.$route.query.see_uid || localStorage.getItem('realUid');
+    this.uid = localStorage.getItem('realUid');
     if(!this.$route.query.see_uid){
       this.isUserMes = true;
     }

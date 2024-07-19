@@ -4,12 +4,13 @@
     <div class="container-box" v-if="infoData">
       <div class="container-left-box">
         <div class="le-box">
-          <div class="le-box-title">求职隐私</div>
+          <div class="le-box-title">个人隐私</div>
           <ul class="le-ul">
             <li :class="setType =='set_resume'? 'hover': '' " @click="clickLeItems('set_resume')">谁能查看我的简历</li>
             <li :class="setType =='set_shield'? 'hover': '' " @click="clickLeItems('set_shield')">屏蔽公司</li>
             <li :class="setType =='phone_protect'? 'hover': '' " @click="clickLeItems('phone_protect')">手机号码保护</li>
             <li :class="setType =='name_protect'? 'hover': '' " @click="clickLeItems('name_protect')">真实姓名保护</li>
+            <li :class="setType =='use_purpose'? 'hover': '' " @click="clickLeItems('use_purpose')">使用目的</li>
           </ul>
         </div>
         <div class="le-box">
@@ -29,7 +30,7 @@
         <el-scrollbar style="height:100%;" ref="scrollbar">
           <!-- 谁能查看我的简历 -->
           <div class="container-right-items" id="set_resume">
-            <div class="title">谁能查看我的简历</div>
+            <div class="title" :class="setType =='set_resume'? 'hover': '' ">谁能查看我的简历</div>
             <div class="radio-group-box">
               <el-radio-group v-model="resume_radio" @change="resume_change">
                 <el-radio :label="1">
@@ -57,7 +58,7 @@
           </div>
           <!-- 屏蔽公司 -->
           <div class="container-right-items" id="set_shield">
-            <div class="title">屏蔽公司</div>
+            <div class="title" :class="setType =='set_shield'? 'hover': '' ">屏蔽公司</div>
             <div class="info-box">你可以屏蔽HR或猎头所在公司</div>
             <button @click="clickSetShield">
               <img src="../../../assets/image/Frame_11.png" alt="" />
@@ -73,57 +74,74 @@
           </div>
           <!-- 手机号码保护 -->
           <div class="container-right-items" id="phone_protect">
-            <div class="title">手机号码保护</div>
+            <div class="title" :class="setType =='phone_protect'? 'hover': '' ">手机号码保护</div>
             <div class="info-box">开启后，当企业HR和猎头联系你时对其隐藏真实手机号码</div>
             <div class="phone-protect-box">
               <span class="phone-protect-title">手机号码保护</span>
               <el-switch v-model="is_phone_protect" @change="changePhoneProtect"></el-switch>
             </div>
           </div>
-          <!-- 手机号码保护 -->
+          <!-- 真实姓名保护 -->
           <div class="container-right-items" id="name_protect">
-            <div class="title">真实姓名保护</div>
+            <div class="title" :class="setType =='name_protect'? 'hover': '' ">真实姓名保护</div>
             <div class="info-box">开启后对外展示名称将展示 "张**明"</div>
             <div class="phone-protect-box">
               <span class="phone-protect-title">真实姓名保护</span>
               <el-switch v-model="is_name_protect" @change="changeNameProtect"></el-switch>
             </div>
           </div>
+          <!-- 使用目的 -->
+          <div class="container-right-items" id="use_purpose">
+            <div class="title" :class="setType =='use_purpose'? 'hover': '' ">使用目的</div>
+            <div class="radio-group-box">
+              <el-radio-group v-model="usePurpose" @change="usePurposeChange">
+                <el-radio :label="1">
+                  <h2>职场社交目的</h2>
+                </el-radio>
+                <el-radio :label="2">
+                  <h2>商业机会目的</h2>
+                </el-radio>
+                <el-radio :label="3">
+                  <h2>职业机会目的</h2>
+                </el-radio>
+              </el-radio-group>
+            </div>
+          </div>
           <!-- 手机号码 -->
           <div class="container-right-items" id="set_phone">
-            <div class="title">手机号码</div>
+            <div class="title" :class="setType =='set_phone'? 'hover': '' ">手机号码</div>
             <div class="info-box" >当前手机号: {{ basic_info.real_phone }}</div>
             <button @click="clickSetPhone">修改手机号</button>
           </div>
           <!-- 手机号码 -->
           <div class="container-right-items" id="set_wechat">
-            <div class="title">绑定微信</div>
+            <div class="title" :class="setType =='set_wechat'? 'hover': '' ">绑定微信</div>
             <div class="info-box" >当前微信: {{ basic_info.wechat_number }}</div>
             <button @click="clickSetWechat">修改微信</button>
           </div>
           
           <!-- 我的邮箱 -->
           <div class="container-right-items" id="set_email">
-            <div class="title">我的邮箱</div>
+            <div class="title" :class="setType =='set_email'? 'hover': '' ">我的邮箱</div>
             <div class="info-box">当前邮箱: {{ basic_info.real_email }}</div>
             <button  @click="clickSetEmail">修改邮箱</button>
 
           </div>
           <!-- 密码设置 -->
           <div class="container-right-items" id="set_password">
-            <div class="title">密码设置</div>
+            <div class="title" :class="setType =='set_password'? 'hover': '' ">密码设置</div>
             <div class="info-box">当前登录账号: {{ basic_info.real_phone }}</div>
             <button @click="clickSetPassword">密码设置</button>
           </div>
           <!-- 账号注销 -->
           <div class="container-right-items" id="account_cancellation">
-            <div class="title">账号注销</div>
+            <div class="title" :class="setType =='account_cancellation'? 'hover': '' ">账号注销</div>
             <div class="info-box">账号注销成功后会清空用户在本平台上所有信息！</div>
             <button @click="clickAccountCancellation">确认注销</button>
           </div>
           <!-- 常用语设置 -->
           <div class="container-right-items" id="set_expressions">
-            <div class="title">常用语设置</div>
+            <div class="title" :class="setType =='set_expressions'? 'hover': '' ">常用语设置</div>
             <ul class="phraseslist-box">
               <li class="phrases-item" v-for="(item,index) in phraseslist" :key="index">
                 <p>{{ item.common_language }}</p>
@@ -333,7 +351,8 @@ export default {
       // 用户黑名单
       direction: 'rtl',
       drawer: false,
-      userDefriendList: []
+      userDefriendList: [],
+      usePurpose: 1, // 使用目的
     }
   },
   computed: {
@@ -488,6 +507,10 @@ export default {
     },
     //谁能查看我的简历
     resume_change(e){
+      console.log(e)
+    },
+    // 使用目的
+    usePurposeChange(e){
       console.log(e)
     },
     // 点击设置邮箱
@@ -1136,6 +1159,9 @@ export default {
 
     
   }
+}
+.hover{
+  color: $g_color !important;
 }
 .phraseslist-box{
   width: auto;

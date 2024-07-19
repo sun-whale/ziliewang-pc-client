@@ -42,7 +42,7 @@
                 <!-- <span class="span-id">ID: {{ currentUser.user_number }}</span> -->
               </div>
               <div class="sender-info" v-else>
-                <img :src="friend.avatar?friend.avatar:require('../../../../assets/image/img-user.jpg')" class="sender-avatar"/>
+                <img :src="friend.avatar?friend.avatar:require('../../../../assets/image/img-user.jpg')" class="sender-avatar" @click="clickAvatar"/>
                 <!-- <span class="span-id">ID: {{ friend.user_number }}</span> -->
               </div>
               <!-- 头像 结束 -->
@@ -53,7 +53,12 @@
                   <div class="send-fail" v-if="message.status === 'fail'"></div>
 
                   <!-- 内容 开始 -->
-                  <div v-if="message.type === 'text'" class="content-text" v-html="emoji.decoder.decode(message.payload.text)"></div>
+                  <div v-if="message.type === 'text'" class="content-text" style="flex-direction: column;">
+                    <div v-html="emoji.decoder.decode(message.payload.text)"></div>
+                    <div class="fz-box">
+                      <img src="../../../../assets/image/icon-fz.png" title="复制" alt="" @click="clickCopy(message.payload.text)"/>
+                    </div>
+                  </div>
                   <!-- 内容 结束 -->
                   <!-- 音视频 开始 -->
                   <div v-if="message.type === 'TUICallKit'" class="content-text" v-html="message.payload.text"></div>
@@ -637,6 +642,21 @@
       this.goEasy.im.off(this.GoEasy.IM_EVENT.PRIVATE_MESSAGE_RECEIVED, this.onReceivedPrivateMessage);
     },
     methods: {
+      // 点击聊天框内复制图标
+      async clickCopy(text){
+        console.log(text)
+        try {
+          const textToCopy = text;
+          await navigator.clipboard.writeText(textToCopy);
+          this.$message.success({
+            message:'复制成功!'
+          })
+        } catch (error) {
+          this.$message.error({
+            message:'复制失败!'
+          })
+        }
+      },
       // 发送面试评估
       setAssessMessage(){
         const that = this;
@@ -1669,6 +1689,18 @@
     overflow-wrap: anywhere;
     border-radius: 8px;
     word-break: break-all;
+    .fz-box{
+      width:100%;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      &>img{
+        width: 16px;
+        height: 16px;
+        margin-right: 4px;
+        cursor: pointer;
+      } 
+    }
   }
 
   .content-image {
@@ -1802,6 +1834,13 @@
     display: flex;
     justify-content: flex-start;
     flex-direction: row-reverse;
+    .fz-box{
+      justify-content: flex-end;
+      &>img{
+        margin-right: 0;
+        margin-left: 4px;
+      }
+    }
   }
 
   .message-item .self .audio-facade {
