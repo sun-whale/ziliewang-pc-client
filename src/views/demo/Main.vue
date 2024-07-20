@@ -18,12 +18,13 @@
     <transition name="suck-in" mode="out-in">
       <VueDragResize :style="`z-index:${zInfex_0};`"
        dragHandle=".VueDragResize-title-box" 
-       :isActive="true" :parentLimitation="true" 
+       :isActive="true" :isDraggable="true" :parentLimitation="true" :preventActiveBehavior="true"
        :parentW="parentW" :parentH="parentH" 
        :w="width" :h="height" :minw="minw" :minh="minh"
        :x='left' :y='top' 
        @resizing="resize" 
-       @dragging="resize" v-if="is_VueDragResize">
+       @dragging="resize" 
+       @deactivated="onDeactivated" v-if="is_VueDragResize">
         <div class="VueDragResize-centent-box">
           <div class="VueDragResize-title-box">
             <div class="title">聊一聊</div>
@@ -267,6 +268,9 @@ import { TUICallKit, TUICallKitServer, TUICallType,STATUS } from "@tencentcloud/
         this.top = newRect.top;
         this.left = newRect.left;
       },
+      onDeactivated(e){
+        console.log(e)
+      },
       // 点击 聊天弹窗关闭按钮
       clickCloseBtn(){
         this.is_VueDragResize = false;
@@ -442,9 +446,39 @@ import { TUICallKit, TUICallKitServer, TUICallType,STATUS } from "@tencentcloud/
     transform: scale(0.5);
   }
   .mian-box /deep/ .vdr-stick{
-    display: none;
+    box-shadow: none;
+    background: none;
+    border: 0;
   }
-  .mian-box /deep/ .vdr-stick-br, .vdr-stick-tl{
+  .mian-box /deep/ .vdr-stick-tm{
+    left: 0;
+    top: -2px !important;
+    width: 100% !important;
+    height: 4px !important;
+    margin: 0 !important;
+  }
+  .mian-box /deep/ .vdr-stick-bm{
+    left: 0;
+    bottom: -2px !important;
+    width: 100% !important;
+    height: 4px !important;
+    margin: 0 !important;
+  }
+  .mian-box /deep/ .vdr-stick-ml{
+    top: 0;
+    left: -2px !important;
+    width: 4px !important;
+    height: 100% !important;
+    margin: 0 !important;
+  } 
+  .mian-box /deep/ .vdr-stick-mr{
+    top: 0;
+    right: -2px !important;
+    width: 4px !important;
+    height: 100% !important;
+    margin: 0 !important;
+  }
+  .mian-box /deep/ .vdr-stick-br{
     display: block;
     width: 14px !important;
     height: 14px !important;
