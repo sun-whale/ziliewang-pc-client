@@ -13,60 +13,15 @@
           </div>
         </div>
         <span class="span-id">ID: {{ basic_info.user_number }}</span>
+      </div>
+      
+      <div class="infoTab-box">
+        <div class="infoTab-items" v-for="(item,index) in countList" :key="index" @click="goTomyProfessionalCircle(item)">
+          <span class="infoTab-items-num">{{ item.count }}</span>
+          <span class="infoTab-items-name">{{ item.text }}</span>
+        </div>
+      </div>
 
-      </div>
-      <div class="infoTab-box">
-        <div class="infoTab-items" @click="goTomyProfessionalCircle('谁看过我','skgw')">
-          <span class="infoTab-items-num">{{ basic_info.see_me_num }}</span>
-          <span class="infoTab-items-name">谁看过我</span>
-        </div>
-        <div class="infoTab-items" @click="goTo('myDelivery')">
-          <span class="infoTab-items-num">{{ basic_info.deliver_resume_num }}</span>
-          <span class="infoTab-items-name">我的投递</span>
-        </div>
-        <div class="infoTab-items" @click="goTo('myCollection')">
-          <span class="infoTab-items-num">{{ basic_info.collection_num }}</span>
-          <span class="infoTab-items-name">我的收藏</span>
-        </div>
-      </div>
-      <div class="infoTab-box">
-        <div class="infoTab-items" @click="goTomyProfessionalCircle('谁收藏了我的简历','scwdjl')">
-          <span class="infoTab-items-num">0</span>
-          <span class="infoTab-items-name">谁收藏了我的简历</span>
-        </div>
-        <div class="infoTab-items" @click="goTomyProfessionalCircle('谁点赞了我的简历','dzwdjl')">
-          <span class="infoTab-items-num">0</span>
-          <span class="infoTab-items-name">谁点赞了我的简历</span>
-        </div>
-        <div class="infoTab-items" @click="goTomyProfessionalCircle('谁转发了我的简历','zfwdjl')">
-          <span class="infoTab-items-num">0</span>
-          <span class="infoTab-items-name">谁转发了我的简历</span>
-        </div>
-      </div>
-      <div class="infoTab-box">
-        <div class="infoTab-items" @click="goTomyProfessionalCircle('谁看了我的职业名片','scwdzymp')">
-          <span class="infoTab-items-num">0</span>
-          <span class="infoTab-items-name">谁看了我的职业名片</span>
-        </div>
-        <div class="infoTab-items" @click="goTomyProfessionalCircle('谁转发了我的职业名片','zfwdzymp')">
-          <span class="infoTab-items-num">0</span>
-          <span class="infoTab-items-name">谁转发了我的职业名片</span>
-        </div>
-        <div class="infoTab-items" @click="goTomyProfessionalCircle('谁收藏了我的职业名片','scwdzymp')">
-          <span class="infoTab-items-num">0</span>
-          <span class="infoTab-items-name">谁收藏了我的职业名片</span>
-        </div>
-      </div>
-      <div class="infoTab-box">
-        <div class="infoTab-items" @click="goTomyProfessionalCircle('谁获取了我的联系方式','wqwdlxfs')">
-          <span class="infoTab-items-num">0</span>
-          <span class="infoTab-items-name">谁获取了我的联系方式</span>
-        </div>
-        <div class="infoTab-items" @click="goTomyProfessionalCircle('已沟通过的企业','gtgdqy')">
-          <span class="infoTab-items-num">0</span>
-          <span class="infoTab-items-name">已沟通过的企业</span>
-        </div>
-      </div>
       <div class="setTab-box">
         <div class="setTab-items" @click="clcikRefresh">
           <img src="../../../assets/image/Frame_12.png" alt="" />
@@ -118,8 +73,8 @@
                 </div>
 
                 <div class="s-list-info">
-                  <div class="s-list-name"><span>{{ item.staff_name ?item.staff_name :'暂无' }}</span><span class="span-time">{{ item.createtime }}</span></div>
-                  <div class="s-list-intro"><span>{{ item.company_name?item.company_name :'暂无'  }}</span></div>
+                  <div class="s-list-name"><span>{{ item.name ?item.name :'暂无' }}</span><span class="span-time">{{ item.createtime }}</span></div>
+                  <div class="s-list-intro"><span>{{ item.company_name?item.company_name :''  }}</span></div>
                 </div>
               </div>
             </li>
@@ -146,7 +101,8 @@ export default {
       cb_title:'',
       drawer: false,
       userDefriendList: [],
-      cb_type: ''
+      cb_item: {},
+      countList: []
 
     }
   },
@@ -160,6 +116,7 @@ export default {
   created() {
     // 获取个人信息
     this.getUserProfile();
+    this.getUserCountList();
   },
   methods: {
     goToCompanyDetails(id){
@@ -171,10 +128,10 @@ export default {
         }
       })
     },
-    goTomyProfessionalCircle(text,type){
-      this.cb_title = text;
-      this.cb_type = type;
-      // 获取用户黑名单列表
+    goTomyProfessionalCircle(i){
+      this.cb_title = i.text;
+      this.cb_item = i;
+
       this.getUserDefriendList();
       // this.$router.push('/myProfessionalCircle');
     },
@@ -186,9 +143,11 @@ export default {
       let that = this;
       let p = {
         page: 1,
-        pagesize: 100
+        pagesize: 100,
+        type: that.cb_item.type,
+        tag: that.cb_item.tag,
       };
-      that.$axios.post('/api/see/me/list',p).then( res =>{
+      that.$axios.post('/api/userinfooperate/list',p).then( res =>{
         if(res.code == 0){
           that.userDefriendList = res.data.list;
           that.drawer = true;
@@ -216,6 +175,21 @@ export default {
     // 点击刷新
     clcikRefresh(){
       this.$message.success('刷新成功！');
+    },
+    // 
+    getUserCountList(){
+      let that = this;
+      that.$axios.post('/api/user/count/list',{}).then(res =>{
+        if(res.code == 0){
+          that.countList = res.data;
+        }else{
+          that.$message.error({
+            message:res.msg
+          })
+        }
+      }).catch(e =>{
+        console.log(e)
+      })
     },
     // 获取个人信息
     getUserProfile(params){
@@ -306,15 +280,22 @@ export default {
   .infoTab-box{
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    // justify-content: space-between;
     margin-top: 1.5rem;
     .infoTab-items {
-      flex: 1;
+      width: 33.33333%;
+      // flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      height: 100%;
+      margin-top: 8px;
+      &:hover{
+        background: #f8f9fd;
+      }
       .infoTab-items-num{
         font-size: 20px;
         font-weight: bold;

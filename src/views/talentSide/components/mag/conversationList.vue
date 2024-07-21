@@ -259,6 +259,7 @@
               if( position_id ){
                 friend.position_id = position_id;
                 friend.position_name = res.data.position_name;
+                friend.company_id = res.data.company_id;
                 that.profile.friend = friend;
                 that.$emit( 'chatLocation',friend );
                 that.$bus.$emit( 'click_conversationList_item_getInfoData',friend );
