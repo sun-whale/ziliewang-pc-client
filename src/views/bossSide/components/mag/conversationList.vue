@@ -41,6 +41,7 @@
                     {{ item.lastMessage.senderId === currentUser.id ? '我' : item.lastMessage.senderData.name }}:
                   </div>
                   <span class="text" v-if="item.lastMessage.type === 'text'">{{item.lastMessage.payload.text}}</span>
+                  <span class="text" v-if="item.lastMessage.type === 'texts'">{{item.lastMessage.payload.text}}</span>
                   <span v-else-if="item.lastMessage.type === 'video'">[视频消息]</span>
                   <span v-else-if="item.lastMessage.type === 'audio'">[语音消息]</span>
                   <span v-else-if="item.lastMessage.type === 'image' || item.lastMessage.type === 'images'">[图片消息]</span>

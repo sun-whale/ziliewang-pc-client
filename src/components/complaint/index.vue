@@ -4,11 +4,12 @@
       :visible.sync="isComplaint"
       :close-on-press-escape="false"
       :close-on-click-modal="false"
+      custom-class="content-box"
     >
-      <div class="content-container" :style="'z-index:' + zIndex">
+      <div class="content-container" :style="'z-index:' + zIndex +';padding-top:' + pdiTop">
         <div class="header">
           <div class="passive">
-            <span>{{ states == "2" ? "举报/投诉" : "投诉对象ID：" }}</span
+            <span>{{ uId == "" ? "举报/投诉" : "投诉对象ID：" }}</span
             >{{ uId }}
           </div>
           <i class="el-icon-close" @click="clickClose"></i>
@@ -85,7 +86,13 @@ export default {
     zIndex: {
       type: String,
       default() {
-        return null;
+        return "999";
+      },
+    },
+    pdiTop: {
+      type: String,
+      default() {
+        return '0px';
       },
     },
     id: {
@@ -284,11 +291,12 @@ export default {
       const that = this;
       let params = {
         complaint_type: this.states == 0 ? 1 : this.states == 1 ? 2 : 3, //投诉类型 1.企业投诉人才 2.人才投诉企业 3.其他投诉
-        receive_complaint_uid: this.uId, //被投诉用户ID
+        receive_complaint_uid: this.uId?this.uId:"", //被投诉用户ID
         company_id: this.states == 1 ? this.id : "", // 企业ID 备注：人才投诉企业的时候传
         images: this.params.complaintImage.join(),
         content: this.params.complaintVal + " - " + this.params.complaintText,
       };
+      
       that.$axios
         .post("/api/complaint/create", params)
         .then((res) => {
@@ -372,8 +380,9 @@ export default {
   transform: translate(-50%, -50%);
   width: 50%;
   padding: 20px;
+  padding-top: 0;
   border-radius: 4px;
-  box-shadow: 0 0 16px 0 #8b98a9;
+  // box-shadow: 0 0 16px 0 #8b98a9;
   background-color: #fff;
 
   .header {
@@ -481,5 +490,13 @@ export default {
     color: #fff;
     background-color: rgb(30, 197, 216);
   }
+}
+
+.content-box,
+.el-dialog__body {
+  padding: 0 !important;
+}
+.el-dialog__header{
+  display: none!important;
 }
 </style>
