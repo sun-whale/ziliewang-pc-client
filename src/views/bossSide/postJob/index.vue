@@ -534,6 +534,7 @@ export default {
         resume_demand: '', // 简历要求
         region: '',
         date1: '',
+        gender: '',
         date2: '',
         delivery: false,
         type: [],
@@ -565,7 +566,7 @@ export default {
         sync_workmate: ruleForm.sync_workmate!= ""?ruleForm.sync_workmate.join(','):"",
         resume_demand: ruleForm.resume_demand != ""?ruleForm.resume_demand.join(','):"",
         work_times: ruleForm.work_times,
-        gender: ruleForm.gender,
+        sex: ruleForm.gender,
 
       };
       let url = '';

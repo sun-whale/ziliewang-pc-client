@@ -135,9 +135,9 @@
                   placeholder="性别"
                   style="width: 100%"
                 >
-                  <el-option label="男" value="0"></el-option>
-                  <el-option label="女" value="1"></el-option>
-                  <el-option label="保密" value="2"></el-option>
+                  <el-option label="男" value="1"></el-option>
+                  <el-option label="女" value="2"></el-option>
+                  <el-option label="不限" value="3"></el-option>
                 </el-select>
               </el-col>
             </el-form-item>
@@ -1164,7 +1164,7 @@ export default {
         sync_workmate: ruleForm.sync_workmate!= ""?ruleForm.sync_workmate.join(','):"",
         resume_demand: ruleForm.resume_demand != ""?ruleForm.resume_demand.join(','):"",
         work_times: ruleForm.work_times,
-        gender: ruleForm.gender,
+        sex: ruleForm.gender,
         
       };
       let url = "";

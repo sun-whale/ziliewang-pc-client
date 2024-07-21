@@ -74,7 +74,8 @@
         </div>
 
         <div class="user-top-num">
-          <div @click="uid == see_uid ? clickAttentionTab('attention') : ''">
+          <!-- <div @click="uid == see_uid ? clickAttentionTab('attention') : ''"> -->
+          <div @click="clickAttentionTab('attention')">
             <span class="title">关注: </span>
             <span class="text">{{ infoData.attention_num }}</span>
           </div>
@@ -85,12 +86,12 @@
         </div>
 
         <div class="share-content">
-          <div style="position: absolute" @click="clickShare()">
-            <i
-              class="el-icon-share"
-              style="color: #86909c; padding-right: 2px"
-            ></i>
-            <span>分享</span>
+          <div style="position: absolute">
+            <img
+              src="../../../assets/iconfont/link-icon.svg"
+              style="width: 14px; margin-right: 4px"
+            />
+            <span>点赞</span>
           </div>
           <div
             style="
@@ -101,11 +102,11 @@
             "
             @click="clickShare()"
           >
-            <img
-              src="../../../assets/iconfont/link-icon.svg"
-              style="width: 14px; margin-right: 4px"
-            />
-            <span>点赞</span>
+            <i
+              class="el-icon-share"
+              style="color: #333; padding-right: 6px;font-size: 16px;"
+            ></i>
+            <span>分享</span>
           </div>
 
           <!-- 分享区域 开始 -->
@@ -244,7 +245,7 @@
                   />
                   <img
                     src="../../../assets/iconfont/report-icon.svg"
-                    alt="举报"
+                    alt="投诉"
                     class="item-delete-img"
                     @click.stop="clickItemReport(item, index)"
                   />
@@ -266,7 +267,13 @@
         </div>
       </div>
     </div>
-    <Complaint ref="complaint" states="0" zIndex="1000" />
+    <Complaint
+      ref="complaint"
+      states="0"
+      :id="complaintData.id"
+      :uId="complaintData.uid"
+      zIndex="1000"
+    />
   </div>
 </template>
 
@@ -296,27 +303,25 @@ export default {
       evaluateList: [], //推荐语列表
       page: 1,
       pagesize: 10,
-      textarea:'',
+      textarea: "",
       is_return: true,
       dialogVisible: false,
+      complaintData: {
+        id: "",
+        uid: "",
+      },
     };
   },
   computed: {},
-  mounted() {
-
-  },
+  mounted() {},
   computed: {},
   mounted() {},
-  computed: {
-    
-  },
-  mounted(){
-   
-  },
-  created(){
-    this.see_uid = this.$route.query.see_uid || localStorage.getItem('realUid');
-    this.uid = localStorage.getItem('realUid');
-    if(!this.$route.query.see_uid){
+  computed: {},
+  mounted() {},
+  created() {
+    this.see_uid = this.$route.query.see_uid || localStorage.getItem("realUid");
+    this.uid = localStorage.getItem("realUid");
+    if (!this.$route.query.see_uid) {
       this.isUserMes = true;
     }
     this.page = 1;
@@ -412,13 +417,12 @@ export default {
     clickItemReport(item, index) {
       console.log(item, index);
       // // 当前登录人id
-      // this.complaintData.id = localStorage.getItem("user_number");
-      // // 人才id
-      // this.complaintData.uId = this.basic_info.user_number;
-      this.zx_dialogVisible = false;
-      this.$refs.complaint._data.id = localStorage.getItem("realUid")
+      this.complaintData.id = localStorage.getItem("realUid")
         ? localStorage.getItem("realUid")
         : "";
+      // // 人才id
+      this.complaintData.uid = item.id;
+      this.zx_dialogVisible = false;
       this.$refs.complaint._data.states = "2";
       this.$refs.complaint._data.isComplaint = true;
       this.$refs.complaint.setComplaintType();
@@ -479,14 +483,32 @@ export default {
     },
 
     clickAttentionTab(name) {
-      this.$router.push({
-        path: "/attentionFans", //跳转的路径
-        query: {
-          //路由传参时push和query搭配使用 ，作用时传递参数
-          tag: name,
-          see_uid: this.see_uid,
-        },
-      });
+      let state = this.$route.query.see_uid;
+      let isCareer = localStorage.getItem("isCareer");
+      if (state == undefined) {
+        localStorage.setItem("isCareer", 0);
+        this.$router.push({
+          path: "/attentionFans", //跳转的路径
+          query: {
+            //路由传参时push和query搭配使用 ，作用时传递参数
+            tag: name,
+            see_uid: this.see_uid,
+          },
+        });
+        return;
+      }
+      if (isCareer == 0) {
+        localStorage.setItem("isCareer", 1);
+        this.$router.push({
+          path: "/attentionFans", //跳转的路径
+          query: {
+            //路由传参时push和query搭配使用 ，作用时传递参数
+            tag: name,
+            see_uid: this.see_uid,
+          },
+        });
+        return;
+      }
     },
 
     // 点击关注按钮
@@ -823,6 +845,7 @@ export default {
     padding-top: 10px;
     padding-bottom: 14px;
     max-height: 450px;
+    margin-right: 50px;
   }
   .share-list {
     display: flex;

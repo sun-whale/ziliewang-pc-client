@@ -73,6 +73,20 @@
           </ul>
         </div>
       </div>
+      <div class="options-row">
+        <div class="row-title">年龄</div>
+        <div style="width: 90%;">
+          <el-slider
+            v-model="ageVal"
+            range
+            show-stops
+            :marks="ageList"
+            :min="18"
+            @change="age_scale_change"
+            :max="60">
+          </el-slider>
+        </div>
+      </div>
       <div class="filter-options-selector-section">
         <div class="options-row">
           <div class="row-title">更多</div>
@@ -139,7 +153,7 @@
                     </el-option>
                   </el-select>
                 </div>
-                <div class="jsx-2644757290 select-box">
+                <!-- <div class="jsx-2644757290 select-box">
                   <el-select v-model="age.value" placeholder="年龄">
                     <el-option
                       v-for="(item,index) in ageList"
@@ -148,12 +162,12 @@
                       :value="item">
                     </el-option>
                   </el-select>
-                </div>
+                </div> -->
                 <div class="jsx-2644757290 select-box">
-                  <el-select v-model="gender.value" placeholder="性别" >
-                  <el-option label="男" value="0"></el-option>
-                  <el-option label="女" value="1"></el-option>
-                  <el-option label="保密" value="2"></el-option>
+                  <el-select v-model="gender.value" placeholder="性别"  @change="set_scale_change">
+                  <el-option label="男" value="1"></el-option>
+                  <el-option label="女" value="2"></el-option>
+                  <el-option label="不限" value="3"></el-option>
                   </el-select>
                 </div>
               </div>
@@ -259,12 +273,55 @@ export default {
       input_name:'', // 搜索框value
       hotJob_options: [],
       dialogVisible: false,
-
       position: pcas,
       industryList: [],
       industryCategory: [],
-      ageList:['不限','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','50','51','52','53','54','55','56','57','58','59','60'],
-
+      ageList:{
+        '18': '18',
+        '19': '19',
+        '20': '20',
+        '21': '21',
+        '22': '22',
+        '23': '23',
+        '24': '24',
+        '25': '25',
+        '26': '26',
+        '27': '27',
+        '28': '28',
+        '29': '29',
+        '30': '30',
+        '31': '31',
+        '32': '32',
+        '33': '33',
+        '34': '34',
+        '35': '35',
+        '36': '36',
+        '37': '37',
+        '38': '38',
+        '39': '39',
+        '40': '40',
+        '41': '41',
+        '42': '42',
+        '43': '43',
+        '44': '44',
+        '45': '45',
+        '46': '46',
+        '47': '47',
+        '48': '48',
+        '49': '49',
+        '50': '50',
+        '51': '51',
+        '52': '52',
+        '53': '53',
+        '54': '54',
+        '55': '55',
+        '56': '56',
+        '57': '57',
+        '58': '58',
+        '59': '59',
+        '60': '60'
+      },
+      ageVal: [18,60],
       position: [],
       showCityList:[
         {label:'北京',code:'010'},
@@ -513,6 +570,26 @@ export default {
     company_scale_change(){
       this.getfilterInfo();
     },
+    set_scale_change(){
+      this.getfilterInfo();
+    },
+    age_scale_change(){
+      this.age.value = this.ageVal[0] + '_' + this.ageVal[1];
+      this.getfilterInfo();
+    },
+    industry_requirement_change(){
+      this.getfilterInfo();
+    },
+    position_type_change(){
+      this.getfilterInfo();
+    },
+    gender_change(){
+      this.getfilterInfo();
+    },
+    salary_change(){
+      this.getfilterInfo();
+      this.getfilterInfo();
+    },
     industry_scale_change(row){
       let index = row -1;
       this.industryCategory = this.industryList[index].category_list;
@@ -536,6 +613,10 @@ export default {
           company_scale: this.company_scale.value,
           corporate_finance: this.corporate_finance.value,
           business_nature: this.business_nature.value,
+          age:this.age.value,
+          sex:this.gender.value,
+          industry_requirement:this.industry_requirement.value,
+          position_type:this.position_type.value,
         }
         
       };

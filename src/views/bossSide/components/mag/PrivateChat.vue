@@ -57,9 +57,26 @@
                     <div v-html="emoji.decoder.decode(message.payload.text)"></div>
                     <div class="fz-box">
                       <img src="../../../../assets/image/icon-fz.png" title="复制" alt="" @click="clickCopy(message.payload.text)"/>
+                      <i class="el-icon-warning-outline" title="举报" style="cursor: pointer;" @click="clickReport(item)"></i>
+                      <i class="el-icon-connection" title="引用" style="cursor: pointer;" @click="clickReply(item)"></i>
                     </div>
                   </div>
                   <!-- 内容 结束 -->
+                  <!-- 引用内容 开始 -->
+                  <div v-if="message.type === 'texts'" style="position: relative;">
+                    <div class="content-text" style="flex-direction: column;">
+                      <div v-html="emoji.decoder.decode(message.payload.text)"></div>
+                      <!-- <div class="fz-box">
+                        <img src="../../../../assets/image/icon-fz.png" title="复制" alt="" @click="clickCopy(item.payload.text)"/>
+                        <i class="el-icon-warning-outline" title="举报" style="cursor: pointer;margin-right: 4px;" @click="clickReport(item)"></i>
+                        <i class="el-icon-connection" title="引用" style="cursor: pointer;" @click="clickReply(item)"></i>
+                      </div> -->
+                    </div>
+                    <div style="font-size: 12px;color: #555;margin: 4px 0;">
+                      <div style="message-quote" v-html="emoji.decoder.decode(message.payload.quote)"></div>
+                    </div>
+                  </div>
+                  <!-- 引用内容 结束 -->
                   <!-- 音视频 开始 -->
                   <div v-if="message.type === 'TUICallKit'" class="content-text" v-html="message.payload.text"></div>
                   <!-- 音视频 结束 -->
@@ -309,6 +326,8 @@
         <!-- GoEasyIM最大支持3k的文本消息，如需发送长文本，需调整输入框maxlength值 -->
         <div class="input-box" @click.stop="clickInput">
           <textarea ref="input" @focus="onInputFocus" @keyup.enter="sendTextMessage" placeholder="输入内容...." v-model="text" maxlength="700"  class="input-content"></textarea>
+          <!-- 引用的消息 -->
+          <div class="reply-message" v-if="quoteMessageShow">{{quoteMessage}}</div>
         </div>
         <div class="send-box">
           <button class="send-button" @click="sendTextMessage">发送</button>
@@ -466,10 +485,12 @@
     <!-- 百度地图位置选择 -->
     <BMapAddressSelect ref="bmapAddressSelect" @confirmMapAddress="confirmMapAddress"></BMapAddressSelect>
 
+    <Complaint ref="complaint" states="0" :id="complaintData.id" :uId="complaintData.uid" pdiTop="20px" zIndex="1000" />
   </div>
 </template>
 
 <script>
+  import Complaint from "@/components/complaint";
   import {formatDate} from '../../../../utils/utils.js'
   import EmojiDecoder from '../../../../utils/EmojiDecoder';
   import GoeasyVideoPlayer from "../../../../components/GoEasyVideoPlayer";
@@ -485,7 +506,8 @@
     components: {
       GoeasyVideoPlayer,
       onlineResume,
-      BMapAddressSelect
+      BMapAddressSelect,
+      Complaint
     },
     props:{
       infoData:{
@@ -512,6 +534,9 @@
         '[傲慢]': 'emoji_8@2x.png',
       };
       return {
+        complaintData:{id:"",uid:""},
+        quoteMessage:"",
+        quoteMessageShow:false,
         assessmentList:[],
         qualityVal: false,
         leftX: 0,
@@ -656,6 +681,50 @@
             message:'复制失败!'
           })
         }
+      },
+      // 点击聊天框内的举报
+      clickReport(item){
+        let senderList = item.senderId.split("_");
+        let receiverList = item.receiverId.split("_");
+        this.complaintData.id = receiverList[1]
+        this.complaintData.uid = senderList[1]
+        this.zx_dialogVisible = false;
+        this.$refs.complaint._data.states = "2";
+        this.$refs.complaint._data.isComplaint = true;
+        this.$refs.complaint.setComplaintType();
+      },
+      // 点击聊天框内的引用
+      clickReply(item){
+        if(item.senderId == ('u_'+localStorage.getItem('realUid'))){
+          this.quoteMessage = localStorage.getItem('name') + item.payload.text;
+        }else{
+          this.quoteMessage = this.friend.name + ":" + item.payload.text;
+        }
+        this.quoteMessageShow = true;
+        console.log(this.quoteMessage);
+      },
+      // 发送引用消息
+      setQuoteMessage(){
+        var payload = {
+          contentType: "texts",
+          text: this.text,
+          quote:this.quoteMessage
+        };
+        this.goEasy.im.createCustomMessage({
+          type: 'texts',  // 自定义类型,不能添加image 
+          payload,
+          to: this.to,
+          onSuccess: (message) => {
+            this.text = "";
+            this.quoteMessage = "";
+            this.quoteMessageShow = false;
+            this.sendMessage(message);
+          },
+          onFailed: (err) => {
+            console.log("创建消息err:", err);
+          }
+        });
+        
       },
       // 发送面试评估
       setAssessMessage(){
@@ -933,6 +1002,13 @@
           content: this.text,
         }
         this.$axios.post('/api/company/find-user',p);
+        
+        // 是否是引用的消息
+        if(this.quoteMessageShow){
+          this.setQuoteMessage();
+          return
+        }
+
         this.goEasy.im.createTextMessage({
           text: this.text,
           to: this.to,

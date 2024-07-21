@@ -70,11 +70,14 @@
                     <span>{{ item.comment_num?item.comment_num:0 }}评论</span>
                   </div>
                   <div class="bottom-btn-items" @click.stop="clickShare(item,index)">
-                    <i class="el-icon-share" style="color:#86909C;padding-right: 2px;"></i>
+                    <i class="el-icon-share" style="color:#86909C;padding-right: 2px;font-size: 14px;"></i>
                     <span>分享</span>
                   </div>
+                  <div class="bottom-btn-items" @click.stop="clickReport(item,index)">
+                    <i class="el-icon-warning-outline" style="color:#86909C;padding-right: 2px;font-size: 14px;"></i>
+                    <span>投诉</span>
+                  </div>
                   <img src="../../../assets/image/icon-copy.png" alt="删除"  class="item-delete-img" @click.stop="clickItemDelete(item,index)"  v-if="tag == 'myCircle' && uid == myInfoData.uid"/>
-
                 </div>
                 
                 <!-- 分享区域 开始 -->
@@ -134,6 +137,10 @@
                               <div class="bottom-btn-items" @click.stop="clickRecover(items)">
                                 <img src="../../../assets/image/comment.png" alt="" />
                                 <span>{{ items.comment_num }} 回复</span>
+                              </div>
+                              <div class="bottom-btn-items" @click.stop="clickReport(items,c_index)">
+                                <i class="el-icon-warning-outline" style="color:#86909C;padding-right: 2px;font-size: 14px;"></i>
+                                <span>投诉</span>
                               </div>
                               <div class="bottom-btn-items" @click.stop="clickitemsDelt(item.id,items.id,c_index,index)" v-if="uid == item.uid || uid == items.uid">
                                 <img src="../../../assets/image/icon-copy.png" alt="" />
@@ -252,11 +259,20 @@
         </span>
       </el-dialog>
     </div>
+
+    
+    <Complaint
+      ref="complaint"
+      states="2"
+      pdiTop="20px"
+      zIndex="1000"
+    />
   </div>
 
 </template>
 
 <script>
+import Complaint from "@/components/complaint";
 import hotRecommendation from './components/hotRecommendation.vue';
 import live from '../../talentSide/liveBroadcast/index.vue';
 import videoDialog from '../components/videoDialog.vue';
@@ -268,7 +284,7 @@ export default {
     hotRecommendation,
     live,
     magInfo,
-    videoDialog
+    videoDialog,Complaint
   },
   data(){
     return{
@@ -538,6 +554,18 @@ export default {
       if(i.images.length >= 1){
         that.shareImage = i.images[0]
       }
+    },
+    // 举报
+    clickReport(i,idx){
+      const that = this;
+      console.log(i);
+      console.log(idx);
+      this.zx_dialogVisible = false; 
+      this.$refs.complaint._data.id = i.id;
+      this.$refs.complaint._data.uId = localStorage.getItem("user_number");
+      this.$refs.complaint._data.states = "2";
+      this.$refs.complaint._data.isComplaint = true;
+      this.$refs.complaint.setComplaintType();
     },
     // 获取详情
     async getInfoData(){
