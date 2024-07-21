@@ -258,7 +258,7 @@
         </div>
       </div>
     </div>
-    <div class="chat-footer" :style="`height:${is_pop == 'pop'?'120':'140'}px;`">
+    <div class="chat-footer" :style="`min-height:${is_pop == 'pop'?'120':'140'}px;`">
       <div class="action-delete" v-if="messageSelector.visible">
         <!-- <img class="delete-btn" src="../../../../assets/images/delete.png" @click="deleteMultipleMessages"/> -->
         <div @click="cancelMultipleMessages">取消选择</div>
@@ -994,6 +994,7 @@ import Complaint from "@/components/complaint";
           company_id: that.friend.company_id,// 公司id
           company_uid: that.to.data.uid,//  发布人uid
         }
+        console.log(p)
         that.$axios.post('/api/user/deliver',p).then( res =>{
           console.log(res)
           if( res.code == 0){
@@ -2058,7 +2059,8 @@ import Complaint from "@/components/complaint";
   }
 
   .send-box {
-    padding: 8px 20px;
+    height: auto;
+    padding: 4px 20px;
     text-align: right;
   }
 

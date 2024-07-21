@@ -43,6 +43,30 @@
           <span class="infoTab-items-name">谁转发了我的简历</span>
         </div>
       </div>
+      <div class="infoTab-box">
+        <div class="infoTab-items" @click="goTomyProfessionalCircle('谁看了我的职业名片','scwdzymp')">
+          <span class="infoTab-items-num">0</span>
+          <span class="infoTab-items-name">谁看了我的职业名片</span>
+        </div>
+        <div class="infoTab-items" @click="goTomyProfessionalCircle('谁转发了我的职业名片','zfwdzymp')">
+          <span class="infoTab-items-num">0</span>
+          <span class="infoTab-items-name">谁转发了我的职业名片</span>
+        </div>
+        <div class="infoTab-items" @click="goTomyProfessionalCircle('谁收藏了我的职业名片','scwdzymp')">
+          <span class="infoTab-items-num">0</span>
+          <span class="infoTab-items-name">谁收藏了我的职业名片</span>
+        </div>
+      </div>
+      <div class="infoTab-box">
+        <div class="infoTab-items" @click="goTomyProfessionalCircle('谁获取了我的联系方式','wqwdlxfs')">
+          <span class="infoTab-items-num">0</span>
+          <span class="infoTab-items-name">谁获取了我的联系方式</span>
+        </div>
+        <div class="infoTab-items" @click="goTomyProfessionalCircle('已沟通过的企业','gtgdqy')">
+          <span class="infoTab-items-num">0</span>
+          <span class="infoTab-items-name">已沟通过的企业</span>
+        </div>
+      </div>
       <div class="setTab-box">
         <div class="setTab-items" @click="clcikRefresh">
           <img src="../../../assets/image/Frame_12.png" alt="" />
@@ -230,6 +254,9 @@ export default {
 .right-box{
   opacity: 1;
   text-align: left;
+  .m-box{
+    padding: 20px 16px;
+  }
   .users-box{
     width: 100%;
     .avatar-box{
@@ -282,13 +309,14 @@ export default {
     justify-content: space-between;
     margin-top: 1.5rem;
     .infoTab-items {
+      flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       .infoTab-items-num{
-        font-size: 24px;
+        font-size: 20px;
         font-weight: bold;
         color: $g_textColor;
         line-height: 28px;
@@ -297,33 +325,32 @@ export default {
         font-size: 13px;
         font-weight: 400;
         color: #86909C;
-        line-height: 1.1rem;
         margin-top: 6px;
         text-align: center;
       }
     }
   }
   .setTab-box{
-    margin-top: 20px;
-    padding-top: 20px;
+    margin-top: 16px;
+    padding-top: 16px;
     border-top: 1px solid #F2F3F5;
     display: flex;
     justify-content: space-between;
     .setTab-items{
+      flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       img{
-        width: 1.8rem;
-        height: 1.8rem;
+        width: 32px;
+        height: 32px;
       }
       .setTab-items-name{
-        font-size: 0.7rem;
+        font-size: 13px;
         font-weight: 400;
         color: $g_textColor;
-        line-height: 1.1rem;
         margin-top: 6px;
       }
 
