@@ -201,8 +201,8 @@
                             <div class="title-left">
                               <img :src="items.evaluate_user_avatar?items.evaluate_user_avatar:require('../../../assets/image/img-user.jpg')" alt="" class="avatar-img"/>
                               <span>{{ items.evaluate_user_name }}</span>
-                              <!-- <img src="../../../assets/image/right-one.png" alt="" class="right-one" v-if="items.reply_id"/> -->
-                              <!-- <span v-if="items.reply_id">{{ items.publish_name }}</span> -->
+                              <img src="../../../assets/image/right-one.png" alt="" class="right-one" v-if="items.reply_id"/>
+                              <span v-if="items.reply_id">{{ items.user_name }}</span>
                             </div>
                             <div class="title-t">{{ items.createtime }}</div>
                           </div>
@@ -219,10 +219,10 @@
                                 <i class="el-icon-warning-outline" style="color:#86909C;padding-right: 2px;font-size: 14px;"></i>
                                 <span>投诉</span>
                               </div>
-                              <!-- <div class="bottom-btn-items" @click.stop="clickitemsDelt(item.id,items.id,c_index,index)" v-if="uid == item.uid || uid == items.uid">
+                              <div class="bottom-btn-items" @click.stop="clickItemDelete(items,index,c_index)" v-if="uid == item.uid || uid == items.uid" >
                                 <img src="../../../assets/image/icon-copy.png" alt="" />
                                 <span>删除</span>
-                              </div> -->
+                              </div>
 
                             </div>
                           </div>
@@ -366,7 +366,7 @@ export default {
       }
       let p = {
         evaluate_user_type: 1,
-        uid: that.reply_item.uid,
+        uid: that.reply_item.evaluate_uid,
         reply_id: that.reply_id,
       }
       if(n ==1){
@@ -492,34 +492,40 @@ export default {
       this.$refs.complaint._data.isComplaint = true;
       this.$refs.complaint.setComplaintType();
     },
-    // 删除
-    clickItemDelete(i, idx) {
+
+    // 删除推荐语
+    clickItemDelete(i, idx,c_idx) {
       let that = this;
       let item = i;
       let index = idx;
+      let c_index = c_idx;
       let evaluateList = that.evaluateList;
       console.log(item);
       let p = {
         id: item.id,
       };
-      that.$axios
-        .post("/api/user-evaluate/delete", p)
-        .then((res) => {
-          if (res.code == 0) {
-            that.$message.success("删除成功！");
+      that.$axios.post("/api/user-evaluate/delete", p).then((res) => {
+        if (res.code == 0) {
+          that.$message.success("删除成功！");
+          if(!c_index){
             evaluateList.splice(index, 1);
             that.evaluateList = evaluateList;
-          } else {
-            that.$message.error({
-              message: res.msg,
-            });
+          }else{
+            evaluateList[index].reply_list.splice(c_index, 1);
+            that.evaluateList = evaluateList;
           }
-          that.is_return = true;
-        })
-        .catch((e) => {
-          console.log(e);
-          that.is_return = true;
-        });
+          
+        } else {
+          that.$message.error({
+            message: res.msg,
+          });
+        }
+        that.is_return = true;
+      })
+      .catch((e) => {
+        console.log(e);
+        that.is_return = true;
+      });
     },
     // 是否显示分享
     clickShare() {
