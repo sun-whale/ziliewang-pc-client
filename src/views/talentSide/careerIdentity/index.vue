@@ -211,7 +211,7 @@
                             <div class="items-c-p">{{ items.content }}</div>
 
                             <div class="items-bottom-btn">
-                              <div class="bottom-btn-items" @click.stop="clickRecover(items)">
+                              <div class="bottom-btn-items" @click.stop="clickRecover(items,item.id,index)">
                                 <img src="../../../assets/image/comment.png" alt="" />
                                 <span>{{ items.comment_num }} 回复</span>
                               </div>
@@ -305,6 +305,7 @@ export default {
       recoverVisible: false,
       reply_item: {},
       reply_id: null,
+      recommend_id: null, // 推荐语id
       recover_value:'',
       content:'',
       sel_index: 0,
@@ -332,9 +333,11 @@ export default {
 
     },
     // 点击评论列表回复
-    clickRecover(item){
+    clickRecover(item,id,idx){
       this.reply_item = item;
       this.reply_id = item.id;
+      this.recommend_id = id; // 推荐语id
+      this.sel_index = idx;
       this.recoverVisible = true;
     },
     // 点击列表 评论按钮
@@ -363,11 +366,14 @@ export default {
       if(n ==1){
         that.reply_item = item;
         that.reply_id = item.id;
+        that.recommend_id = item.id; // 推荐语id
       }
       let p = {
         evaluate_user_type: 1,
         uid: that.reply_item.evaluate_uid,
         reply_id: that.reply_id,
+        recommend_id: that.recommend_id,
+        profile_uid: that.see_uid, //当前职业身份者uid
       }
       if(n ==1){
         p.content = that.content
@@ -377,16 +383,18 @@ export default {
       that.$axios.post('/api/user-evaluate/create',p).then( res =>{
         console.log(res)
         if( res.code == 0 ){
+          let sel_index = that.sel_index;
+          let evaluateList = that.evaluateList;
+          let data = res.data;
+          evaluateList[sel_index].reply_list.unshift(data);
+          that.evaluateList = evaluateList;
 
           that.recoverVisible = false;
           that.recover_value = '';
           that.content = '';
           that.$message.success('回复成功！');
-          setTimeout( ()=>{
-      // this.is_content = false;
-      //获取职圈详情
-      // that.getInfoData();
-          },1500)
+          
+
 
         }else{
           that.$message.error({
@@ -448,7 +456,8 @@ export default {
       let p = {
         content: that.textarea,
         evaluate_user_type: 1, // 评价用户类型 1.人才用户 2.企业用户
-        uid: that.see_uid, // 	被评价人才ID
+        uid: that.see_uid, //当前职业身份者uid
+        profile_uid: that.see_uid, //当前职业身份者uid: that.see_uid, // 	被评价人才ID
       };
       console.log(p);
       if (!that.is_return) {
@@ -944,7 +953,7 @@ export default {
 
 // 评论展示
 .items-review-box {
-  transition: all 0.5s;
+  transition: all 0.5s linear;
   padding-left: 10px;
   padding-right: 10px;
   background: #f6f6f694;
