@@ -1573,6 +1573,9 @@ export default {
     border-radius: 2px;
     margin-right: 12px;
     overflow: hidden;
+  }
+}
+
 // 评论回复弹窗
 .recoverVisible{
   /deep/ .el-dialog{
