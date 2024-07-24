@@ -95,6 +95,16 @@
                     </div>
                   </a>
                   <!-- 简历 结束 -->
+                  <!-- 职业身份卡片 开始 -->
+                  <div v-if="item.type === 'share-card'" class="share-card" @click="clickShare(item.payload.url)">
+                    <img :src="item.payload.userMessage.avatar" />
+                    <div>
+                      <div>{{ item.payload.userMessage.name }}</div>
+                      <div style="font-size: 14px">{{ item.payload.userMessage.position || '--' }}</div>
+                    </div>
+                    <div class="tips">好友卡片</div>
+                  </div>
+                  <!-- 职业身份卡片 结束 -->
                   <!-- 面试邀请 开始 -->
                   <div class="message-phone-universal-card" v-if="item.type === 'interview' &&  item.payload.way_status == 1">
                     <h4 class="message-phone-universal-card-header">面试邀请</h4>
@@ -585,8 +595,33 @@ import Complaint from "@/components/complaint";
       this.goEasy.im.off(this.GoEasy.IM_EVENT.CONVERSATIONS_UPDATED, this.renderConversations);
     },
     methods: {
+      clickShare(url){
+        this.$router.push(`/careerIdentity?see_uid=10`);
+      },
       // 点击聊天框内复制图标
       async clickCopy(text){
+        // var payload = {
+        //   contentType: "share-card",
+        //   userMessage: {
+        //     name:'彭讲建',
+        //     position: '高级产品经理',
+        //     avatar: "https://zlw0720.oss-cn-beijing.aliyuncs.com/avatar/20240112/076b2bdc935b0110afa3221afedc7697.png",
+        //   },
+        //   url: '/careerIdentity?see_uid=10'
+        // };
+        // this.goEasy.im.createCustomMessage({
+        //   type: 'share-card',  // 自定义类型,不能添加image 
+        //   payload,
+        //   to: this.to,
+        //   onSuccess: (message) => {
+        //     this.quoteMessage = "";
+        //     this.quoteMessageShow = false;
+        //     this.sendMessage(message);
+        //   },
+        //   onFailed: (err) => {
+        //     console.log("创建消息err:", err);
+        //   }
+        // });
         console.log(text)
         try {
           const textToCopy = text;
@@ -641,7 +676,6 @@ import Complaint from "@/components/complaint";
             console.log("创建消息err:", err);
           }
         });
-        
       },
       // 发送截图消息
       async screenshotMessage(image){
@@ -1445,6 +1479,28 @@ import Complaint from "@/components/complaint";
 </script>
 
 <style scoped lang="scss">
+  .share-card{
+    padding: 10px;
+    display: flex;
+    padding-bottom: 4px;
+    margin-bottom: 2px;
+    border-radius: 4px;
+    background: #f5f5f5;
+    flex-wrap: wrap;
+    img{
+      width: 40px;
+      height: 40px;
+      margin-right: 8px;
+      border-radius: 4px;
+    }
+    .tips{
+      width: 100%;
+      font-size: 12px;
+      color: #999;
+      margin-top: 6px;
+    }
+  }
+
   .chat-container {
     width: 100%;
     height: 100%;
