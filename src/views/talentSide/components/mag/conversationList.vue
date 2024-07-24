@@ -256,21 +256,30 @@
           that.$axios.post('/api/position-chat-record/detail',p).then(res =>{
             if(res.code == 0){
               let position_id = res.data?res.data.position_id:'';
-              if( position_id ){
-                friend.position_id = position_id;
-                friend.position_name = res.data.position_name;
-                friend.company_id = res.data.company_id;
-                that.profile.friend = friend;
+              if( position_id || position_id == '' ){
+                if(position_id){
+                  friend.position_id = position_id?position_id:'';
+                  friend.position_name = res.data.position_name ? res.data.position_name:'我的好友';
+                }else{
+                  friend.position_id = '';
+                  friend.position_name = '我的好友';
+                }
+                that.profile.friend = friend?friend:'';
+              //if( position_id ){
+              //friend.position_id = position_id;
+              //friend.position_name = res.data.position_name;
+              //friend.company_id = res.data.company_id;
+              //that.profile.friend = friend;
                 that.$emit( 'chatLocation',friend );
                 that.$bus.$emit( 'click_conversationList_item_getInfoData',friend );
               }else{
                 that.$message.error({
-                  message: '岗位信息获取失败！'
+                  message: '岗位信息获取失败3！'
                 })
               }
             }else{
               that.$message.error({
-                message: '岗位信息获取失败！'
+                message: '岗位信息获取失败3！'
               })
             }
           }).catch(e =>{

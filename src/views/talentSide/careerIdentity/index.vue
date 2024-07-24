@@ -16,6 +16,7 @@
             <div class="div-id">ID: {{ infoData.user_number }}</div>
           </div>
           <div class="gz-sx-btn" v-if="uid != see_uid">
+            <div @click="clickChitchat"><div class="left">聊一聊</div></div>
             <div>
               <div class="left" @click="clickAttention" v-if="infoData.is_already_attention == 2">
                 <img src="../../../assets/image/Frame_10.png" alt="" />
@@ -60,12 +61,35 @@
         </div>
 
         <div class="share-content">
-          <div style="position: absolute">
-            <img src="../../../assets/iconfont/link-icon.svg" style="width: 14px; margin-right: 4px" />
-            <span>点赞</span>
+          <div
+            style="position: absolute; display: flex; align-items: center"
+            @click="clickPraise(infoData.is_point_my_card)"
+          >
+            <img
+              v-if="infoData.is_point_my_card == 1"
+              src="../../../assets/iconfont/link-icons.svg"
+              style="width: 14px; margin-right: 4px"
+            />
+            <img
+              v-if="infoData.is_point_my_card == 2"
+              src="../../../assets/iconfont/link-icon.svg"
+              style="width: 14px; margin-right: 4px"
+            />
+            <span :style="infoData.is_point_my_card==1?'color: #1ec5d8':''">点赞</span>
           </div>
-          <div style="position: absolute;top: 30px; display: flex;align-items: center; " @click="clickShare()">
-            <i class="el-icon-share" style="color: #333; padding-right: 6px;font-size: 16px;"></i>
+          <div
+            style="
+              position: absolute;
+              top: 30px;
+              display: flex;
+              align-items: center;
+            "
+            @click="clickShare()"
+          >
+            <i
+              class="el-icon-share"
+              style="color: #333; padding-right: 6px; font-size: 16px"
+            ></i>
             <span>分享</span>
           </div>
 
@@ -83,6 +107,10 @@
               <div class="share-item" @click="clickShareWent(2)">
                 <img src="../../../assets//image/share-wb.png" />
                 <span>微博</span>
+              </div>
+              <div class="share-item" @click="clickShareWent(3)">
+                <img src="../../../assets//image/share-friend.png" />
+                <span>好友</span>
               </div>
             </div>
           </div>
@@ -248,6 +276,29 @@
         </div>
       </div>
     </div>
+    <!-- 分享好友列表 -->
+    <el-dialog title="好友列表" :visible.sync="friendVisible" width="30%">
+      <div
+        class="friend-item-box"
+        v-for="(item, index) in friendList"
+        :key="index"
+      >
+        <img :src="item.avatar" alt="" />
+        <div>
+          <div
+            style="
+              font-size: 16px;
+              font-weight: bold;
+              margin-bottom: 2px;
+              color: #333;
+            "
+          >
+            {{ item.real_name }}
+          </div>
+          <div>{{ item.age }} | {{ item.live_city }}</div>
+        </div>
+      </div>
+    </el-dialog>
 
     <!-- 回复弹窗 -->
     <div class="recoverVisible">
@@ -264,6 +315,7 @@
       </el-dialog>
     </div>
     <Complaint ref="complaint" states="0" :id="complaintData.id" :uId="complaintData.uid" zIndex="1000" />
+
   </div>
 </template>
 
@@ -281,6 +333,7 @@ export default {
   },
   data() {
     return {
+      friendVisible: false,
       isUserMes: false,
       userId: localStorage.getItem("realUid"),
       avatar: localStorage.getItem('realAvatar'),
@@ -302,6 +355,7 @@ export default {
         id: "",
         uid: "",
       },
+      friendList: [],
       recoverVisible: false,
       reply_item: {},
       reply_id: null,
@@ -540,10 +594,49 @@ export default {
     clickShare() {
       this.show_share = this.show_share ? false : true;
     },
+    // 点赞
+    clickPraise(is_point_my_card) {
+      const that = this;
+      let page = {
+        uid: that.see_uid ? that.see_uid : that.uid,
+        tag: 2,
+        type: 2,
+        // status: 1, 1.点赞 2.取消
+      };
+      page.status = is_point_my_card == 1 ? 2 : 1;
+      this.$axios
+        .post("/api/userinfooperate/create", page)
+        .then((res) => {
+          if (res.code == 0) {
+            that.$message.success({
+              message: "操作成功",
+            });
+            that.getUserProfile();
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
     // 分享按钮点击  1 复制链接  2 微博
     clickShareWent(i) {
       const that = this;
       const title = "【自猎网】"; // 标题
+
+      let page = {
+        uid: that.see_uid ? that.see_uid : that.uid,
+        tag: 2,
+        type: 3,
+        status: 1,
+      };
+      this.$axios
+        .post("/api/userinfooperate/create", page)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
       if (i == 2) {
         let images = encodeURIComponent(that.infoData.avatar);
         let shareUrl = encodeURIComponent(window.location.href);
@@ -552,6 +645,28 @@ export default {
         this.show_share = false;
         return;
       }
+      if (i == 3) {
+        that.$axios
+          .post("/api/user/friend/list", {
+            page: 1,
+            tag: "friend",
+            see_uid: localStorage.getItem("realUid"),
+          })
+          .then((res) => {
+            if (res.code == 0) {
+              that.friendList = res.data;
+              that.show_share = false;
+              that.friendVisible = true;
+              console.log(that.friendList);
+            } else {
+              that.$message.error({
+                message: res.msg,
+              });
+            }
+          });
+        return;
+      }
+
       navigator.clipboard
         .writeText(title + window.location.href)
         .then(() => {
@@ -590,7 +705,27 @@ export default {
         return;
       }
     },
-
+    // 聊一聊
+    clickChitchat() {
+      const that = this;
+      let infoData = {
+        position_id: "", // 岗位id
+        company_id: "", // 企业id
+        id: "c_" + that.infoData.uid,
+        user_number: that.infoData.user_number,
+        uid: that.infoData.uid,
+        name: that.infoData.real_name || "BOSS",
+        avatar:
+          that.infoData.avatar ||
+          "https://zlw0720.oss-cn-beijing.aliyuncs.com/avatar/20240127/e4ffd5fcef38311336c5676416b317fa.jpg",
+      };
+      that.$bus.$emit("talentSide_receiveParams", {
+        type: "JobDetails",
+        laiyuan: "nav",
+        infoData: infoData,
+      });
+      that.$bus.$emit("talentSide_clickSidebar", { type: "clickChat" });
+    },
     // 点击关注按钮
     clickAttention() {
       this.$axios
@@ -775,7 +910,7 @@ export default {
       }
 
       .gz-sx-btn {
-        width: 300px;
+        width: 400px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -1424,6 +1559,20 @@ export default {
     }
   }
 }
+.friend-item-box {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 8px;
+  border-radius: 4px;
+  box-shadow: 5px 5px 2px 0px rgba(209, 209, 209, 0.75);
+
+  img {
+    width: 50px;
+    height: 50px;
+    border-radius: 2px;
+    margin-right: 12px;
+    overflow: hidden;
 // 评论回复弹窗
 .recoverVisible{
   /deep/ .el-dialog{
