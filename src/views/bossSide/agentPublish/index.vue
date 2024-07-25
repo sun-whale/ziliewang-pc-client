@@ -834,6 +834,7 @@ export default {
         });
     },
     sendMessage(message, userName) {
+      const that = this;
       this.history.messages.push(message);
       this.goEasy.im.sendMessage({
         message: message,
