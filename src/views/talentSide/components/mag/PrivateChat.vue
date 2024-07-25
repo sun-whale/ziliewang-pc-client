@@ -99,12 +99,22 @@
                   <div v-if="item.type === 'share-card'" class="share-card" @click="clickShare(item.payload.url)">
                     <img :src="item.payload.userMessage.avatar" />
                     <div>
-                      <div>{{ item.payload.userMessage.name }}</div>
-                      <div style="font-size: 14px">{{ item.payload.userMessage.position || '--' }}</div>
+                      <div class="share-title">{{ item.payload.userMessage.name }}</div>
+                      <div class="share-tips">{{ item.payload.userMessage.position || '--' }}</div>
                     </div>
                     <div class="tips">好友卡片</div>
                   </div>
                   <!-- 职业身份卡片 结束 -->
+                  <!-- 岗位卡片 开始 -->
+                  <div v-if="item.type === 'share-post'" class="share-card" @click="clickShare(item.payload.url)">
+                    <img :src="item.payload.userMessage.avatar" />
+                    <div>
+                      <div class="share-title">{{ item.payload.userMessage.company_name }}</div>
+                      <div class="share-tips">{{ item.payload.userMessage.job_preference || '--' }}</div>
+                    </div>
+                    <div class="tips">职位卡片</div>
+                  </div>
+                  <!-- 岗位卡片 结束 -->
                   <!-- 面试邀请 开始 -->
                   <div class="message-phone-universal-card" v-if="item.type === 'interview' &&  item.payload.way_status == 1">
                     <h4 class="message-phone-universal-card-header">面试邀请</h4>
@@ -609,8 +619,17 @@ import Complaint from "@/components/complaint";
         //   },
         //   url: '/careerIdentity?see_uid=10'
         // };
+        // var payload = {
+        //   contentType: "share-post",
+        //   userMessage: {
+        //     company_name:'湖北省佰豪聚富商贸有限公司安徽分公司',
+        //     job_preference: '高级产品经理',
+        //     avatar: "https://zlw0720.oss-cn-beijing.aliyuncs.com/avatar/20240402/89cb1ca3ddf4b171bee2139a049a249b.png",
+        //   },
+        //   url: '/JobDetails?id=85'
+        // };
         // this.goEasy.im.createCustomMessage({
-        //   type: 'share-card',  // 自定义类型,不能添加image 
+        //   type: 'share-post',  // 自定义类型,不能添加image 
         //   payload,
         //   to: this.to,
         //   onSuccess: (message) => {
@@ -1479,6 +1498,16 @@ import Complaint from "@/components/complaint";
 </script>
 
 <style scoped lang="scss">
+  .share-title,
+  .share-tips{
+    white-space: nowrap; /* 防止文本换行 */
+    overflow: hidden; /* 隐藏超出部分 */
+    text-overflow: ellipsis; /* 超出部分显示省略号 */
+    max-width: 160px; /* 设置一个宽度，可以根据需要调整 */
+  }
+  .share-tips{
+     font-size: 14px;
+  }
   .share-card{
     padding: 10px;
     display: flex;
@@ -1487,6 +1516,7 @@ import Complaint from "@/components/complaint";
     border-radius: 4px;
     background: #f5f5f5;
     flex-wrap: wrap;
+    max-width: 240px;
     img{
       width: 40px;
       height: 40px;
