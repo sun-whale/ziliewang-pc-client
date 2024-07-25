@@ -561,7 +561,7 @@ export default {
         },
         to: that.userGoEasy,
         onSuccess: (message) => {
-          console.log("message",message);
+          console.log("message", message);
           that.sendMessage(message, item.name);
         },
         onFailed: (err) => {
@@ -829,21 +829,20 @@ export default {
     clickShareWent(i) {
       const that = this;
       const title = "【自猎网】"; // 标题
-
       let page = {
         uid: that.see_uid ? that.see_uid : that.uid,
         tag: 2,
         type: 3,
         status: 1,
       };
-      // this.$axios
-      //   .post("/api/userinfooperate/create", page)
-      //   .then((res) => {
-      //     console.log(res);
-      //   })
-      //   .catch((e) => {
-      //     console.log(e);
-      //   });
+      this.$axios
+        .post("/api/userinfooperate/create", page)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
       if (i == 2) {
         let images = encodeURIComponent(that.infoData.avatar);
         let shareUrl = encodeURIComponent(window.location.href);

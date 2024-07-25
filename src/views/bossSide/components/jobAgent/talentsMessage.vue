@@ -45,9 +45,26 @@
         </div>
       </div>
       <div class="items-right-box">
-        <div class="hover" @click.stop="clickChat()" style="width: auto;padding: 0 10px;">查看素质评估结果</div>
-        <div class="hover" @click.stop="clickChat()" style="width: auto;padding: 0 10px;">查看面试评估结果</div>
+        <div
+          class="hover"
+          @click.stop="clickChat()"
+          style="width: auto; padding: 0 10px"
+        >
+          查看素质评估结果
+        </div>
+        <div
+          class="hover"
+          @click.stop="clickChat()"
+          style="width: auto; padding: 0 10px"
+        >
+          查看面试评估结果
+        </div>
         <div class="hover" @click.stop="clickChat()">打招呼</div>
+      </div>
+      <div class="steps-box">
+        <div class="steps-item active">面试评估</div>
+        <div class="steps-item">素质评估</div>
+        <div class="steps-item">已入职</div>
       </div>
     </div>
   </div>
@@ -197,6 +214,50 @@ export default {
         background: $g_bg;
         color: #fff;
       }
+    }
+  }
+  .steps-box {
+    position: absolute;
+    right: 20px;
+    font-size: 12px;
+    color: #666;
+    .steps-item {
+      margin-top: 8px;
+      position: relative;
+    }
+    .active {
+      color: $g_bg;
+    }
+
+    .steps-item::after {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #fff;
+      border: 1px solid $g_bg;
+      position: absolute;
+      top: 50%;
+      left: -20px;
+      margin-top: -5px;
+    }
+    .active {
+      color: $g_bg;
+    }
+    .active::after {
+      background-color: $g_bg;
+    }
+    .steps-item::before {
+      content: "";
+      width: 2px;
+      height: 15px;
+      position: absolute;
+      left: -16px;
+      top: 10px;
+      background: $g_bg;
+    }
+    .steps-item:last-child::before {
+      background: #fff;
     }
   }
 }
