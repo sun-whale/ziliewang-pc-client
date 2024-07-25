@@ -574,7 +574,7 @@ export default {
       this.getfilterInfo();
     },
     age_scale_change(){
-      this.age.value = this.ageVal[0] + '_' + this.ageVal[1];
+      this.age.value = this.ageVal[0] + '-' + this.ageVal[1];
       this.getfilterInfo();
     },
     industry_requirement_change(){
