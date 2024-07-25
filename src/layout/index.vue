@@ -32,7 +32,15 @@
 
 
       <!-- 聊天弹窗 开始-->
-      <VueDragResize :style="`z-index:${zInfex_0};`" dragHandle=".VueDragResize-title-box" :isActive="true" :parentW="parentW" :parentLimitation="true" :parentH="parentH" :w="width" :h="height" :minw="minw" :minh="minh" :x='left' :y='top' @dragstop="onDragstop" @resizing="resize" @dragging="resize" v-if="is_VueDragResize">
+      <VueDragResize :style="`z-index:${zInfex_0};`" 
+        dragHandle=".VueDragResize-title-box" 
+        :isActive="true" :isDraggable="true" 
+        :parentW="parentW" :parentH="parentH" :parentLimitation="true" :preventActiveBehavior="true"
+        :w="width" :h="height" 
+        :minw="minw" :minh="minh" 
+        :x='left' :y='top' @dragstop="onDragstop" 
+        @resizing="resize" @dragging="resize" @deactivated="onDeactivated"
+        v-if="is_VueDragResize">
         <div class="VueDragResize-centent-box">
           <div class="VueDragResize-title-box">
             <div class="title"><span>我的沟通</span></div>
@@ -264,6 +272,9 @@ export default {
       this.top = newRect.top;
       this.left = newRect.left;
     },
+    onDeactivated(e){
+      
+    },
     onDragstop(newRect) {
       
      
@@ -458,9 +469,39 @@ export default {
     transform: scale(0.5);
   }
   .app-wrapper /deep/ .vdr-stick{
-    display: none;
+    box-shadow: none;
+    background: none;
+    border: 0;
   }
-  .app-wrapper /deep/ .vdr-stick-br, .vdr-stick-tl{
+  .app-wrapper /deep/ .vdr-stick-tm{
+    left: 0;
+    top: -2px !important;
+    width: 100% !important;
+    height: 4px !important;
+    margin: 0 !important;
+  }
+  .app-wrapper /deep/ .vdr-stick-bm{
+    left: 0;
+    bottom: -2px !important;
+    width: 100% !important;
+    height: 4px !important;
+    margin: 0 !important;
+  }
+  .app-wrapper /deep/ .vdr-stick-ml{
+    top: 0;
+    left: -2px !important;
+    width: 4px !important;
+    height: 100% !important;
+    margin: 0 !important;
+  } 
+  .app-wrapper /deep/ .vdr-stick-mr{
+    top: 0;
+    right: -2px !important;
+    width: 4px !important;
+    height: 100% !important;
+    margin: 0 !important;
+  }
+  .app-wrapper /deep/ .vdr-stick-br{
     display: block;
     width: 14px !important;
     height: 14px !important;

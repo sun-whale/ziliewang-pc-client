@@ -123,12 +123,10 @@
 
 <script>
 import { getToken, setToken, removeToken } from '@/utils/auth';
-import VueDragResize from 'vue-drag-resize';
 import ConversationList from './mag/conversationList.vue';
 
 export default {
   components: {
-    VueDragResize,
     ConversationList
   },
   data(){

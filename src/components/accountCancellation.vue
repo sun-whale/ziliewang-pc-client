@@ -124,7 +124,9 @@ export default {
             that.$router.push(`/login`);
           },1000)
         }else{
-          
+          that.$message.error({
+            message:res.msg
+          })
         }
       }).catch(error =>{
         console.log(error)

@@ -94,7 +94,7 @@
           <div class="container-right-items" id="use_purpose">
             <div class="title" :class="setType =='use_purpose'? 'hover': '' ">使用目的</div>
             <div class="radio-group-box">
-              <el-radio-group v-model="usePurpose" @change="usePurposeChange">
+              <el-radio-group v-model="application_aim" @change="applicationAimChange">
                 <el-radio :label="1">
                   <h2>职场社交目的</h2>
                 </el-radio>
@@ -164,7 +164,7 @@
         <div class="cententinfo-box">
           <div class="demo-input-suffix">
             <span>公司名称:</span>
-            <el-input v-model="corporation" type="text" name="corporation" placeholder="公司名称" clearable prefix-icon="el-icon-search" @input="schoolSearchInput"></el-input>
+            <el-input v-model="corporation" type="text" name="corporation" placeholder="请输入公司名称或ID号" clearable prefix-icon="el-icon-search" @input="schoolSearchInput"></el-input>
             <!-- 弹窗 开始 -->
             <div class="searchList-box" v-if="searchList_info">
               <div class="suggest-list">
@@ -352,7 +352,7 @@ export default {
       direction: 'rtl',
       drawer: false,
       userDefriendList: [],
-      usePurpose: 1, // 使用目的
+      application_aim: 1, // 使用目的
     }
   },
   computed: {
@@ -488,6 +488,7 @@ export default {
         if(res.code == 0){
           this.infoData = res.data;
           this.basic_info = res.data.basic_info;
+          this.application_aim = res.data.basic_info.application_aim;
           let is_phone_protect = res.data.basic_info.is_phone_protect;
           let is_name_protect = res.data.basic_info.is_name_protect;
           if(is_phone_protect == 1){
@@ -510,8 +511,22 @@ export default {
       console.log(e)
     },
     // 使用目的
-    usePurposeChange(e){
+    applicationAimChange(e){
       console.log(e)
+      let application_aim = e;
+      this.$axios.post('/api/user/save',{
+        application_aim,
+      }).then(res =>{
+        if(res.code == 0){
+
+        }else{
+          this.$message.error({
+            message:res.msg
+          })
+        }
+      }).catch(error =>{
+        console.log(error)
+      })
     },
     // 点击设置邮箱
     clickSetEmail(){

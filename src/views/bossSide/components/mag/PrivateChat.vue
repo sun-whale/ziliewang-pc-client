@@ -241,7 +241,7 @@
         </div>
       </div>
     </div>
-    <div class="chat-footer" :style="`height:${is_pop == 'pop'?'120':'140'}px;`">
+    <div class="chat-footer" :style="`min-height:${is_pop == 'pop'?'120':'140'}px;`">
       <div class="action-delete" v-if="messageSelector.visible">
         <!-- <img class="delete-btn" src="../../../../assets/images/delete.png" @click="deleteMultipleMessages"/> -->
         <div @click="cancelMultipleMessages">取消选择</div>
@@ -2087,7 +2087,8 @@
   }
 
   .send-box {
-    padding: 8px 20px;
+    heihgt: auto;
+    padding: 4px 20px;
     text-align: right;
   }
 
