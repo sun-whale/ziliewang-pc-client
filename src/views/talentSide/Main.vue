@@ -16,7 +16,7 @@
     <!-- 底部 结束  -->
 
     <!-- 侧边栏 -->
-    <Sidebar :infoData="infoData"/>
+    <Sidebar ref="sidebar" :infoData="infoData" :filteredList="filteredList"/>
     <!-- 聊天弹窗 开始-->
     <transition name="suck-in" mode="out-in">
       <VueDragResize :style="`z-index:${zInfex_0};`"
@@ -115,6 +115,7 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
         laiyuan:'',
         is_pop:'pop',
         infoData: {},
+        filteredList: [],
         show_TUICallKit: false,
         // 腾讯云 SDKAppID、userSig 的获取参考下面步骤
         // 主叫的 userID
@@ -177,6 +178,7 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
          this.connectGoEasy(); 
       }
       this.listenConversationUpdate();// 监听会话列表变化
+      this.loadConversations(); //加载会话列表
 
       // 腾讯云 音视频 初始化 ↓
       this.Init();
@@ -217,14 +219,31 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
           }
         });
       },
+      // 监听会话列表变化
       listenConversationUpdate() {
         this.goEasy.im.on(this.GoEasy.IM_EVENT.CONVERSATIONS_UPDATED, this.setUnreadNumber);
+      },
+      //加载会话列表
+      loadConversations() {
+        this.goEasy.im.latestConversations({
+          onSuccess: (result) => {
+            let content = result.content;
+            this.setUnreadNumber(content);
+          },
+          onFailed: (error) => {
+            console.log('获取最新会话列表失败, code:' + error.code + 'content:' + error.content);
+          },
+        });
       },
       // 获取消息数量
       setUnreadNumber(content) {
         console.log(content)
+        this.filteredList = content.conversations; // 会话列表
         this.unreadAmount = content.unreadTotal;
         this.$store.dispatch('user/actions_unreadTotal', content.unreadTotal); // vuex
+        if(content.unreadTotal >0){
+          this.$store.dispatch('user/actions_sidebarShow',true);// vuex
+        }
       },
       talentSide_receiveParams(params){
         console.log(params)

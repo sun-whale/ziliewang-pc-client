@@ -52,7 +52,7 @@
                   <span v-else-if="item.lastMessage.type === 'quality'">[素质测评]</span>
                   <span v-else-if="item.lastMessage.type === 'assess'">[面试评估]</span>
                   <span v-else-if="item.lastMessage.type === 'share-card'">[好友卡片]</span>
-                <span v-else-if="item.lastMessage.type === 'share-post'">[职位卡片]</span>
+                  <span v-else-if="item.lastMessage.type === 'share-post'">[职位卡片]</span>
 
                 </div>
               </div>
