@@ -160,7 +160,14 @@
         this.$axios.post('/api/chat/search',p).then(res =>{
           if(res.code == 0){
             let data = res.data;
-            let result = data.map(item => filteredList.find(element => element.data.uid == item.company_uid));
+            let result = [];
+            data.forEach(item =>{
+              filteredList.forEach( ele =>{
+                if(ele.data.uid == item.company_uid){
+                  result.push(ele)
+                }
+              })
+            })
             this.conversations = result;
           }else{
             this.conversations =filteredList;
@@ -259,27 +266,17 @@
           that.$axios.post('/api/position-chat-record/detail',p).then(res =>{
             if(res.code == 0){
               let position_id = res.data?res.data.position_id:'';
-              if( position_id || position_id == '' ){
-                if(position_id){
-                  friend.position_id = position_id?position_id:'';
-                  friend.position_name = res.data.position_name ? res.data.position_name:'我的好友';
-                }else{
-                  friend.position_id = '';
-                  friend.position_name = '我的好友';
-                }
-                that.profile.friend = friend?friend:'';
-              //if( position_id ){
-              //friend.position_id = position_id;
-              //friend.position_name = res.data.position_name;
-              //friend.company_id = res.data.company_id;
-              //that.profile.friend = friend;
-                that.$emit( 'chatLocation',friend );
-                that.$bus.$emit( 'click_conversationList_item_getInfoData',friend );
+              if(position_id){
+                friend.position_id = position_id?position_id:'';
+                friend.position_name = res.data.position_name ? res.data.position_name:'我的好友';
+                friend.company_id = res.data.company_id;
               }else{
-                that.$message.error({
-                  message: '岗位信息获取失败3！'
-                })
+                friend.position_id = '';
+                friend.position_name = '我的好友';
               }
+              that.profile.friend = friend ? friend : {};
+              that.$emit( 'chatLocation',friend );
+              that.$bus.$emit( 'click_conversationList_item_getInfoData',friend );
             }else{
               that.$message.error({
                 message: '岗位信息获取失败3！'
