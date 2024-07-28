@@ -59,7 +59,7 @@
         >
           查看面试评估结果
         </div>
-        <div class="hover" @click.stop="clickChat()">打招呼</div>
+        <div class="hover">打招呼</div>
       </div>
       <div class="steps-box">
         <div class="steps-item active">面试评估</div>
@@ -79,7 +79,9 @@ export default {
   created() {},
   methods: {
     // 点击打招呼
-    clickChat() {},
+    clickChat() {
+      this.$router.push({path:'/qualityResult'})
+    },
   },
 };
 </script>

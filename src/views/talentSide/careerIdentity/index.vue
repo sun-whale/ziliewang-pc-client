@@ -886,8 +886,7 @@ export default {
     clickAttentionTab(name) {
       let state = this.$route.query.see_uid;
       let isCareer = localStorage.getItem("isCareer");
-      if (state == undefined) {
-        localStorage.setItem("isCareer", 0);
+      localStorage.setItem("isCareer", 0);
         this.$router.push({
           path: "/attentionFans", //跳转的路径
           query: {
@@ -896,20 +895,30 @@ export default {
             see_uid: this.see_uid,
           },
         });
-        return;
-      }
-      if (isCareer == 0) {
-        localStorage.setItem("isCareer", 1);
-        this.$router.push({
-          path: "/attentionFans", //跳转的路径
-          query: {
-            //路由传参时push和query搭配使用 ，作用时传递参数
-            tag: name,
-            see_uid: this.see_uid,
-          },
-        });
-        return;
-      }
+      // if (state == undefined) {
+      //   localStorage.setItem("isCareer", 0);
+      //   this.$router.push({
+      //     path: "/attentionFans", //跳转的路径
+      //     query: {
+      //       //路由传参时push和query搭配使用 ，作用时传递参数
+      //       tag: name,
+      //       see_uid: this.see_uid,
+      //     },
+      //   });
+      //   return;
+      // }
+      // if (isCareer == 0) {
+      //   localStorage.setItem("isCareer", 1);
+      //   this.$router.push({
+      //     path: "/attentionFans", //跳转的路径
+      //     query: {
+      //       //路由传参时push和query搭配使用 ，作用时传递参数
+      //       tag: name,
+      //       see_uid: this.see_uid,
+      //     },
+      //   });
+      //   return;
+      // }
     },
     // 聊一聊
     clickChitchat() {

@@ -228,7 +228,7 @@
                 <span>转发给同事</span>
               </div> -->
 
-              <div @click="collection">
+              <div @click="collection(infoData.is_collection)">
                 <img
                   src="../../../assets/image/bossSide/icon-star-1.png"
                   alt=""
@@ -371,6 +371,23 @@ export default {
     clickShareWent(i) {
       const that = this;
       const title = "【自猎网】"; // 标题
+      var userId = sessionStorage.getItem("userId");
+      let match = userId.match(/c_(\d+)/);
+      let page = {
+        uid: match[1],
+        tag: 2,
+        type: 3,
+        status: 3,
+      };
+      this.$axios
+        .post("/api/userinfooperate/create", page)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+
       if (i == 2) {
         let images = encodeURIComponent(that.basic_info.avatar);
         let shareUrl = encodeURIComponent(window.location.href);
@@ -392,7 +409,7 @@ export default {
       this.zx_dialogVisible = false;
     },
     // 点击收藏
-    async collection() {
+    async collection(type) {
       let that = this;
       let url = "";
       let infoData = that.infoData;
@@ -421,6 +438,23 @@ export default {
               message: res.msg,
             });
           }
+        });
+
+      var userId = sessionStorage.getItem("userId");
+      let match = userId.match(/c_(\d+)/);
+      let page = {
+        uid: match[1],
+        tag: 2,
+        type: 1,
+        status: type == 2 ? 1 : 2,
+      };
+      this.$axios
+        .post("/api/userinfooperate/create", page)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((e) => {
+          console.log(e);
         });
     },
     // 点击获取微信、手机号
@@ -471,7 +505,7 @@ export default {
         return;
       }
       that.seltPositionData = i;
-      console.log(that.seltPositionData)
+      console.log(that.seltPositionData);
       that.getPositionList(); // 获取职位
     },
     // 创建岗位会话信息
@@ -513,11 +547,15 @@ export default {
         position_id: i.id, // 岗位id
         position_name: i.position_name,
         user_number: i.user_number,
-      }
+      };
       that.zx_dialogVisible = false;
       that.position_dialogVisible = false;
-      that.createPositionChatRecord(i.id,seltPositionData.basic_info.uid);
-      that.$bus.$emit('receiveParams', {type:'searchTalent',laiyuan:'nav',infoData });
+      that.createPositionChatRecord(i.id, seltPositionData.basic_info.uid);
+      that.$bus.$emit("receiveParams", {
+        type: "searchTalent",
+        laiyuan: "nav",
+        infoData,
+      });
     },
     position_handleClose() {
       this.position_dialogVisible = false;
