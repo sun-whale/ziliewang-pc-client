@@ -93,7 +93,7 @@ export default {
     getSysMsgList() {
       let that = this;
       that.$axios.post('/api/user/friend/list', {
-        tag: 'friend'
+        tag: 'attention'
       }).then(res => {
         if (res.code == 0) {
           that.msgList = res.data;

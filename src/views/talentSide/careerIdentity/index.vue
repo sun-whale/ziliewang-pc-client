@@ -855,7 +855,7 @@ export default {
         that.$axios
           .post("/api/user/friend/list", {
             page: 1,
-            tag: "friend",
+            tag: "attention",
             see_uid: localStorage.getItem("realUid"),
           })
           .then((res) => {
@@ -943,8 +943,10 @@ export default {
     },
     // 点击关注按钮
     clickAttention() {
+      console.log(1);
       this.$axios
-        .post("/api/user-attention/attention", {
+        // .post("/api/user-attention/attention", {
+          .post("/api/user/attention/create", {
           attention_uid: this.see_uid,
         })
         .then((res) => {
@@ -963,8 +965,10 @@ export default {
     },
     // 取消关注
     clickCancelAttention() {
+      console.log(1);
       this.$axios
-        .post("/api/user-attention/cancel-attention", {
+        // .post("/api/user-attention/cancel-attention", {
+          .post("/api/user/attention/cancel", {
           attention_uid: this.see_uid,
         })
         .then((res) => {

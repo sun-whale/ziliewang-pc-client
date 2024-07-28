@@ -371,13 +371,11 @@ export default {
     clickShareWent(i) {
       const that = this;
       const title = "【自猎网】"; // 标题
-      var userId = sessionStorage.getItem("userId");
-      let match = userId.match(/c_(\d+)/);
       let page = {
-        uid: match[1],
-        tag: 2,
+        uid: that.basic_info.uid,
+        tag: 1,
         type: 3,
-        status: 3,
+        status: 1,
       };
       this.$axios
         .post("/api/userinfooperate/create", page)
@@ -439,12 +437,9 @@ export default {
             });
           }
         });
-
-      var userId = sessionStorage.getItem("userId");
-      let match = userId.match(/c_(\d+)/);
       let page = {
-        uid: match[1],
-        tag: 2,
+        uid: that.basic_info.uid,
+        tag: 1,
         type: 1,
         status: type == 2 ? 1 : 2,
       };

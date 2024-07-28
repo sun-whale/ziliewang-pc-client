@@ -370,7 +370,7 @@ export default {
         that.$axios
           .post("/api/user/friend/list", {
             page: 1,
-            tag: "friend",
+            tag: "attention",
             see_uid: localStorage.getItem("realUid"),
           })
           .then((res) => {
