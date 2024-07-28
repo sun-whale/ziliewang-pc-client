@@ -59,8 +59,15 @@
 
                   <!-- 内容 开始 -->
                   <div v-if="item.type === 'text'" class="content-text" style="flex-direction: column;">
-                    <div v-html="emoji.decoder.decode(item.payload.text)"></div>
-                    <div class="fz-box">
+                    <div style="min-width: 60px;">
+                      <div v-html="emoji.decoder.decode(item.payload.text)"></div>
+                    </div>
+                    <div class="fz-box" v-if="currentUser.id === item.senderId">
+                      <i class="el-icon-connection" title="引用" style="cursor: pointer;" @click="clickReply(item)"></i>
+                      <i class="el-icon-warning-outline" title="举报" style="cursor: pointer;margin:0 4px;" @click="clickReport(item)"></i>
+                      <img src="../../../../assets/image/icon-fz.png" title="复制" style="margin-left: 0;" @click="clickCopy(item.payload.text)"/>
+                    </div>
+                    <div class="fz-box" v-else>
                       <img src="../../../../assets/image/icon-fz.png" title="复制" alt="" @click="clickCopy(item.payload.text)"/>
                       <i class="el-icon-warning-outline" title="举报" style="cursor: pointer;margin-right: 4px;" @click="clickReport(item)"></i>
                       <i class="el-icon-connection" title="引用" style="cursor: pointer;" @click="clickReply(item)"></i>
@@ -71,11 +78,6 @@
                   <div v-if="item.type === 'texts'" style="position: relative;">
                     <div class="content-text" style="flex-direction: column;">
                       <div v-html="emoji.decoder.decode(item.payload.text)"></div>
-                      <!-- <div class="fz-box">
-                        <img src="../../../../assets/image/icon-fz.png" title="复制" alt="" @click="clickCopy(item.payload.text)"/>
-                        <i class="el-icon-warning-outline" title="举报" style="cursor: pointer;margin-right: 4px;" @click="clickReport(item)"></i>
-                        <i class="el-icon-connection" title="引用" style="cursor: pointer;" @click="clickReply(item)"></i>
-                      </div> -->
                     </div>
                     <div style="font-size: 12px;color: #555;margin: 4px 0;">
                       <div style="message-quote" v-html="emoji.decoder.decode(item.payload.quote)"></div>
@@ -606,7 +608,7 @@ import Complaint from "@/components/complaint";
     },
     methods: {
       clickShare(url){
-        this.$router.push(`/careerIdentity?see_uid=10`);
+        this.$router.push(url);
       },
       // 点击聊天框内复制图标
       async clickCopy(text){

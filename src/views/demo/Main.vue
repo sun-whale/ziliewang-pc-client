@@ -27,7 +27,7 @@
        @deactivated="onDeactivated" v-if="is_VueDragResize">
         <div class="VueDragResize-centent-box">
           <div class="VueDragResize-title-box">
-            <div class="title">聊一聊</div>
+            <div class="title">消息中心</div>
             <div class="icon-box">
               <img src="../../assets/image/icon-minificationpng.png" alt="缩小"  @click="clickMinificationpngBtn">
               <img src="../../assets/image/icon-close.png" alt="关闭" @click="clickCloseBtn"/>
