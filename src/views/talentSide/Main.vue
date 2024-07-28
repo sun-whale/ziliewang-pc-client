@@ -24,17 +24,18 @@
        :isActive="true" :isDraggable="true" :parentLimitation="true" :preventActiveBehavior="true"
        :parentW="parentW" :parentH="parentH" 
        :w="width" :h="height" :minw="minw" :minh="minh"
-       :x='left' :y='top' 
+       :x="left" :y="top" 
        @resizing="resize" 
        @dragging="resize" 
        @deactivated="onDeactivated"
        v-if="is_VueDragResize">
         <div class="VueDragResize-centent-box">
           <div class="VueDragResize-title-box">
-            <div class="title">聊一聊</div>
+            <div class="title">消息中心</div>
             <div class="icon-box">
-              <img src="../../assets/image/icon-minificationpng.png" alt="缩小"  @click="clickMinificationpngBtn">
-              <img src="../../assets/image/icon-close.png" alt="关闭" @click="clickCloseBtn"/>
+              <img src="../../assets/image/icon-minificationpng.png" title="缩小"  @click="clickSXBtn" />
+              <img src="../../assets/image/icon-fangda.png" title="放大"  @click="clickFDBtn" />
+              <img src="../../assets/image/icon-close.png" title="关闭" @click="clickMinificationpngBtn" />
             </div>
           </div>
           <div class="Chat-box">
@@ -107,7 +108,7 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
         minh: 340,
         parentH: 0,
         parentW: 0,
-        top: 40,
+        top: 1,
         left: 500,
         zInfex_0: 99,
         is_VueDragResize: false,
@@ -165,6 +166,7 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
       this.width = Number(getViewportSize.width)/2>820?Number(getViewportSize.width)/2:820; // 可拖动div 宽度
       this.height = Number(getViewportSize.height - 80); // 可拖动div 高度
       this.left = Number(getViewportSize.width)/2 - Number(this.width)/2;
+      this.top = 40;
       this.currentUser = {
         id: 'u_'+ localStorage.getItem('realUid'),
         uid:localStorage.getItem('realUid'),
@@ -315,10 +317,35 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
         this.left = newRect.left;
       },
       // 点击 聊天弹窗关闭按钮
-      clickCloseBtn(){
+      // clickCloseBtn(){
+      //   this.is_VueDragResize = false;
+      // },
+      // 点击聊天窗口缩小
+      clickSXBtn(){
+        let getViewportSize = this.$getViewportSize();
         this.is_VueDragResize = false;
+        this.$nextTick(() =>{
+          this.width = Number(getViewportSize.width)/2>820?Number(getViewportSize.width)/2:820; // 可拖动div 宽度
+          this.height = Number(getViewportSize.height - 80); // 可拖动div 高度
+          this.top = 40;
+          this.left = Number(getViewportSize.width)/2 - Number(this.width)/2;
+          this.is_VueDragResize = true;
+        })
       },
-      // 点击聊天弹窗缩小--按钮
+      // 点击聊天窗口放大
+      clickFDBtn(){
+        let getViewportSize = this.$getViewportSize();
+        console.log(getViewportSize)
+        this.is_VueDragResize = false;
+        this.$nextTick(() =>{
+          this.top = 0;
+          this.left = 0;
+          this.height = getViewportSize.height; // 可拖动div 高度
+          this.width = getViewportSize.width - 16; // 可拖动div 宽度
+          this.is_VueDragResize = true;
+        })
+      },
+      // 点击聊天弹窗关闭--按钮
       clickMinificationpngBtn(){
         this.is_VueDragResize = false;
         // this.$bus.$emit('talentSide_clickSidebar',{ is_clickMinificationpngBtn:true } );
@@ -581,7 +608,7 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
   }
   //  弹窗 动画样式 -----
   .suck-in-enter-active, .suck-in-leave-active {
-    transition: all 0.5s ease;
+    transition: all 0.4s ease;
     transform-origin: right;
   }
 
