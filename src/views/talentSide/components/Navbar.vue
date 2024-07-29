@@ -24,7 +24,7 @@
         <div class="right-menu">
           <div class="right-items-box">
             <div @click="clickxsms">
-              <span>线上面试</span>
+              <span>求职Agent</span>
             </div>
             <div @click="clickProfessionalCircle">
               <img src="../../../assets/image/nav_1.png" alt="" />
