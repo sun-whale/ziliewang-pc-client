@@ -188,7 +188,8 @@ export default {
     addAttention(i,idx){
       let dataList = this.dataList;
       let index = idx;
-      this.$axios.post('/api/user-attention/attention',{
+      // this.$axios.post('/api/user-attention/attention',{
+        this.$axios.post('/api/user/attention/create',{
         attention_uid: i.uid
       }).then( res =>{
         if(res.code == 0){
@@ -208,7 +209,8 @@ export default {
     cancelAttention(i,idx){
       let dataList = this.dataList;
       let index = idx;
-      this.$axios.post('/api/user-attention/cancel-attention',{
+      // this.$axios.post('/api/user-attention/cancel-attention',{
+        this.$axios.post('/api/user/attention/cancel',{
         attention_uid: i.uid
       }).then( res =>{
         if(res.code == 0){

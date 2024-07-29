@@ -21,7 +21,7 @@
           </div>
         </div>
         <div class="tips-box" v-if="friends.length <= 0">
-          -双方相互关注后即可成为好友-
+          -暂无关注的好友-
         </div>
       </div>
     </div>
@@ -64,16 +64,11 @@
       <PrivateChat :infoData="profile.friend" />
     </div>
 
-    <el-dialog
-      title="提示"
-      :visible.sync="moreVisible"
-      width="30%"
-      :before-close="handleClose"
-    >
+    <el-dialog title="提示" :visible.sync="moreVisible" width="30%">
       <span>是否将联系人{{ moreStates == 0 ? "加入黑名单" : "删除" }}?</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="moreVisible = false">取 消</el-button>
-        <el-button type="primary" @click="moreVisible = false">确 定</el-button>
+        <el-button type="primary" @click="clickCancel">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -103,22 +98,58 @@ export default {
       moreVisible: false,
       moreShow: false,
       moreStates: "",
+      cancelPage: {},
     };
   },
   mounted() {
     this.friends = this.msgList;
   },
   methods: {
+    // 校验拉黑 / 删除
     clickMore(type) {
-      if (type == 0) {
-        // 加入黑名单
-      } else {
-        // 删除好友
-      }
+      const that = this;
+      let page = {};
+      that.cancelPage = {};
+      page.tag = type == 0 ? "black" : "delete";
+      page.attention_uid = that.profile.friend.uid;
+      that.cancelPage = page;
       this.moreShow = false;
       this.moreStates = type;
       this.moreVisible = true;
     },
+    clickCancel() {
+      const that = this;
+      that.$axios
+        .post("/api/user/attention/cancel", that.cancelPage)
+        .then((res) => {
+          if (res.code == 0) {
+            that.$message.success({
+              message: "操作成功",
+            });
+            that.getSysMsgList();
+            that.is_chat = !that.is_chat;
+            that.moreVisible = !that.moreVisible;
+          } else {
+            that.$message.error({
+              message: res.msg,
+            });
+          }
+        });
+    },
+    // 获取好友列表
+    getSysMsgList(){
+      let that = this;
+      that.$axios.post('/api/user/friend/list', {
+        tag: 'attention'
+      }).then(res => {
+        if (res.code == 0) {
+          that.friends = res.data;
+        } else {
+          that.$message.error({
+            message: res.msg
+          })
+        }
+      })},
     showFriendProfile(friend) {
       console.log(friend);
       this.profile.friend = {
