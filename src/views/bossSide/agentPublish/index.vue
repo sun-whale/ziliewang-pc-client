@@ -1,46 +1,35 @@
+<!-- eslint-disable vue/html-self-closing -->
 <template>
   <div class="bossSide-container">
     <div class="m-box">
       <div class="postJob-box">
-        <div class="title">{{ position_id ? "修改职位" : "发布职位" }}</div>
+        <div class="title">发布Agent职位</div>
         <div class="postJob-form-box">
           <el-form
             :model="ruleForm"
             :rules="rules"
             ref="ruleForm"
-            label-width="120px"
+            label-width="160px"
             class="demo-ruleForm"
           >
+            <!-- 职位名称 -->
             <el-form-item label="职位名称" prop="position_name">
-              <el-input
-                v-model="ruleForm.position_name"
-                placeholder="请输入"
-                style="width: 95%"
-              ></el-input>
-              <el-tooltip
-                class="item"
-                effect="dark"
-                content="Agent一键代填"
-                placement="top-end"
-              >
-                <i
-                  @click="agent"
-                  class="el-icon-s-platform"
-                  style="font-size: 20px; color: #999; margin-left: 10px"
-                ></i>
-              </el-tooltip>
+              <el-input placeholder="请输入职位名称" />
             </el-form-item>
-
-            <el-form-item label="工作性质" prop="work_type">
-              <el-radio-group v-model="ruleForm.work_type">
-                <el-radio label="1">全职</el-radio>
-                <el-radio label="2">兼职</el-radio>
-                <el-radio label="3">实习</el-radio>
-                <el-radio label="4">校园</el-radio>
+            <!-- 工作性质 -->
+            <el-form-item label="工作性质" prop="position_type">
+              <el-radio-group>
+                <el-radio
+                  v-for="(item, index) in workTypeOptions"
+                  :key="index"
+                  :label="item.value"
+                  :value="item.label"
+                  >{{ item.label }}</el-radio
+                >
               </el-radio-group>
             </el-form-item>
-
-            <el-form-item label="职位描述" prop="position_desc">
+            <!-- 详细岗位要求 -->
+            <el-form-item label="详细岗位要求" prop="position_desc">
               <span class="desc-title"
                 >请勿输入邮箱、电话、链接,请不要包含性别歧视语
                 请参考职位描述规范</span
@@ -48,44 +37,37 @@
               <el-input
                 type="textarea"
                 :rows="10"
-                v-model="ruleForm.position_desc"
                 :placeholder="desc_placeholder"
-              ></el-input>
+              />
             </el-form-item>
-
-            <el-form-item label="职位亮点" prop="position_lightspot">
+            <!-- 岗位优势 -->
+            <el-form-item label="岗位优势" prop="position_lightspot">
               <span class="desc-title"
-                >求职端展示效果，向求职者介绍您的职位亮点，增加独特的吸引力，让您的职位脱颖而出!</span
+                >求职端展示效果，向求职者介绍您的岗位优势，增加独特的吸引力，让您的职位脱颖而出!</span
               >
               <el-input
                 type="textarea"
                 :rows="3"
-                v-model="ruleForm.position_lightspot"
-                :placeholder="hight_placeholder"
+                :placeholder="advantage_placeholder"
               ></el-input>
             </el-form-item>
-
-            <el-form-item label="行业要求" prop="industry_requirement">
+            <!-- 所属行业 -->
+            <el-form-item label="所属行业" prop="position_industry">
               <el-select
-                v-model="ruleForm.industry_requirement"
+                style="width: 100%"
                 placeholder="请选择您期望候选人来自于哪些行业"
-                @change="changeIndustry"
               >
                 <el-option
                   :label="item.industry"
                   :value="item.industry"
-                  v-for="(item, index) in industryList"
+                  v-for="(item, index) in industry_list"
                   :key="index"
                 ></el-option>
               </el-select>
             </el-form-item>
-
-            <el-form-item label="职位类别" prop="position_type">
-              <el-select
-                v-model="ruleForm.position_type"
-                placeholder="请选择职位类别"
-                @change="changePositionType"
-              >
+            <!-- 职位类别 -->
+            <el-form-item label="职位类别" prop="position_class">
+              <el-select style="width: 100%" placeholder="请选择职位类别">
                 <el-option
                   :label="item.category_name"
                   :value="item.category_name"
@@ -94,10 +76,25 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-
-            <el-form-item label="职位偏好" prop="job_preference">
+            <!-- 职位级别 -->
+            <el-form-item label="职位级别" prop="position_rank">
               <el-select
-                v-model="ruleForm.job_preference"
+                style="width: 100%"
+                filterable
+                placeholder="请选择职位级别"
+              >
+                <el-option
+                  :label="item.label"
+                  :value="item.value"
+                  v-for="(item, index) in rank_list"
+                  :key="index"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <!-- 职位偏好 -->
+            <el-form-item label="职位偏好" prop="position_job">
+              <el-select
+                style="width: 100%"
                 placeholder="请选择职位偏好，有助于帮您更精准地匹配人才"
               >
                 <el-option
@@ -108,1119 +105,832 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-
-            <el-form-item label="学历要求" required>
-              <el-col :span="7">
-                <el-form-item prop="educational_experience">
-                  <el-select
-                    v-model="ruleForm.educational_experience"
-                    placeholder="请选择学历要求"
-                  >
-                    <el-option label="博士" value="博士"></el-option>
-                    <el-option label="研究生" value="研究生"></el-option>
-                    <el-option label="本科" value="本科"></el-option>
-                    <el-option label="大专" value="大专"></el-option>
-                    <el-option label="高中" value="高中"></el-option>
-                    <el-option label="初中" value="初中"></el-option>
-                    <el-option label="最低学历" value="最低学历"></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
+            <!-- 工作职能 -->
+            <el-form-item label="工作职能" prop="position_capacity">
+              <el-input placeholder="请输入工作职能" />
             </el-form-item>
-
-            <el-form-item label="性别" required>
-              <el-col :span="5">
-                <el-select
-                  v-model="ruleForm.gender"
-                  placeholder="性别"
-                  style="width: 100%"
-                >
-                  <el-option label="男" value="1"></el-option>
-                  <el-option label="女" value="2"></el-option>
-                  <el-option label="不限" value="3"></el-option>
-                </el-select>
-              </el-col>
+            <!-- 工作职权 -->
+            <el-form-item label="工作职权" prop="position_authority">
+              <el-input placeholder="请输入工作职权" />
             </el-form-item>
-
-            <el-form-item label="工作地址" prop="work_address">
-              <!-- <el-input v-model="ruleForm.work_address" placeholder="请输入工作地址"></el-input> -->
-              <el-cascader
-                :options="options"
-                ref="cascaderAddr"
-                v-model="ruleForm.selectedOptions"
-                :props="{ value: 'label' }"
-                :show-all-levels="false"
-                placeholder="请选择城市"
-                @change="handleChange"
+            <!-- 汇报上级 -->
+            <el-form-item label="汇报上级" prop="position_superiors">
+              <el-select
+                style="width: 100%"
+                filterable
+                placeholder="请选择汇报上级"
               >
-              </el-cascader>
+                <el-option
+                  :label="item.label"
+                  :value="item.value"
+                  v-for="(item, index) in superiors_list"
+                  :key="index"
+                ></el-option>
+              </el-select>
             </el-form-item>
-
-            <el-form-item label="新资范围" required>
-              <el-col :span="5" class="xzfw-box">
-                <el-select
-                  @change="changeMoney"
-                  v-model="ruleForm.xz_status"
-                  placeholder="最低月薪"
-                >
-                  <el-option label="1K" value="1"></el-option>
-                  <el-option label="2K" value="2"></el-option>
-                  <el-option label="3K" value="3"></el-option>
-                  <el-option label="4K" value="4"></el-option>
-                  <el-option label="5K" value="5"></el-option>
-                  <el-option label="6k" value="6"></el-option>
-                  <el-option label="7K" value="7"></el-option>
-                  <el-option label="8K" value="8"></el-option>
-                  <el-option label="9K" value="9"></el-option>
-                  <el-option label="10K" value="10"></el-option>
-                  <el-option label="11K" value="11"></el-option>
-                  <el-option label="12K" value="12"></el-option>
-                  <el-option label="13K" value="13"></el-option>
-                  <el-option label="14K" value="14"></el-option>
-                  <el-option label="15K" value="15"></el-option>
-                  <el-option label="16K" value="16"></el-option>
-                  <el-option label="17K" value="17"></el-option>
-                  <el-option label="18K" value="18"></el-option>
-                  <el-option label="19K" value="19"></el-option>
-                  <el-option label="20K" value="20"></el-option>
-                  <el-option label="25K" value="25"></el-option>
-                  <el-option label="30K" value="30"></el-option>
-                  <el-option label="40K" value="40"></el-option>
-                  <el-option label="50K" value="50"></el-option>
-                  <el-option label="70K" value="70"></el-option>
-                  <el-option label="100K" value="100"></el-option>
-                </el-select>
-              </el-col>
-              <el-col :span="5" class="xzfw-box">
-                <el-select
-                  @change="changeMoney"
-                  v-model="ruleForm.xz_end"
-                  placeholder="最高月薪"
-                >
-                  <el-option label="2K" value="2"></el-option>
-                  <el-option label="3K" value="3"></el-option>
-                  <el-option label="4K" value="4"></el-option>
-                  <el-option label="5K" value="5"></el-option>
-                  <el-option label="6k" value="6"></el-option>
-                  <el-option label="7K" value="7"></el-option>
-                  <el-option label="8K" value="8"></el-option>
-                  <el-option label="9K" value="9"></el-option>
-                  <el-option label="10K" value="10"></el-option>
-                  <el-option label="11K" value="11"></el-option>
-                  <el-option label="12K" value="12"></el-option>
-                  <el-option label="13K" value="13"></el-option>
-                  <el-option label="14K" value="14"></el-option>
-                  <el-option label="15K" value="15"></el-option>
-                  <el-option label="16K" value="16"></el-option>
-                  <el-option label="17K" value="17"></el-option>
-                  <el-option label="18K" value="18"></el-option>
-                  <el-option label="19K" value="19"></el-option>
-                  <el-option label="20K" value="20"></el-option>
-                  <el-option label="25K" value="25"></el-option>
-                  <el-option label="30K" value="30"></el-option>
-                  <el-option label="40K" value="40"></el-option>
-                  <el-option label="50K" value="50"></el-option>
-                  <el-option label="70K" value="70"></el-option>
-                  <el-option label="100K" value="100"></el-option>
-                  <el-option label="150K" value="150"></el-option>
-                </el-select>
-              </el-col>
-              <el-col :span="5" class="xzfw-box">
-                <el-select v-model="ruleForm.months" placeholder="请选择">
-                  <el-option label="x12月" value="12"></el-option>
-                  <el-option label="x13月" value="13"></el-option>
-                  <el-option label="x14月" value="14"></el-option>
-                  <el-option label="x15月" value="15"></el-option>
-                  <el-option label="x16月" value="16"></el-option>
-                  <el-option label="x17月" value="17"></el-option>
-                  <el-option label="x18月" value="18"></el-option>
-                  <el-option label="x19月" value="19"></el-option>
-                  <el-option label="x20月" value="20"></el-option>
-                  <el-option label="x21月" value="21"></el-option>
-                  <el-option label="x22月" value="22"></el-option>
-                  <el-option label="x23月" value="23"></el-option>
-                  <el-option label="x24月" value="24"></el-option>
-                </el-select>
-              </el-col>
+            <!-- 下级人数 -->
+            <el-form-item label="下级人数" prop="position_subordinate">
+              <el-select style="width: 100%" placeholder="请选择下级人数">
+                <el-option
+                  :label="item.label"
+                  :value="item.value"
+                  v-for="(item, index) in subordinate_list"
+                  :key="index"
+                ></el-option>
+              </el-select>
             </el-form-item>
-
-            <el-form-item label="工作时间" required>
-              <el-col :span="5">
-                <el-select
-                  v-model="ruleForm.work_times"
-                  placeholder="工作时间"
-                  style="width: 100%"
-                >
-                  <el-option label="无经验要求" value="3"></el-option>
-                  <el-option label="0-1年" value="0-1"></el-option>
-                  <el-option label="1-3年" value="1-3"></el-option>
-                  <el-option label="3-5年" value="3-5"></el-option>
-                  <el-option label="5-10年" value="5-10"></el-option>
-                  <el-option label="10-15年" value="10-15"></el-option>
-                  <el-option label="15年以上" value="15"></el-option>
-                </el-select>
-              </el-col>
+            <!-- 归属部门 -->
+            <el-form-item label="归属部门" prop="position_department">
+              <el-select
+                style="width: 100%"
+                filterable
+                placeholder="请选择归属部门"
+              >
+                <el-option
+                  :label="item.label"
+                  :value="item.value"
+                  v-for="(item, index) in department_list"
+                  :key="index"
+                ></el-option>
+              </el-select>
             </el-form-item>
-
-            <el-form-item label="职位福利" prop="job_benefits">
-              <el-col :span="15">
-                <el-select
-                  v-model="ruleForm.job_benefits"
-                  multiple
-                  placeholder="请选择"
-                  style="width: 100%"
-                >
-                  <el-option label="五险一金" value="五险一金"></el-option>
-                  <el-option label="绩效奖金" value="绩效奖金"></el-option>
-                  <el-option label="餐补" value="餐补"></el-option>
-                  <el-option label="交通补" value="交通补"></el-option>
-                  <el-option label="住房补" value="住房补"></el-option>
-                </el-select>
-              </el-col>
+            <!-- 学历要求 -->
+            <el-form-item label="学历要求" prop="position_education">
+              <el-select style="width: 100%" placeholder="请选择学历">
+                <el-option
+                  :label="item.label"
+                  :value="item.value"
+                  v-for="(item, index) in education_list"
+                  :key="index"
+                ></el-option>
+              </el-select>
             </el-form-item>
-
-            <el-form-item label="招聘人数" prop="need_nums">
-              <el-col :span="7">
+            <!-- 年龄要求 -->
+            <el-form-item label="年龄要求" prop="position_age">
+              <el-slider
+                v-model="ruleForm.age"
+                :marks="age_list"
+                range
+                :min="18"
+                :max="60"
+              >
+              </el-slider>
+              <el-input
+                placeholder="年龄"
+                popper-class="display-none"
+                class="display-none"
+              />
+              <div style="height: 20px"></div>
+            </el-form-item>
+            <!-- 风格要求 -->
+            <el-form-item label="风格要求" prop="position_style">
+              <el-select style="width: 100%" placeholder="请选择风格">
+                <el-option
+                  :label="item.label"
+                  :value="item.value"
+                  v-for="(item, index) in style_list"
+                  :key="index"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <!-- 入职时间 -->
+            <el-form-item label="入职时间" prop="position_entry_time">
+              <el-date-picker
+                placeholder="请选择入职时间"
+                v-model="ruleForm.time"
+                style="width: 100%"
+              ></el-date-picker>
+            </el-form-item>
+            <!-- 工作地点 -->
+            <el-form-item label="工作地点" prop="position_workplace">
+              <div class="address">
                 <el-input
-                  v-model="ruleForm.need_nums"
-                  placeholder="招聘人数"
-                ></el-input>
-              </el-col>
-              <span style="padding-left: 10px; font-size: 14px">人</span>
+                  v-model="ruleForm.workplace"
+                  placeholder="请输入工作地点"
+                />
+                <i
+                  class="icon el-icon-map-location"
+                  @click="clickIconAddress(0)"
+                ></i>
+              </div>
             </el-form-item>
-
-            <el-form-item label="年龄范围" required>
-              <el-col :span="5" class="xzfw-box">
-                <el-input
-                  v-model="ruleForm.age_status"
-                  placeholder="最低年龄"
-                ></el-input>
-              </el-col>
-              <el-col :span="5" class="xzfw-box">
-                <el-input
-                  v-model="ruleForm.age_end"
-                  placeholder="最高年龄"
-                ></el-input>
-              </el-col>
+            <!-- 薪酬范围 -->
+            <el-form-item label="薪酬范围" prop="position_emolument">
+              <span class="desc-title"
+                >薪资范围以月为单位，薪资单位为K(千元)</span
+              >
+              <el-slider
+                v-model="ruleForm.emolument"
+                :marks="emolument_list"
+                range
+                :min="0"
+                :max="100"
+              >
+              </el-slider>
+              <el-input
+                placeholder="薪酬范围"
+                popper-class="display-none"
+                class="display-none"
+              />
+              <div style="height: 20px"></div>
             </el-form-item>
-
-            <el-form-item label="简历同步至" prop="sync_workmate">
+            <!-- 工龄要求 -->
+            <el-form-item label="工龄要求" prop="position_seniority">
+              <el-select style="width: 100%" placeholder="请选择工龄">
+                <el-option
+                  :label="item.label"
+                  :value="item.value"
+                  v-for="(item, index) in seniority_list"
+                  :key="index"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <!-- 试用期时长 -->
+            <el-form-item label="试用期时长" prop="position_probation">
+              <el-select style="width: 100%" placeholder="请选择试用期时长">
+                <el-option
+                  :label="item.label"
+                  :value="item.value"
+                  v-for="(item, index) in probation_list"
+                  :key="index"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <!-- 简历同步 -->
+            <el-form-item label="简历同步至">
               <span class="desc-title"
                 >我的同事
                 TA将与您一起管理该职位，可以通过平台和邮箱接收简历</span
               >
-              <el-col :span="15">
-                <el-select
-                  v-model="ruleForm.sync_workmate"
-                  multiple
-                  placeholder="请选择"
-                  style="width: 100%"
-                >
-                  <el-option
-                    :label="item.staff_name"
-                    :value="item.staff_name"
-                    v-for="(item, index) in staffList"
-                    :key="index"
-                  ></el-option>
-                </el-select>
-              </el-col>
+              <el-select multiple placeholder="请选择" style="width: 100%">
+                <el-option
+                  :label="item.staff_name"
+                  :value="item.staff_name"
+                  v-for="(item, index) in staffList"
+                  :key="index"
+                ></el-option>
+              </el-select>
             </el-form-item>
-
-            <el-form-item label="简历要求" prop="resume_demand">
-              <span class="desc-title"
-                >设置后，不满足要求的简历，将被自动标记为不合适，该部分简历可在下人才管理-不合适，中查看!</span
+            <!-- 福利待遇 -->
+            <el-form-item label="福利待遇" prop="position_benefits">
+              <el-select
+                multiple
+                placeholder="请选择福利待遇"
+                style="width: 100%"
               >
-              <el-col :span="15">
-                <el-select
-                  v-model="ruleForm.resume_demand"
-                  multiple
-                  placeholder="设置期望简历要求"
-                  style="width: 100%"
-                >
-                  <el-option label="三年" value="三年"></el-option>
-                  <el-option label="北京" value="北京"></el-option>
-                  <el-option label="本科" value="本科"></el-option>
-                </el-select>
-              </el-col>
+                <el-option
+                  :label="item.label"
+                  :value="item.value"
+                  v-for="(item, index) in benefits_list"
+                  :key="index"
+                ></el-option>
+              </el-select>
             </el-form-item>
-
-            <el-form-item label="补充信息" prop="supplementary_information">
-              <el-checkbox-group v-model="ruleForm.supplementary_information">
-                <el-checkbox label="可转正" name="可转正"></el-checkbox>
-                <el-checkbox label="可远程实习" name="可远程实习"></el-checkbox>
-                <el-checkbox
-                  label="提供实习证明"
-                  name="提供实习证明"
-                ></el-checkbox>
-              </el-checkbox-group>
+            <!-- 招聘人数 -->
+            <el-form-item label="招聘人数" prop="position_num">
+              <el-input placeholder="请输入招聘人数" />
             </el-form-item>
-
-            <el-form-item label="上传入职offer">
-              <el-col :span="20"
-                ><el-upload
-                  class="upload-demo"
-                  action="none"
-                  :http-request="uploadArticleCover"
-                  :file-list="fileList"
-                >
-                  <el-button size="small" type="primary">点击上传</el-button>
-                  <div slot="tip" class="el-upload__tip">
-                    <a
-                      href="https://zlw0720.oss-cn-beijing.aliyuncs.com/avatar/20240618/61d3be0077537fd904391b0d04c66042.docx"
-                      >点击下载入职offer模板</a
-                    >
-                  </div>
-                </el-upload></el-col
-              >
+            <!-- 办理入职联系人 -->
+            <el-form-item label="办理入职联系人" prop="position_name">
+              <el-input placeholder="请输入办理入职联系人" />
             </el-form-item>
-
-            <el-form-item label="入职资料选择">
-              <el-col :span="15">
-                <el-select
-                  v-model="ruleForm.prepare_material"
-                  multiple
-                  placeholder="请选择"
-                  style="width: 100%"
-                >
-                  <el-option
-                    :label="item.label"
-                    :value="item.value"
-                    v-for="(item, index) in materialList"
-                    :key="index"
-                  ></el-option>
-                </el-select>
-              </el-col>
+            <!-- 办理入职联系人电话 -->
+            <el-form-item label="办理入职联系人电话" prop="position_phone">
+              <el-input placeholder="请输入办理入职联系人电话" />
             </el-form-item>
-
-            <el-form-item label="背景调查">
-              <el-col :span="5">
-                <el-switch
-                  style="margin-top: 5px"
-                  v-model="ruleForm.investigation"
-                  active-color="#1ec5d8"
+            <!-- 办理入职地点 -->
+            <el-form-item label="办理入职地点" prop="position_address">
+              <div class="address">
+                <el-input
+                  v-model="ruleForm.position_address"
+                  placeholder="请输入办理入职地点"
                 />
-              </el-col>
-            </el-form-item>
-
-            <el-form-item v-if="ruleForm.investigation" label="背景调查选择">
-              <el-col :span="15">
-                <el-select
-                  v-model="ruleForm.investigationVal"
-                  multiple
-                  placeholder="请选择"
-                  style="width: 100%"
-                >
-                  <el-option
-                    :label="item.label"
-                    :value="item.value"
-                    v-for="(item, index) in investigationList"
-                    :key="index"
-                  ></el-option>
-                </el-select>
-              </el-col>
-            </el-form-item>
-
-            <el-form-item label="素质评估">
-              <el-col :span="5">
-                <el-switch
-                  style="margin-top: 5px"
-                  v-model="ruleForm.qualityVal"
-                  active-color="#1ec5d8"
-                />
-              </el-col>
-            </el-form-item>
-
-            <el-form-item v-if="ruleForm.qualityVal" label="评估题目选择">
-              <el-col :span="15">
-                <el-select
-                  v-model="ruleForm.question_types"
-                  placeholder="请选择"
-                  style="width: 100%"
-                >
-                  <el-option
-                    :label="item.appraisal_category_name"
-                    :value="item.id"
-                    v-for="(item, index) in questionList"
-                    :key="index"
-                  ></el-option>
-                </el-select>
-              </el-col>
-            </el-form-item>
-
-            <el-form-item label="面试评估">
-              <div
-                class="assess-list"
-                v-for="(item, index) in ruleForm.assessList"
-                :key="index"
-              >
-                <el-col :span="24">
-                  <div class="assess-title">
-                    请选择{{ assessValList[index] }}面问题
-                    <el-tooltip
-                      v-if="ruleForm.assessList.length < 10"
-                      class="item"
-                      effect="dark"
-                      :content="
-                        '添加' + assessValList[index + 1] + '次面试问题'
-                      "
-                      placement="top-start"
-                    >
-                      <i @click="addAssessItem(index)" class="el-icon-plus"></i>
-                    </el-tooltip>
-                  </div>
-                </el-col>
-                <el-col :span="24">
-                  <el-table
-                    :data="ruleForm.assessList[index]"
-                    :border="true"
-                    style="width: 100%"
-                  >
-                    <el-table-column label="问题描述">
-                      <template slot-scope="scope">
-                        <el-input
-                          v-model="scope.row.question"
-                          placeholder="请输入问题描述"
-                        ></el-input>
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="回答方式" width="180">
-                      <template slot-scope="scope">
-                        <el-select
-                          disabled
-                          v-model="scope.row.answer"
-                          placeholder="请选择回答方式"
-                          style="width: 100%"
-                        >
-                          <el-option label="录音" value="录音"></el-option>
-                          <el-option label="视频" value="视频"></el-option>
-                        </el-select>
-                      </template>
-                    </el-table-column>
-                    <el-table-column fixed="right" label="操作" width="100">
-                      <template slot-scope="scope">
-                        <el-button
-                          @click="
-                            handleClickAssess(scope.row, scope.$index, index)
-                          "
-                          type="text"
-                          size="small"
-                          class="assess-del"
-                          >删除</el-button
-                        >
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                </el-col>
-                <el-col :span="24">
-                  <el-button
-                    @click="addAssess(index)"
-                    type="primary"
-                    class="assess-button"
-                    >添加面试评估</el-button
-                  >
-                </el-col>
+                <i
+                  class="icon el-icon-map-location"
+                  @click="clickIconAddress(1)"
+                ></i>
               </div>
             </el-form-item>
-
+            <!-- 其他补充/备注 -->
+            <el-form-item label="其他补充/备注">
+              <el-input
+                type="textarea"
+                :rows="3"
+                placeholder="请填写其他补充/备注"
+              ></el-input>
+            </el-form-item>
+            <!------------ agent ------------>
+            <!-- 素质测评 -->
+            <el-form-item label="素质测评">
+              <span class="desc-title">在面试完成后将生成报告给企业。 </span>
+              <el-select
+                multiple
+                @change="changeQuality"
+                v-model="ruleForm.quality"
+                placeholder="请选择素质测评"
+                style="width: 100%"
+              >
+                <el-option
+                  :label="item.label"
+                  :value="item.value"
+                  v-for="(item, index) in quality_list"
+                  :key="index"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <!-- 背景调查 -->
+            <el-form-item label="背景调查">
+              <span class="desc-title">在面试完成后将生成报告给企业。 </span>
+              <el-select
+                multiple
+                placeholder="请选择背景调查"
+                style="width: 100%"
+              >
+                <el-option
+                  :label="item.label"
+                  :value="item.value"
+                  v-for="(item, index) in investigation_list"
+                  :key="index"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <!-- 入职资料 -->
+            <el-form-item label="入职资料">
+              <el-select
+                multiple
+                placeholder="请选择入职资料"
+                style="width: 100%"
+              >
+                <el-option
+                  :label="item.label"
+                  :value="item.value"
+                  v-for="(item, index) in entry_data_list"
+                  :key="index"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <!-- 上传面试官视频 -->
+            <el-form-item label="上传视频">
+              <span class="desc-title">请面试官按照示例录制好视频上传。</span>
+              <el-upload
+                action="your_upload_endpoint_url"
+                :accept="'.mp4, .avi'"
+                :on-success="handleVideoUploadSuccess"
+                :on-remove="handleRemoveVideo"
+              >
+                <el-button type="primary">点击上传视频</el-button>
+              </el-upload>
+            </el-form-item>
+            <!-- 面试评估 -->
+            <el-form-item label="面试评估">
+              <el-table :data="assessList" :border="true" style="width: 100%">
+                <el-table-column prop="title" label="问题标题" width="200" />
+                <el-table-column label="问题描述">
+                  <template slot-scope="scope">
+                    <span class="desc-title"
+                      >问题示例：{{ scope.row.tips }}</span
+                    >
+                    <el-input
+                      v-model="scope.row.question"
+                      placeholder="请输入问题描述"
+                    ></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column fixed="right" label="操作" width="100">
+                  <template slot-scope="scope">
+                    <el-button
+                      @click="handleClickAssess(scope.row, scope.$index, index)"
+                      type="text"
+                      size="small"
+                      class="assess-del"
+                      >删除</el-button
+                    >
+                  </template>
+                </el-table-column>
+              </el-table>
+              <el-button type="primary" class="assess-button"
+                >添加面试评估</el-button
+              >
+            </el-form-item>
+            <!-- 按钮 -->
             <el-form-item class="btn-box">
-              <el-button type="primary" @click="submitForm">{{
-                position_id ? "修改" : "发布"
-              }}</el-button>
+              <el-button type="primary" @click="submitForm">发布</el-button>
               <el-button @click="resetForm">重置</el-button>
             </el-form-item>
           </el-form>
         </div>
       </div>
     </div>
+    <!-- 选择地图 -->
+    <el-dialog title="选择位置" :visible.sync="mapVisible" width="40%">
+      <Map ref="mapConten" />
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="mapVisible = false">取 消</el-button>
+        <el-button type="primary" @click="clickMapAddress">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
-  <script>
-import pcas from "../../../assets/json/pc-code.json";
-import axios from "axios";
-
+<script>
+import Map from "./components/map";
 export default {
+  components: {
+    Map,
+  },
   data() {
     return {
-      // 入职资料列表
-      materialList: [
+      fileList: [
         {
-          value: "最近6个月银行流水",
-          label: "最近6个月银行流水",
-        },
-        {
-          value: "二级以上医院的体检报告",
-          label: "二级以上医院的体检报告",
-        },
-        {
-          value: "学历学位证书",
-          label: "学历学位证书",
-        },
-        {
-          value: "身份证原件照片",
-          label: "身份证原件照片",
-        },
-        {
-          value: "离职证明",
-          label: "离职证明",
-        },
-        {
-          value: "两寸白底证件照",
-          label: "两寸白底证件照",
+          name: "food.jpeg",
+          url: "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
         },
       ],
-      // 背景调查列表
-      investigationList: [
+      // 是否显示地图
+      mapVisible: false,
+      // 地图状态
+      addressType: "",
+      // 工作类型
+      workTypeOptions: [
+        { label: "全职", value: "1" },
+        { label: "创业", value: "2" },
+        { label: "合伙人", value: "3" },
+        { label: "兼职", value: "4" },
+        { label: "实习", value: "5" },
+        { label: "顾问", value: "6" },
+      ],
+      // 所属行业
+      industry_list: [
         {
-          value: "学历",
-          label: "学历",
+          industry: "IT互联网技术",
+          value: "1",
         },
         {
-          value: "身份核实",
-          label: "身份核实",
+          industry: "电子/通信/半导体",
+          value: "2",
         },
         {
-          value: "劳动仲裁记录",
-          label: "劳动仲裁记录",
-        },
-        {
-          value: "涉案判决",
-          label: "涉案判决",
-        },
-        {
-          value: "法律文书",
-          label: "法律文书",
-        },
-        {
-          value: "工商信息",
-          label: "工商信息",
+          industry: "销售/客服",
+          value: "3",
         },
       ],
-      questionList: [
+      // 职位类别
+      category_list: [
         {
-          value: "全部",
-          label: "全部",
+          category_name: "产品经理",
+          category_id: "1",
         },
         {
-          value: "语言测试",
-          label: "语言测试",
+          category_name: "UI/UX设计师",
+          category_id: "2",
         },
         {
-          value: "职场性格测试",
-          label: "职场性格测试",
+          category_name: "前端工程师",
+          category_id: "3",
         },
       ],
-      userGoEasy: {},
-      history: {
-        messages: [],
-        allLoaded: false,
-        loading: true,
+      // 职位偏好
+      position_list: [
+        {
+          category_name: "web前端开发",
+          position_id: "1",
+        },
+        {
+          category_name: "UI/UX设计师",
+          position_id: "2",
+        },
+        {
+          category_name: "前端工程师",
+          position_id: "3",
+        },
+      ],
+      // 汇报上级
+      superiors_list: [
+        { label: "班长", value: "1" },
+        { label: "领班", value: "2" },
+        { label: "组长", value: "3" },
+        { label: "部门主管", value: "4" },
+        { label: "副主任", value: "5" },
+        { label: "主任", value: "6" },
+        { label: "部门经理", value: "7" },
+        { label: "副厂长", value: "8" },
+        { label: "厂长", value: "9" },
+        { label: "副总监", value: "10" },
+        { label: "总监", value: "12" },
+        { label: "业务负责人", value: "13" },
+        { label: "项目负责人", value: "14" },
+        { label: "总工", value: "15" },
+        { label: "技术负责人", value: "16" },
+        { label: "副总经理", value: "17" },
+        { label: "项目总经理", value: "18" },
+        { label: "区域城市总经理", value: "19" },
+        { label: "公司总经理", value: "20" },
+        { label: "秘书", value: "21" },
+        { label: "助理", value: "22" },
+        { label: "副部长", value: "23" },
+        { label: "部长", value: "24" },
+        { label: "副院长", value: "25" },
+        { label: "院长", value: "26" },
+        { label: "副书记", value: "27" },
+        { label: "书记", value: "28" },
+        { label: "副总裁", value: "29" },
+        { label: "总裁", value: "30" },
+        { label: "董事长", value: "31" },
+        { label: "董事会", value: "32" },
+        { label: "其他领导", value: "33" },
+      ],
+      // 下级人数
+      subordinate_list: [
+        { label: "1-3人", value: "1" },
+        { label: "3-5人", value: "2" },
+        { label: "5-10人", value: "3" },
+        { label: "10-20人", value: "4" },
+        { label: "20-50人", value: "5" },
+        { label: "50-100人", value: "6" },
+        { label: "100-200人", value: "7" },
+        { label: "200-500人", value: "8" },
+        { label: "500-1000人", value: "9" },
+        { label: "1000人以上", value: "10" },
+      ],
+      // 归属部门
+      department_list: [
+        { label: "总裁办", value: "1" },
+        { label: "总经理办", value: "2" },
+        { label: "人力资源部", value: "3" },
+        { label: "行政部", value: "4" },
+        { label: "财务部", value: "5" },
+        { label: "法务部", value: "6" },
+        { label: "执行部", value: "7" },
+        { label: "生产部", value: "8" },
+        { label: "交付部", value: "9" },
+        { label: "安监部", value: "10" },
+        { label: "其他支持部门", value: "11" },
+        { label: "党群部", value: "12" },
+        { label: "工会办", value: "13" },
+        { label: "运营部", value: "14" },
+        { label: "保卫部", value: "15" },
+        { label: "纪检部", value: "16" },
+        { label: "宣传部", value: "17" },
+        { label: "后勤部", value: "18" },
+        { label: "投诉部", value: "19" },
+        { label: "投资部", value: "20" },
+        { label: "金融部", value: "21" },
+        { label: "融资部", value: "22" },
+        { label: "业务部", value: "23" },
+        { label: "工程部", value: "24" },
+        { label: "销售部", value: "25" },
+        { label: "策划部", value: "26" },
+        { label: "技术部", value: "27" },
+        { label: "研发部", value: "28" },
+        { label: "研究部", value: "29" },
+        { label: "开发部", value: "30" },
+        { label: "法务部", value: "31" },
+        { label: "发展部", value: "32" },
+        { label: "前期部", value: "33" },
+        { label: "售前部", value: "34" },
+        { label: "售后部", value: "35" },
+        { label: "维修部", value: "36" },
+        { label: "统计部", value: "37" },
+        { label: "分析部", value: "38" },
+        { label: "项目部", value: "39" },
+        { label: "采购部", value: "40" },
+        { label: "材料部", value: "41" },
+        { label: "测试部", value: "42" },
+        { label: "公关部", value: "43" },
+        { label: "运维部", value: "44" },
+        { label: "其他部门", value: "45" },
+      ],
+      // 职位级别
+      rank_list: [
+        { label: "工程师", value: "1" },
+        { label: "程序员", value: "2" },
+        { label: "测试员", value: "3" },
+        { label: "服务员", value: "4" },
+        { label: "专员", value: "5" },
+        { label: "普通员工", value: "6" },
+        { label: "班长", value: "7" },
+        { label: "领班", value: "8" },
+        { label: "组长", value: "9" },
+        { label: "部门主管", value: "10" },
+        { label: "副主任", value: "11" },
+        { label: "主任", value: "12" },
+        { label: "部门经理", value: "13" },
+        { label: "副厂长", value: "14" },
+        { label: "厂长", value: "15" },
+        { label: "副总监", value: "16" },
+        { label: "总监", value: "17" },
+        { label: "业务负责人", value: "18" },
+        { label: "项目负责人", value: "19" },
+        { label: "总工", value: "20" },
+        { label: "技术负责人", value: "21" },
+        { label: "副总经理", value: "22" },
+        { label: "项目总经理", value: "23" },
+        { label: "区域城市总经理", value: "24" },
+        { label: "公司总经理", value: "25" },
+        { label: "秘书", value: "26" },
+        { label: "助理", value: "27" },
+        { label: "副部长", value: "28" },
+        { label: "部长", value: "29" },
+        { label: "副院长", value: "30" },
+        { label: "院长", value: "31" },
+        { label: "副书记", value: "32" },
+        { label: "书记", value: "33" },
+        { label: "副总裁", value: "34" },
+        { label: "总裁", value: "35" },
+        { label: "董事长", value: "36" },
+        { label: "其他职位", value: "37" },
+      ],
+      // 学历
+      education_list: [
+        { label: "普通高校", value: "1" },
+        { label: "一本院校", value: "2" },
+        { label: "211/985", value: "3" },
+        { label: "双一流", value: "4" },
+        { label: "海外留学", value: "5" },
+        { label: "不限", value: "6" },
+      ],
+      // 年龄
+      age_list: {
+        18: "18",
+        20: "20",
+        25: "25",
+        30: "30",
+        35: "35",
+        40: "40",
+        45: "45",
+        50: "50",
+        55: "55",
+        60: "60",
       },
-      assessValList: [
-        "一",
-        "二",
-        "三",
-        "四",
-        "五",
-        "六",
-        "七",
-        "八",
-        "九",
-        "十",
+      // 风格
+      style_list: [
+        { label: "无要求", value: "1" },
+        { label: "干练", value: "2" },
+        { label: "儒雅", value: "3" },
+        { label: "文弱", value: "4" },
       ],
-      company_appraisal_category_id: "",
-      fileList: [],
-      position_id: "",
-      staffList: [], // 员工列表
-      industryList: [], //行业列表
-      category_list: [], // 职位列表
-      position_list: [], // 职位偏好
-      selt_industry_item: "", // 选中的行业名称
-      selt_positionType_item: "", // 选中的职位名称
-      ruleForm: {
-        question_types: "",
-        entry_offer: "", //offer存放入口
-        is_automation: "2", // 1.手动 2.自动
-        assessList: [[]], // 面试评估
-        qualityVal: false, // 素质评估
-        investigation: false, // 背景调查
-        position_name: "", // 职位名称
-        work_type: "", // 工作性质
-        position_desc: "", // 职位描述
-        position_lightspot: "", // 职位亮点
-        position_type: "", // 职位类别
-        industry_requirement: "", // 行业要求
-        educational_experience: "",
-        job_preference: "", // 职位偏好
-        work_address: "", // 工作地址
-        xz_status: "",
-        xz_end: "",
-        months: "12",
-        gender:"",
-        work_times: "",
-        age_status: "", // 年龄范围
-        age_end: "",
-        supplementary_information: [], // 补充信息
-        sync_workmate: "", // 同事
-        need_nums: "", // 招聘人数
-        job_benefits: "", // 职位福利
-        resume_demand: "", // 简历要求
-        region: "",
-        date1: "",
-        date2: "",
-        delivery: false,
-        type: [],
-        selectedOptions: [], // 选中的地址
+      // 薪资
+      emolument_list: {
+        0: "0K",
+        10: "10K",
+        20: "20K",
+        30: "30K",
+        40: "40K",
+        50: "50K",
+        60: "60K",
+        70: "70K",
+        80: "80K",
+        90: "90K",
+        100: "100K",
       },
-      options: pcas, // 地址数据
+      // 工龄
+      seniority_list: [
+        { label: "无要求", value: "1" },
+        { label: "1-3年", value: "2" },
+        { label: "3-5年", value: "3" },
+        { label: "5-8年", value: "4" },
+        { label: "8-10年", value: "5" },
+        { label: "10-15年", value: "6" },
+        { label: "15-20年", value: "7" },
+        { label: "20-30年", value: "8" },
+        { label: "30年以上", value: "9" },
+      ],
+      // 试用期时长
+      probation_list: [
+        { label: "无试用期", value: "1" },
+        { label: "1个月", value: "2" },
+        { label: "2个月", value: "3" },
+        { label: "3个月", value: "4" },
+        { label: "4个月", value: "5" },
+        { label: "5个月", value: "6" },
+        { label: "6个月", value: "7" },
+      ],
+      // 同步简历
+      staffList: [{ staff_name: "郜喜忠" }, { staff_name: "孙家旺" }],
+      // 福利待遇
+      benefits_list: [
+        { label: "五险一金", value: "1" },
+        { label: "绩效奖金", value: "2" },
+        { label: "餐补", value: "3" },
+        { label: "交通补", value: "4" },
+        { label: "住房补", value: "5" },
+        { label: "业绩提成", value: "6" },
+      ],
+      // 素质评估
+      quality_list: [
+        { label: "素质评估1", value: "1" },
+        { label: "素质评估2", value: "2" },
+        { label: "素质评估3", value: "3" },
+        { label: "素质评估4", value: "4" },
+      ],
+      // 背景调查
+      investigation_list: [
+        { label: "身份验证", value: "1" },
+        { label: "学历验证", value: "2" },
+        { label: "学位验证", value: "3" },
+        { label: "工商信息验证", value: "4" },
+        { label: "涉案法律验证", value: "5" },
+        { label: "征信", value: "6" },
+        { label: "失信人", value: "7" },
+        { label: "执行人", value: "8" },
+        { label: "社会舆情", value: "9" },
+      ],
+      // 入职资料
+      entry_data_list: [
+        { label: "身份证照片", value: "1" },
+        { label: "学历证照片", value: "2" },
+        { label: "最近六个月工资单银行流水", value: "3" },
+        { label: "最近六个月二级以上医院体检报告", value: "4" },
+        { label: "离职证明", value: "5" },
+        { label: "2寸白底照片", value: "6" },
+      ],
+      assessList: [
+        {
+          question: "",
+          title: "面试题1(专业类)",
+          tips: "XX机械出现了XX故障，有哪些方法解决？",
+        },
+        {
+          question: "",
+          title: "面试题2(管理类)",
+          tips: "从利润角度出发，你认为提升公司的经营效率最好的方法有哪些？",
+        },
+        {
+          question: "",
+          title: "面试题3(市场类)",
+          tips: "谈谈你对市场开拓的有效办法？",
+        },
+        {
+          question: "",
+          title: "面试题4(其他综合胜任能力)",
+          tips: "我们公司主要是做XX产品的，如果你作为负责人，你以什么为抓手去开支你的工作？业务重心放在哪方面？主要关注那些经营指标的那部分？",
+        },
+        {
+          question: "",
+          title: "面试题5(企业文化匹配)",
+          tips: "你认为什么样的企业文化和管理风格是和你比较匹配的？",
+        },
+        {
+          question: "",
+          title: "面试题6(解决问题能力)",
+          tips: "如果你有个下级是公司领导的亲戚，但是工作能力无法满足岗位要求，你会怎么解决？",
+        },
+        {
+          question: "",
+          title: "面试题7(入职时间)",
+          tips: "如果面试通过了面试，你的具体到岗时间是几月几号？",
+        },
+        {
+          question: "",
+          title: "面试题8(意愿度)",
+          tips: "如果面试成功了，你是直接选择加盟我公司，还是会再做对比或考虑？",
+        },
+      ],
+
+      // 必填提示
       rules: {
-        // 必填提示
         position_name: [
           { required: true, message: "请输入职位名称", trigger: "blur" },
         ],
-        work_address: [
-          { required: true, message: "请输入工作地址", trigger: "blur" },
-        ],
-        work_type: [
+        position_type: [
           { required: true, message: "请选择工作性质", trigger: "change" },
         ],
         position_desc: [
-          { required: true, message: "请填写职位描述", trigger: "blur" },
+          { required: true, message: "请输入详细岗位要求", trigger: "blur" },
         ],
         position_lightspot: [
-          { required: true, message: "请填写职业亮点", trigger: "blur" },
+          { required: true, message: "请输入职位优势", trigger: "blur" },
         ],
-        position_type: [
-          { required: true, message: "请选择职位类别", trigger: "change" },
+        position_industry: [
+          { required: true, message: "请选择所属行业", trigger: "change" },
         ],
-        industry_requirement: [
-          { required: true, message: "请选择行业要求", trigger: "change" },
+        position_class: [
+          { required: true, message: "请选择岗位类别", trigger: "change" },
         ],
-        educational_experience: [
-          { required: true, message: "请选择学历要求", trigger: "change" },
-        ],
-        work_times: [
-          { required: true, message: "请选择工作时间", trigger: "change" },
-        ],
-        xz_status: [
-          { required: true, message: "请选择薪资范围", trigger: "change" },
-        ],
-        xz_end: [
-          { required: true, message: "请选择薪资范围", trigger: "change" },
-        ],
-        age_status: [
-          { required: true, message: "最低年龄要求", trigger: "blur" },
-        ],
-        age_end: [{ required: true, message: "最高年龄要求", trigger: "blur" }],
-        months: [{ required: true, message: "请选择", trigger: "change" }],
-        need_nums: [
-          { required: true, message: "请填写招聘人数", trigger: "blur" },
-        ],
-        job_preference: [
+        position_job: [
           { required: true, message: "请选择职位偏好", trigger: "change" },
         ],
-        job_preference: [
-          { required: true, message: "请选择职位偏好", trigger: "change" },
+        position_capacity: [
+          { required: true, message: "请输入工作职能", trigger: "blur" },
+        ],
+        position_authority: [
+          { required: true, message: "请输入工作职权", trigger: "blur" },
+        ],
+        position_superiors: [
+          { required: true, message: "请选择汇报上级", trigger: "change" },
+        ],
+        position_subordinate: [
+          { required: true, message: "请选择下级人数", trigger: "change" },
+        ],
+        position_department: [
+          { required: true, message: "请选择归属部门", trigger: "change" },
+        ],
+        position_rank: [
+          { required: true, message: "请选择职位级别", trigger: "change" },
+        ],
+        position_education: [
+          { required: true, message: "请选择学历", trigger: "change" },
+        ],
+        position_age: [
+          { required: true, message: "请选择学历", trigger: "blur" },
+        ],
+        position_style: [
+          { required: true, message: "请选择风格", trigger: "change" },
+        ],
+        position_entry_time: [
+          { required: true, message: "请选择入职时间", trigger: "change" },
+        ],
+        position_emolument: [
+          { required: true, message: "请选择薪酬范围", trigger: "blur" },
+        ],
+        position_seniority: [
+          { required: true, message: "请选择工龄", trigger: "change" },
+        ],
+        position_probation: [
+          { required: true, message: "请选择试用期时长", trigger: "change" },
+        ],
+        position_benefits: [
+          { required: true, message: "请选择福利待遇", trigger: "change" },
+        ],
+        position_num: [
+          { required: true, message: "请输入招聘人数", trigger: "blur" },
+        ],
+        position_name: [
+          { required: true, message: "请输入办理入职联系人", trigger: "blur" },
+        ],
+        position_phone: [
+          {
+            required: true,
+            message: "请输入办理入职联系人电话",
+            trigger: "blur",
+          },
+        ],
+        position_workplace: [
+          { required: true, message: "请输入工作地点", trigger: "blur" },
+        ],
+        position_address: [
+          { required: true, message: "请输入办理入职地点", trigger: "blur" },
         ],
       },
-      desc_placeholder: `请输入岗位职责、任职要求等描述，至少10个字，建议使用以下格式逐条列出岗位职责
-        职责描述:
-        1...
-        2...
-        任职要求:
-        1...
-        2...
-        补充说明
-        晋升说明、培训情况等工作时间、
-        `,
-      hight_placeholder: `1.您可以问下招聘需求方，他们更懂得如何用有趣且个性化的方式来吸引该类人才。
-  2. 建议填写调薪机制&晋升通道、是否牛人带队、团队氛围、企业发展潜力等.
-        `,
+
+      // 详细岗位要求-tips
+      desc_placeholder: `公司及项目介绍：\n岗位职责：\n岗位要求：\n岗位经验要求：\n福利待遇：\n`,
+      // 岗位优势-tips
+      advantage_placeholder: `1.您可以问下招聘需求方，他们更懂得如何用有趣且个性化的方式来吸引该类人才。\n2. 建议填写调薪机制&晋升通道、是否牛人带队、团队氛围、企业发展潜力等.`,
+
+      // 表单数据
+      ruleForm: {
+        quality: [],
+        age: [18, 60],
+        emolument: [0, 100],
+        time: "",
+        workplace: "",
+        address: "",
+      },
     };
   },
-  components: {},
-  mounted() {
-    // console.log(this.$root.positionItems);
-    // 获取员工列表
-    this.getStaffList();
-    // 素质评估问题列表
-    this.getCompanyList();
-  },
-  created() {
-    if (this.$route.query.id) {
-      this.position_id = this.$route.query.id;
-      this.getDetails(this.position_id, this.getPositionList);
-    } else {
-      // 获取行业列表信息
-      this.getPositionList();
-    }
-  },
+  mounted() {},
+  created() {},
   methods: {
-    agent() {
-      const that = this;
-      let position_name = that.ruleForm.position_name;
-      let position_desc = that.ruleForm.position_desc;
-      if (position_name == "") {
-        that.$message.warning({
-          message: "请先填写职位名称",
-        });
-        return;
-      }
-      let kimiUrl = "https://api.moonshot.cn/v1/chat/completions";
-      let kimiHeader = {
-        "Content-Type": "application/json",
-        Authorization: "sk-bg5hWvn56MdLPKZ3iZ8NBJ2JpAfq2XGSSCmM7ybHqQ5lZ7Vx",
-      };
-      let kimiData = {
-        model: "moonshot-v1-8k",
-        messages: [
-          {
-            role: "user",
-            content: "写一个" + position_name + "的职位描述",
-          },
-        ],
-        temperature: 0.3,
-      };
-      let jsonString = JSON.stringify(kimiData);
-
-      that.ruleForm.position_desc = "正在获取中...";
-      axios({
-        method: "post",
-        url: kimiUrl,
-        headers: kimiHeader,
-        data: jsonString,
-      })
-        .then(function (response) {
-          // 请求成功，处理响应数据
-          that.ruleForm.position_desc =
-            response.data.choices[0].message.content; // 职位描述
-
-          that.ruleForm.position_lightspot = "正在获取中...";
-          that.setLightspotAgent(kimiUrl, kimiHeader);
-        })
-        .catch(function (error) {
-          // 请求失败，处理错误
-          console.error(error);
-        });
+    // 点击图标地址
+    clickIconAddress(i) {
+      this.addressType = i;
+      this.mapVisible = true;
     },
-    setLightspotAgent(kimiUrl, kimiHeader) {
+    // 点击弹窗地图地址确认按钮
+    clickMapAddress() {
       const that = this;
-      let position_name = that.ruleForm.position_name;
-      let kimiData = {
-        model: "moonshot-v1-8k",
-        messages: [
-          {
-            role: "user",
-            content: "写一个" + position_name + "的职位亮点",
-          },
-        ],
-        temperature: 0.3,
-      };
-      let jsonString = JSON.stringify(kimiData);
-      axios({
-        method: "post",
-        url: kimiUrl,
-        headers: kimiHeader,
-        data: jsonString,
-      })
-        .then(function (response) {
-          // 请求成功，处理响应数据
-          that.ruleForm.position_lightspot =
-            response.data.choices[0].message.content; // 职位亮点
-          console.log(response.data.choices);
-        })
-        .catch(function (error) {
-          // 请求失败，处理错误
-          console.error(error);
-        });
-    },
-    sendMessage(message, userName) {
-      const that = this;
-      this.history.messages.push(message);
-      this.goEasy.im.sendMessage({
-        message: message,
-        onSuccess: (message) => {
-          console.log("发送成功", message);
-          that.$message.success({
-            message: "已向候选人" + userName + "发送面试测试",
-          });
-        },
-        onFailed: function (error) {
-          if (error.code === 507) {
-            alert("发送失败，没有配置OSS存储");
-            console.log("发送失败，没有配置OSS存储");
-          } else {
-            console.log("发送失败:", error);
-          }
-        },
-      });
-    },
-    // 发送面试评估/素质评估
-    setAssessMessage(positionId, uids) {
-      const that = this;
-      uids.forEach((item) => {
-        that.userGoEasy = {
-          type: this.GoEasy.IM_SCENE.PRIVATE,
-          id: "u_" + item.uid,
-          data: {
-            uid: item.uid,
-            name: item.name,
-            avatar: item.avatar,
-            user_number: item.user_number,
-            position_id: positionId, // 岗位id
-            company_id: localStorage.getItem("company_id"), // 公司id
-            position_name: this.ruleForm.position_name, // 职位名称
-          },
-        };
-
-        // 面试评估
-        if (this.ruleForm.assessList.length > 0) {
-          var payload = {
-            contentType: "assess",
-            assessList: this.ruleForm.assessList,
-          };
-          this.goEasy.im.createCustomMessage({
-            type: "assess",
-            payload,
-            to: that.userGoEasy,
-            onSuccess: (message) => {
-              that.sendMessage(message, item.name);
-            },
-            onFailed: (err) => {
-              console.log("创建消息err:", err);
-            },
-          });
-        }
-
-        // 素质评估
-        if (this.ruleForm.qualityVal) {
-          var quality = {
-            id: this.company_appraisal_category_id,
-            contentType: "quality",
-            url: "",
-          };
-          this.goEasy.im.createCustomMessage({
-            type: "quality",
-            quality,
-            to: that.userGoEasy,
-            onSuccess: (message) => {
-              that.sendMessage(message, item.name);
-            },
-            onFailed: (err) => {
-              console.log("创建消息err:", err);
-            },
-          });
-        }
-      });
-    },
-
-    // 上传图片文件
-    uploadArticleCover(param) {
-      console.log(param.file);
-      const that = this;
-      const formData = new FormData();
-      formData.append("file[]", param.file);
-      formData.append("pictureCategory", "articleCover");
-      formData.append("up_tag", "avatar");
-      this.$axios
-        .post("/api/upload", formData, {
-          "Content-Type": "multipart/form-data",
-        })
-        .then((res) => {
-          let file = [
-            {
-              name: "文件已上传",
-              url: res.data.upload_files,
-            },
-          ];
-          console.log(res.data);
-          console.log(res.data.upload_files);
-          that.ruleForm.entry_offer = res.data.upload_files;
-          that.fileList = file;
-        })
-        .catch((e) => {
-          console.log("erro");
-          this.$refs["upload"].clearFiles();
-        });
-    },
-    // 最大薪资不能小于最低薪资
-    changeMoney() {
-      if (this.ruleForm.xz_status != "" && this.ruleForm.xz_end != "") {
-        if (this.ruleForm.xz_status > this.ruleForm.xz_end) {
-          this.ruleForm.xz_end = "";
-          this.$message.error({
-            message: "最低薪资不能大于最高薪资！",
-          });
-        }
+      this.mapVisible = false;
+      let agentAddress = that.$refs.mapConten.agentAddress;
+      if (that.addressType == 0) {
+        that.ruleForm.workplace = agentAddress;
+      } else if (that.addressType == 1) {
+        that.ruleForm.address = agentAddress;
       }
     },
-    // 删除一条面试评估
-    handleClickAssess(item, index, i) {
-      this.ruleForm.assessList[i].splice(index, 1);
-      // this.ruleForm.assessList.splice(index, 1);
-    },
-    // 添加一条面试评估
-    addAssess(index) {
-      const that = this;
-      let assessList = that.ruleForm.assessList;
-      let assessObj = {
-        question: "",
-        answer: "视频",
-      };
-      assessList[index].push(assessObj);
-      // assessList[index] = [...assessList[index], assessObj];
-      // that.ruleForm.assessList = assessList;
-    },
-    // 添加面试评估
-    addAssessItem(index) {
-      const that = this;
-      if (that.ruleForm.assessList.length >= 10) {
-        that.$message.success({
-          message: "最多添加十条面试次数",
-        });
-        return;
+    // 素质评估
+    changeQuality(e) {
+      if (e.length >= 2) {
+        this.ruleForm.quality = [];
+        this.ruleForm.quality = [e[0], e[1]];
       }
-      let array = [];
-      that.ruleForm.assessList.push(array);
     },
-    // 点击选择行业要求
-    changeIndustry(e) {
-      this.selt_industry_item = e;
-      let industryList = this.industryList;
-      this.selt_positionType_item = ""; // 选中的职位类别名称
-      (this.ruleForm.position_type = ""),
-        (this.ruleForm.job_preference = ""),
-        industryList.forEach((ele) => {
-          if (ele.industry == e) {
-            this.category_list = ele.category_list;
-          }
-        });
-    },
-    // 点击选择职位类别
-    changePositionType(e) {
-      this.selt_positionType_item = e;
-      let category_list = this.category_list;
-      category_list.forEach((ele) => {
-        if (ele.category_name == e) {
-          this.position_list = ele.position_list;
-        }
-      });
-    },
-    // 获取职位列表信息
-    getPositionList(i) {
-      let that = this;
-      that.$axios
-        .post("/api/position/list", {})
-        .then((res) => {
-          let industryList = res.data;
-          if (i) {
-            that.industryList = industryList;
-            let ruleForm = that.ruleForm;
-            let selt_industry_item = ruleForm.industry_requirement; // 选中的行业名称
-            let selt_positionType_item = ruleForm.position_type; // 选中的职位类别名称
-            that.selt_industry_item = selt_industry_item;
-            that.selt_positionType_item = selt_positionType_item;
-            industryList.forEach((ele) => {
-              if (ele.industry == selt_industry_item) {
-                that.category_list = ele.category_list; // 职位列表
-              }
-            });
-            that.category_list.forEach((ele) => {
-              if (ele.category_name == selt_positionType_item) {
-                that.position_list = ele.position_list;
-              }
-            });
-          } else {
-            that.industryList = industryList;
-          }
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
-    // 获取员工列表
-    getStaffList() {
-      let that = this;
-      that.$axios.post("/api/staff/index", {}).then((res) => {
-        if (res.code == 0) {
-          that.staffList = res.data;
-        } else {
-          that.$message.error({
-            message: res.data.msg,
-          });
-        }
-      });
-    },
-    // 获取详情
-    getDetails(i, f) {
-      let that = this;
-      let id = i;
-      let p = {
-        position_id: id,
-      };
-      that.$axios.post("/api/company-position/detail", p).then((res) => {
-        if (res.code == 0) {
-          let ruleForm = JSON.parse(JSON.stringify(res.data));
-          let salary = res.data.salary.split("-");
-          let limit_age = res.data.limit_age.split("-");
-          ruleForm.selectedOptions = res.data.work_address.split("/");
-          ruleForm.xz_status = salary[0];
-          ruleForm.xz_end = salary[1];
-          ruleForm.age_status = limit_age[0];
-          ruleForm.age_end = limit_age[1];
-          ruleForm.job_benefits = res.data.job_benefits.split(",");
-          ruleForm.supplementary_information =
-            res.data.supplementary_information.split(",");
-          ruleForm.sync_workmate = res.data.sync_workmate.split(",");
-          ruleForm.resume_demand = res.data.resume_demand.split(",");
-          ruleForm.work_type = res.data.work_type + "";
-          ruleForm.months = res.data.months ? res.data.months : "12";
-          that.ruleForm = ruleForm;
-          return f(id);
-        } else {
-          that.$message.error({
-            message: res.msg,
-          });
-        }
-      });
-    },
-    // 获取省市区地址级联
-    handleChange(thsAreaCode) {
-      // thsAreaCode = this.$refs['cascaderAddr'].getCheckedNodes()[0].pathLabels// 注意2： 获取label值
-      this.selectedOptions = thsAreaCode;
-    },
-    radioGroup(v) {
-      console.log(v);
-    },
-    // 点击重置
-    resetForm() {
-      this.fileList = [];
-      this.ruleForm = {
-        entry_offer: "",
-        assessList: [[]],
-        qualityVal: false, // 素质评估
-        position_name: "", // 职位名称
-        work_type: "", // 工作性质
-        position_desc: "", // 职位描述
-        position_lightspot: "", // 职位亮点
-        position_type: "", // 职位类别
-        industry_requirement: "", // 行业要求
-        educational_experience: "", // 学历要求
-        job_preference: "", // 职位偏好
-        work_address: "", // 工作地址
-        xz_status: "",
-        xz_end: "",
-        age_status: "",
-        age_end: "",
-        months: "12",
-        work_times: "", // 工作要求
-        gender:"",
-        supplementary_information: [], // 补充信息
-        sync_workmate: "", // 同事
-        need_nums: "", // 招聘人数
-        job_benefits: "", // 职位福利
-        resume_demand: "", // 简历要求
-        region: "",
-        date1: "",
-        date2: "",
-        delivery: false,
-        type: [],
-      };
-    },
-    // 点击提交
-    submitForm() {
-      let that = this;
-      let ruleForm = that.ruleForm;
-      if (ruleForm.qualityVal && ruleForm.question_types == "") {
-        that.$message.error({
-          message: "请选择评估题目",
-        });
-        return;
-      }
+    handleVideoUploadSuccess(response, file) {
+      // 假设服务器返回的数据结构如下：
+      // { success: true, data: { videoUrl: 'https://example.com/video.mp4' } }
+      const videoUrl = response.data.videoUrl;
 
-      // 勾选了素质评估
-      if (ruleForm.qualityVal) {
-        that.company_appraisal_category_id = ruleForm.question_types;
-      }
-
-      let p = {
-        is_automation: "2",
-        entry_offer: ruleForm.entry_offer, // offer 存放地址
-        interview_evaluation: JSON.stringify(ruleForm.assessList), // 面试评估
-        quality_assessment: ruleForm.qualityVal ? 1 : 2, // 素质评估 1.开启 2.关闭
-        position_name: ruleForm.position_name,
-        work_type: ruleForm.work_type,
-        position_desc: ruleForm.position_desc,
-        position_lightspot: ruleForm.position_lightspot,
-        position_type: ruleForm.position_type,
-        industry_requirement: ruleForm.industry_requirement,
-        educational_experience: ruleForm.educational_experience,
-        job_preference: ruleForm.job_preference,
-        months: ruleForm.months,
-        work_address: ruleForm.selectedOptions!=""?ruleForm.selectedOptions.join('/'):"",
-        salary: ruleForm.xz_status + "-" + ruleForm.xz_end,
-        limit_age: ruleForm.age_status + "-" + ruleForm.age_end,
-        job_benefits: ruleForm.job_benefits!=""?ruleForm.job_benefits.join(','):"",
-        need_nums: ruleForm.need_nums,
-        supplementary_information: ruleForm.supplementary_information!= ""?ruleForm.supplementary_information.join(","):"",
-        sync_workmate: ruleForm.sync_workmate!= ""?ruleForm.sync_workmate.join(','):"",
-        resume_demand: ruleForm.resume_demand != ""?ruleForm.resume_demand.join(','):"",
-        work_times: ruleForm.work_times,
-        sex: ruleForm.gender,
-        
-      };
-      let url = "";
-      let position_id = that.position_id;
-      if (position_id) {
-        // 修改编辑
-        p.id = position_id;
-        url = "/api/company-position/edit";
-      } else {
-        // 新发布
-        url = "/api/company-position/publish";
-      }
-      console.log(p);
-
-      that.$axios.post(url, p).then((res) => {
-        if (res.code == 0) {
-          that.$message.success(" 发布成功！");
-          if (res.data) {
-            that.setAssessMessage(res.data.position_id, res.data.users);
-            that.messageShow(res.data.users);
-            return;
-          }
-          setTimeout(() => {
-            that.$router.push("/jobCenter");
-          }, 1500);
-        } else {
-          that.$message.error({
-            message: res.msg,
-          });
-        }
-      });
+      // 将视频URL保存到组件状态中，以便后续回显
+      this.videoUrl = videoUrl;
     },
-    // 获取素质评估题目
-    getCompanyList() {
-      const that = this;
-      that.$axios.post("api/company-appraisal-category/list").then((res) => {
-        that.questionList = res.data;
-      });
-    },
-    // 发送显示消息
-    messageShow(userList) {
-      const that = this;
-      userList.forEach((item) => {
-        setTimeout(() => {
-          that.$notify({
-            title: "Agtnt招聘",
-            message: "已向" + item.name + "发送面试邀请",
-          });
-        }, 200);
-      });
+
+    handleRemoveVideo(file, fileList) {
+      // 清空回显的视频URL
+      this.videoUrl = null;
     },
   },
 };
 </script>
-  <style lang="scss" scoped>
+<style lang="scss" scoped>
 .assess-del {
   color: $g_bg;
 }
@@ -1242,6 +952,7 @@ export default {
     color: $g_textColor;
     position: relative;
     padding-left: 10px;
+    margin-bottom: 20px;
     &::after {
       content: "";
       width: 3px;
@@ -1252,56 +963,38 @@ export default {
       top: -2px;
     }
   }
-
-  .postJob-form-box {
-    width: 100%;
-    margin-top: 16px;
-    .desc-title {
-      font-size: 14px;
-      font-weight: 400;
-      color: $g_textColor;
-      line-height: 22px;
-    }
-    .line {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 10px;
-    }
-    .span-padd {
-      float: left;
-    }
-    /deep/ .el-form-item__content {
-      line-height: 32px;
-    }
-    /deep/ .el-form-item__label {
-      padding-right: 20px;
-      line-height: 32px;
-    }
-    /deep/ .el-input__inner {
-      height: 32px;
-      line-height: 32px;
-    }
-    /deep/ .el-input__icon {
-      line-height: 32px;
-    }
-    .xzfw-box {
-      margin-left: 12px;
-      &:nth-of-type(1) {
-        margin-left: 0;
-      }
-    }
+}
+.desc-title {
+  font-size: 12px;
+  font-weight: 400;
+  color: #999999;
+}
+.display-none {
+  position: fixed !important;
+  top: -100px !important;
+  width: 0px !important;
+  height: 0px !important;
+  padding: 0px !important;
+}
+.address {
+  display: flex;
+  align-items: center;
+  .icon {
+    font-size: 20px;
+    margin-left: 15px;
+    margin-right: 8px;
+    cursor: pointer;
   }
 }
 .btn-box {
   display: flex;
   align-items: center;
-  margin-top: 20px;
+  justify-content: space-between;
   & /deep/ .el-form-item__content {
     margin-left: 40px !important;
   }
   & /deep/ .el-button {
-    width: 114px;
+    width: 200px;
     height: 40px;
     margin-right: 20px;
   }
@@ -1310,22 +1003,5 @@ export default {
     border-color: $g_color;
   }
 }
-.el-upload__tip {
-  a {
-    color: $g_bg;
-  }
-}
-.assess-title {
-  width: 100%;
-  font-size: 15px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  i {
-    font-size: 22px;
-  }
-}
 </style>
+
