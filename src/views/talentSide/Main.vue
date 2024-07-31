@@ -66,14 +66,29 @@
       <el-drawer title="系统通知" :visible.sync="is_Notification" :before-close="clickCloseNotificationBtn">
         <div class="items-box">
           <ul>
-            <li class="s-list-nav" v-for="(item,index) in userDefriendList" :key="index">
-             
+            <li class="s-list-nav" v-for="(item,index) in notificationList" :key="index">
+              <div class="itemWrap">
+                <div class="s-avatar">
+                  <img :src=" item.operate_user_avatar ? item.operate_user_avatar : require('../../assets/image/img-user.jpg')" alt="" />
+                </div>
+                <div class="s-list-info">
+                  <div class="s-list-name">
+                    <span>
+                      <span>{{ item.operate_user_name }}添加了</span>
+                      <span>一条评论</span>
+                    </span>
+                    <span class="span-time">{{ item.createtime }}</span>
+                  </div>
+                  <div class="s-list-intro"><span>{{ item.content?item.content :'暂无'  }}</span></div>
+                </div>
+              </div>
             </li>
           </ul>
-          <div class="tips-box" v-if="userDefriendList.length<= 0">- 暂无通知 -</div>
+          <div class="tips-box" v-if="notificationList.length<= 0">- 暂无通知 -</div>
         </div>
       </el-drawer>
     </div>
+
   </div>
 </template>
 <script>
@@ -101,7 +116,7 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
       Sidebar,
       // buddyChart,
       magInfo,
-      TUICallKit
+      TUICallKit,
     },
     data(){
       return {
@@ -131,10 +146,9 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
         countTime: null,
         counter: 0,
         unreadTotal: null, // 新消息数量
-
-        is_Notification: false,
-        userDefriendList: [],
         vueDragResizeTitle: '消息中心',
+        notificationList: [],
+        is_Notification: false
       }
     },
     watch: {
@@ -267,29 +281,21 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
       // 监听导航上 点击通知按钮事件
       getNotification(params){
         let that = this;
-        this.is_Notification = false;
-        this.$nextTick(function () {
-          this.is_Notification = true;
-        });
-        return
-        that.$axios.post('',{}).then( res =>{
+        that.$axios.post('/api/system/notification/list',{}).then( res =>{
           if(res.code == 0){
-            that.userDefriendList = res.data.list;
-            that.drawer = true;
+            that.notificationList = res.data.list;
           }else{
             that.$message.error({
               message:res.msg
             })
-            return
           }
-
+          that.is_Notification = true;
         }).catch( e =>{
           that.$message.error({
             message:e.message
           })
           console.log(e)
         })
-       
       },
       // 点击会话列表获取所点击对象数据
       click_conversationList_item_getInfoData(params){
@@ -644,7 +650,6 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
     left: 50%;
     transform: translate(-50%,-50%);
   }
-  // 黑名单
   #drawer-box{
     /deep/ .el-drawer__header{
       margin: 0;
@@ -657,6 +662,73 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
       .s-list-nav{
         width: 100%;
         position: relative;
+        cursor: pointer;
+        .itemWrap{
+          padding: 8px 0;
+          display: flex;
+          align-items: center;
+          border-bottom: 1px solid #e2e2e2;
+          .s-avatar{
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            &>img{
+              width: 100%;
+              height: 100%;
+            }
+          }
+          .s-list-info{
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            margin: 10px;
+          
+            .s-list-name {
+              font-size: 15px;
+              color: #1e1f24;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+            }
+            .s-list-name span {
+              overflow-x: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
+            .s-list-name span.span-time{
+              font-size: 13px;
+              color: #848691;
+            }
+            .s-list-intro {
+              font-size: 14px;
+              height: 16px;
+              width: 100%;
+              color: #848691;
+              display: flex;
+              align-items: center;
+              padding-top: 10px;
+            }
+            .s-list-intro span {
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
+          }
+          .s-list-button .s-button {
+            height: 28px;
+            width: 60px;
+            background-color: $g_bg;
+            color: #fff;
+            border-radius: 20px;
+            font-size: 13px;
+            line-height: 28px;
+            text-align: center;
+            cursor: pointer;
+          }
+
+        }
       }
       .tips-box{
         width: 100%;
