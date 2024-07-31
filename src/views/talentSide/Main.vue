@@ -74,8 +74,14 @@
                 <div class="s-list-info">
                   <div class="s-list-name">
                     <span>
-                      <span>{{ item.operate_user_name }}添加了</span>
-                      <span>一条评论</span>
+                      <span>{{ item.operate_user_name }}</span>
+                      <!-- 通知类型 1.收藏 2.点赞 3.转发 4.查看 5.评论 6.回复 -->
+                      <span v-if="item.type == 1">收藏了您</span>
+                      <span v-if="item.type == 2">点赞了您的评论</span>
+                      <span v-if="item.type == 3">转发了您的评论</span>
+                      <span v-if="item.type == 4">查看了您的简历</span>
+                      <span v-if="item.type == 5">评论了您的动态</span>
+                      <span v-if="item.type == 6">评论了您的评论</span>
                     </span>
                     <span class="span-time">{{ item.createtime }}</span>
                   </div>
@@ -696,6 +702,8 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
               overflow-x: hidden;
               text-overflow: ellipsis;
               white-space: nowrap;
+              font-size: 14px;
+              font-weight: bold;
             }
             .s-list-name span.span-time{
               font-size: 13px;
@@ -729,6 +737,9 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
           }
 
         }
+      }
+      .s-list-nav:hover{
+        background: rgba(236, 236, 236, 0.288);
       }
       .tips-box{
         width: 100%;
