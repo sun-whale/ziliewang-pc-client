@@ -1544,7 +1544,7 @@ import Complaint from "@/components/complaint";
 
   .chat-title {
     height: auto;
-    padding: 6px 10px;
+    padding: 6px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;

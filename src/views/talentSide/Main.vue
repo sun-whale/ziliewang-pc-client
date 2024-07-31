@@ -31,7 +31,7 @@
        v-if="is_VueDragResize">
         <div class="VueDragResize-centent-box">
           <div class="VueDragResize-title-box">
-            <div class="title">消息中心</div>
+            <div class="title">{{ vueDragResizeTitle }}</div>
             <div class="icon-box">
               <img src="../../assets/image/icon-minificationpng.png" title="缩小"  @click="clickSXBtn" />
               <img src="../../assets/image/icon-fangda.png" title="放大"  @click="clickFDBtn" />
@@ -39,7 +39,9 @@
             </div>
           </div>
           <div class="Chat-box">
-            <buddyChart :title_show="title_show" :infoData="infoData" :laiyuan="laiyuan" :width="width" :height="height - 50"  is_pop="is_pop" ref="chat" />
+
+            <!-- <buddyChart :infoData="infoData" :laiyuan="laiyuan" is_pop="is_pop" ref="chat" /> -->
+            <magInfo :infoData="infoData" :laiyuan="laiyuan" @setVueDragResizeTitle="setVueDragResizeTitle" is_pop="is_pop" ref="chat" />
           </div>
         </div>
       </VueDragResize>
@@ -79,7 +81,8 @@ import Navbar from './components/Navbar';
 import Footer from '../../components/footer';
 import VueDragResize from 'vue-drag-resize';
 import Sidebar from './components/sidebar';
-import buddyChart from './components/mag/buddyChart.vue';
+// import buddyChart from './components/mag/buddyChart.vue';
+import magInfo from './components/mag/magInfo.vue';
 import { TUICallKit, TUICallKitServer, TUICallType,STATUS } from "@tencentcloud/call-uikit-vue2.6";
 import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
 
@@ -96,7 +99,8 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
       Footer,
       VueDragResize,
       Sidebar,
-      buddyChart,
+      // buddyChart,
+      magInfo,
       TUICallKit
     },
     data(){
@@ -112,7 +116,6 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
         left: 500,
         zInfex_0: 99,
         is_VueDragResize: false,
-        title_show: '',
         laiyuan:'',
         is_pop:'pop',
         infoData: {},
@@ -130,7 +133,8 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
         unreadTotal: null, // 新消息数量
 
         is_Notification: false,
-        userDefriendList: []
+        userDefriendList: [],
+        vueDragResizeTitle: '消息中心',
       }
     },
     watch: {
@@ -163,10 +167,10 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
       let getViewportSize = this.$getViewportSize();
       this.parentH = getViewportSize.height; // 组件范围
       this.parentW = getViewportSize.width; // 组件范围 
-      this.width = Number(getViewportSize.width)/2>820?Number(getViewportSize.width)/2:820; // 可拖动div 宽度
-      this.height = Number(getViewportSize.height - 80); // 可拖动div 高度
+      this.width = Number(getViewportSize.width)/2>1000?Number(getViewportSize.width)/2:1000; // 可拖动div 宽度
+      this.height = Number(getViewportSize.height - 120); // 可拖动div 高度
       this.left = Number(getViewportSize.width)/2 - Number(this.width)/2;
-      this.top = 40;
+      this.top = 60;
       this.currentUser = {
         id: 'u_'+ localStorage.getItem('realUid'),
         uid:localStorage.getItem('realUid'),
@@ -251,14 +255,12 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
         console.log(params)
         // '接收到的参数:' params
         this.laiyuan = params.laiyuan?params.laiyuan:'';
-        if(params.type){
-          this.title_show = params.type //JobDetails 是详情页  navbarMag 是导航
-        }
         this.infoData = params.infoData;
         this.is_VueDragResize = false;
         this.$nextTick(function () {
           this.is_VueDragResize = true;
         });
+        this.$store.dispatch('user/actions_sidebarShow',false);// vuex
         // this.zInfex_0 = 99;
         // this.top = 56;
       },
@@ -325,9 +327,9 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
         let getViewportSize = this.$getViewportSize();
         this.is_VueDragResize = false;
         this.$nextTick(() =>{
-          this.width = Number(getViewportSize.width)/2>820?Number(getViewportSize.width)/2:820; // 可拖动div 宽度
-          this.height = Number(getViewportSize.height - 80); // 可拖动div 高度
-          this.top = 40;
+          this.width = Number(getViewportSize.width)/2>1000?Number(getViewportSize.width)/2:1000; // 可拖动div 宽度
+          this.height = Number(getViewportSize.height - 120); // 可拖动div 高度
+          this.top = 60;
           this.left = Number(getViewportSize.width)/2 - Number(this.width)/2;
           this.is_VueDragResize = true;
         })
@@ -355,6 +357,15 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
       // 点击 系统通知弹窗关闭按钮
       clickCloseNotificationBtn(){
         this.is_Notification = false;
+      },
+      setVueDragResizeTitle(e){
+        // 'conversations' 聊天记录  ， 'contacts' 好友
+        if(e.menu_type == 'conversations'){
+          this.vueDragResizeTitle = '消息中心';
+        }
+        if(e.menu_type == 'contacts'){
+          this.vueDragResizeTitle = '我的好友';
+        }
       },
 
       // 腾讯云 初始化
@@ -584,6 +595,7 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
       font-size: 14px;
       height: auto;
       padding: 10px;
+      padding-left: 60px;
       cursor: move;
       .icon-box{
         display: flex;

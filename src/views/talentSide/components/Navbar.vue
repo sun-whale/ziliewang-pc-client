@@ -30,13 +30,9 @@
               <img src="../../../assets/image/nav_1.png" alt="" />
               <span>朋友圈</span>
             </div>
-            <div @click="clickmyGoodFriend">
+            <div @click="clickMessage" class="communication-box">
               <img src="../../../assets/image/nav_hy.png" alt="" />
               <span>我的好友</span>
-            </div>
-            <div @click="clickMessage" class="communication-box">
-              <img src="../../../assets/image/icon-wechat1.png" alt="" />
-              <span>消息</span>
               <span class="corner-mark-box" v-if="unreadTotal">{{ unreadTotal }}</span>
             </div>
             <div @click="clickNotification" class="communication-box">

@@ -18,7 +18,7 @@
         </div>
       </div>
       <div class="home-main">
-        <buddyChart v-if="menu_type == 'conversations'"/>
+        <buddyChart v-if="menu_type == 'conversations'" :infoData="infoData" :laiyuan="laiyuan"/>
         <contacts v-if="menu_type == 'contacts'" :msgList="msgList"/>
       </div>
     </div>
@@ -34,7 +34,13 @@ export default {
     contacts
   },
   props:{
-    is_type:{
+    infoData:{
+      type: Object,
+      default() {
+        return {}
+      }
+    },
+    laiyuan:{
       type: String,
       default() {
         return ''
@@ -69,6 +75,7 @@ export default {
     },
   },
   created(){
+
     this.currentUser = {
       id: 'u_'+ localStorage.getItem('realUid'),
       uid:localStorage.getItem('realUid'),
@@ -107,6 +114,7 @@ export default {
     
     menuItem(n){
       this.menu_type = n;
+      this.$emit('setVueDragResizeTitle',{menu_type: n});
     },
 
   }
@@ -122,7 +130,6 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px 0 10px 0;
   }
 
   .home-container {
@@ -131,7 +138,6 @@ export default {
     background: #FFFFFF;
     display: flex;
     position: relative;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   }
 
   .home-menu {
@@ -144,7 +150,7 @@ export default {
   }
 
   .menu-header {
-    margin: 20px auto;
+    margin: 10px auto;
   }
 
   .user-avatar {

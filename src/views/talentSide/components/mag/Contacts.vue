@@ -1,7 +1,7 @@
 <template>
   <div class="contact">
-    <div class="contact-left">
-      <div class="contact-list-title">好友</div>
+    <div class="contact-left" :class=" is_show ? 'show' : '' ">
+      <!-- <div class="contact-list-title">好友</div> -->
       <div class="friend-list">
         <div
           v-for="(friend, key) in friends || []"
@@ -24,6 +24,8 @@
           -暂无关注的好友-
         </div>
       </div>
+      <img src="../../../../assets/image/icon-shouqi.png" alt="收起" class="icon-shouqi" v-if="is_show" @click="clickiconShow"/>
+      <img src="../../../../assets/image/icon-zhankai.png" alt="展开" class="icon-zhankai" v-if="!is_show" @click="clickiconShow"/>
     </div>
     <div class="contact-main" v-if="!is_chat">
       <div class="profile-card" v-if="profile.friend">
@@ -99,12 +101,16 @@ export default {
       moreShow: false,
       moreStates: "",
       cancelPage: {},
+      is_show: true
     };
   },
   mounted() {
     this.friends = this.msgList;
   },
   methods: {
+    clickiconShow(){
+      this.is_show = !this.is_show;
+    },
     // 校验拉黑 / 删除
     clickMore(type) {
       const that = this;
@@ -191,11 +197,30 @@ export default {
 }
 
 .contact-left {
-  width: 240px;
+  width: 0;
   height: 100%;
   border-right: #dbd6d6 1px solid;
+  position: relative;
 }
-
+.contact-left.show{
+  width: 240px;
+}
+.icon-shouqi{
+  width: 30px;
+  height: 46px;
+  position: absolute;
+  top: 0;
+  right: -10px;
+  cursor: pointer;
+}
+.icon-zhankai{
+  width: 30px;
+  height: 46px;
+  position: absolute;
+  top: 0;
+  left: -10px;
+  cursor: pointer;
+}
 .contact-list-title {
   margin: 10px 20px;
   font-size: 14px;
@@ -204,6 +229,7 @@ export default {
 .friend-list {
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .group-list {

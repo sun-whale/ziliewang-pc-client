@@ -87,12 +87,6 @@
           return {}
         }
       },
-      title_show:{
-        type: String,
-        default() {
-          return ''
-        }
-      },
       laiyuan:{
         type: String,
         default() {
@@ -298,9 +292,11 @@
 
   .mag-box{
     width: 100%;
+    position: relative;
   }
   .contact-searchQuery-box{
     padding-bottom: 10px;
+    padding-right: 10px;
   }
   .contact-searchQuery-box /deep/ .el-input__inner{
     height: 30px;
