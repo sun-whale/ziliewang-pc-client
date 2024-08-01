@@ -67,21 +67,14 @@
         <div class="items-box">
           <ul>
             <li class="s-list-nav" v-for="(item,index) in notificationList" :key="index">
-              <div class="itemWrap">
+              <div class="itemWrap" @click="clickNotificationItem(item)">
                 <div class="s-avatar">
                   <img :src=" item.operate_user_avatar ? item.operate_user_avatar : require('../../assets/image/img-user.jpg')" alt="" />
                 </div>
                 <div class="s-list-info">
                   <div class="s-list-name">
                     <span>
-                      <span>{{ item.operate_user_name }}</span>
-                      <!-- 通知类型 1.收藏 2.点赞 3.转发 4.查看 5.评论 6.回复 -->
-                      <span v-if="item.type == 1">收藏了您</span>
-                      <span v-if="item.type == 2">点赞了您的评论</span>
-                      <span v-if="item.type == 3">转发了您的评论</span>
-                      <span v-if="item.type == 4">查看了您的简历</span>
-                      <span v-if="item.type == 5">评论了您的动态</span>
-                      <span v-if="item.type == 6">评论了您的评论</span>
+                      <span>{{ item.operate_desc }}</span>
                     </span>
                     <span class="span-time">{{ item.createtime }}</span>
                   </div>
@@ -223,6 +216,32 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
       this.goEasy.im.off(this.GoEasy.IM_EVENT.CONVERSATIONS_UPDATED, this.setUnreadNumber);
     },
     methods:{
+      clickNotificationItem(i){
+        let that = this;
+        let item = i;
+        console.log(item)
+        //  1.用户简历 2.用户职业身份名片 3.企业职位 4.用户联系方式 5.企业联系是Number方式 6.职圈 7.职圈评论
+        let path = '';
+        if(item.tag == 1 || item.tag == 4){
+          path = '/myResume'
+        }
+        if(item.tag == 2){
+          path = '/careerIdentity'
+        }
+        if(item.tag == 3){
+          
+        }
+        if(item.tag == 5){
+          
+        }
+        if(item.tag == 6 || item.tag == 7){
+          path = '/professionalCircle?tag=myCircle'
+        } 
+        that.$router.push({
+          path,
+          query:{}
+        })
+      },
       //连接goeasy
        connectGoEasy() {
         let that = this;
