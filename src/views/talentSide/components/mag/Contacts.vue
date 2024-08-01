@@ -20,9 +20,7 @@
             <div class="friend-mail">{{ friend.real_email }}</div>
           </div>
         </div>
-        <div class="tips-box" v-if="friends.length <= 0">
-          -暂无关注的好友-
-        </div>
+        <div class="tips-box" v-if="friends.length <= 0">-暂无关注的好友-</div>
       </div>
     </div>
     <div class="contact-main" v-if="!is_chat">
@@ -63,7 +61,7 @@
     <div class="contact-main" v-if="is_chat">
       <PrivateChat :infoData="profile.friend" />
     </div>
-
+    <!-- 弹出层 -->
     <el-dialog title="提示" :visible.sync="moreVisible" width="30%">
       <span>是否将联系人{{ moreStates == 0 ? "加入黑名单" : "删除" }}?</span>
       <span slot="footer" class="dialog-footer">
@@ -113,7 +111,7 @@ export default {
       page.tag = type == 0 ? "black" : "delete";
       page.attention_uid = that.profile.friend.uid;
       that.cancelPage = page;
-      this.moreShow = false;
+      this.moreShow = false; // 删除按钮
       this.moreStates = type;
       this.moreVisible = true;
     },
@@ -127,8 +125,9 @@ export default {
               message: "操作成功",
             });
             that.getSysMsgList();
-            that.is_chat = !that.is_chat;
             that.moreVisible = !that.moreVisible;
+            this.profile.friend = null;
+            this.is_chat = false; // 聊天框
           } else {
             that.$message.error({
               message: res.msg,
@@ -137,19 +136,23 @@ export default {
         });
     },
     // 获取好友列表
-    getSysMsgList(){
+    getSysMsgList() {
       let that = this;
-      that.$axios.post('/api/user/friend/list', {
-        tag: 'attention'
-      }).then(res => {
-        if (res.code == 0) {
-          that.friends = res.data;
-        } else {
-          that.$message.error({
-            message: res.msg
-          })
-        }
-      })},
+      that.$axios
+        .post("/api/user/friend/list", {
+          tag: "attention",
+        })
+        .then((res) => {
+          console.log("获取好友列表", res);
+          if (res.code == 0) {
+            that.friends = res.data;
+          } else {
+            that.$message.error({
+              message: res.msg,
+            });
+          }
+        });
+    },
     showFriendProfile(friend) {
       console.log(friend);
       this.profile.friend = {
