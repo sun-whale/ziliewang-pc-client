@@ -80,7 +80,8 @@
             <span class="title">关注: </span>
             <span class="text">{{ infoData.attention_num }}</span>
           </div>
-          <div @click="uid == see_uid ? clickAttentionTab('attention') : ''">
+          <!-- <div @click="uid == see_uid ? clickAttentionTab('attention') : ''"> -->
+            <div @click="clickAttentionTab('attention')">
             <span class="title">粉丝: </span>
             <span class="text">{{ infoData.fan_num }}</span>
           </div>

@@ -64,6 +64,7 @@
       <div class="steps-box">
         <div class="steps-item active">面试评估</div>
         <div class="steps-item">素质评估</div>
+        <div class="steps-item">发送offer</div>
         <div class="steps-item">已入职</div>
       </div>
     </div>

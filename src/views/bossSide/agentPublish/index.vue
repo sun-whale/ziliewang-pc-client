@@ -370,7 +370,7 @@
               </el-select>
             </el-form-item>
             <!-- 上传面试官视频 -->
-            <el-form-item label="上传视频">
+            <!-- <el-form-item label="上传视频">
               <span class="desc-title">请面试官按照示例录制好视频上传。</span>
               <el-upload
                 action="your_upload_endpoint_url"
@@ -380,7 +380,7 @@
               >
                 <el-button type="primary">点击上传视频</el-button>
               </el-upload>
-            </el-form-item>
+            </el-form-item> -->
             <!-- 面试评估 -->
             <el-form-item label="面试评估">
               <el-table :data="assessList" :border="true" style="width: 100%">
