@@ -165,6 +165,7 @@ export default {
         real_email: friend.real_email,
         user_number: friend.user_number,
       };
+      this.moreShow = false;
     },
     privateChat() {
       this.is_chat = false;
