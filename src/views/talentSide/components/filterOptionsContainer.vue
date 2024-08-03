@@ -561,6 +561,7 @@ export default {
       this.industry_requirement = {value:''}; // 行业
       this.position_type = {value:''}; // 职位
       this.age = {value:''}; // 年龄
+      this.ageVal = [18,60];
       this.gender = {value:''}; // 性别
       this.getfilterInfo();
     },
