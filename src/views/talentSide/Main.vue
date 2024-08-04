@@ -122,7 +122,7 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
         isRouterAlive: true,
         width: 0,
         height: 0,
-        minw: 516,
+        minw: 630,
         minh: 340,
         parentH: 0,
         parentW: 0,
@@ -180,7 +180,7 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
       let getViewportSize = this.$getViewportSize();
       this.parentH = getViewportSize.height; // 组件范围
       this.parentW = getViewportSize.width; // 组件范围 
-      this.width = Number(getViewportSize.width)/2>1000?Number(getViewportSize.width)/2:1000; // 可拖动div 宽度
+      this.width = Number(getViewportSize.width)/2>880?Number(getViewportSize.width)/2:880; // 可拖动div 宽度
       this.height = Number(getViewportSize.height - 120); // 可拖动div 高度
       this.left = Number(getViewportSize.width)/2 - Number(this.width)/2;
       this.top = 60;
@@ -358,7 +358,7 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
         let getViewportSize = this.$getViewportSize();
         this.is_VueDragResize = false;
         this.$nextTick(() =>{
-          this.width = Number(getViewportSize.width)/2>1000?Number(getViewportSize.width)/2:1000; // 可拖动div 宽度
+          this.width = Number(getViewportSize.width)/2>880?Number(getViewportSize.width)/2:880; // 可拖动div 宽度
           this.height = Number(getViewportSize.height - 120); // 可拖动div 高度
           this.top = 60;
           this.left = Number(getViewportSize.width)/2 - Number(this.width)/2;
@@ -676,6 +676,9 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
     transform: translate(-50%,-50%);
   }
   #drawer-box{
+    /deep/ .el-drawer{
+      width: 450px !important;
+    }
     /deep/ .el-drawer__header{
       margin: 0;
       padding-bottom: 10px;

@@ -261,10 +261,11 @@ export default {
   justify-content: space-between;
   .hospital{
     height: 40px;
+    width: auto;
   }
   .hospital>img{
-    width: 100%;
-    height: 100%;
+    width: 152px;
+    height: 40px;
     -o-object-fit: cover;
     object-fit: cover;
   }
