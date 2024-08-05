@@ -989,8 +989,9 @@ export default {
     // 加入黑名单
     clickAddBlacklist() {
       this.$axios
-        .post("/api/user-defriend/create", {
-          defriend_uid: this.see_uid,
+        .post("/api/user/attention/cancel", {
+          attention_uid: this.see_uid,
+          tag:"black"
         })
         .then((res) => {
           if (res.code == 0) {
@@ -1009,8 +1010,9 @@ export default {
     // 取消黑名单
     clickCancelBlacklist() {
       this.$axios
-        .post("/api/user-defriend/delete", {
-          defriend_uid: this.see_uid,
+        .post("/api/user/attention/cancel", {
+          attention_uid: this.see_uid,
+          tag:"black"
         })
         .then((res) => {
           if (res.code == 0) {
