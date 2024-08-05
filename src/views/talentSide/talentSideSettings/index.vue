@@ -684,9 +684,10 @@ export default {
       let that = this;
       let selt_corporation = n;
       let p = {
-        defriend_uid:selt_corporation.defriend_uid,
+        attention_uid:selt_corporation.defriend_uid,
+        tag:"black"
       };
-      that.$axios.post('/api/user-defriend/delete',p).then( res =>{
+      that.$axios.post('/api/user/attention/cancel',p).then( res =>{
         if(res.code == 0){
           that.$message.success({
             message:'取消成功'
