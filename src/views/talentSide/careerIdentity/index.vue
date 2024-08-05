@@ -87,7 +87,7 @@
           </div>
         </div>
 
-        <div class="share-content">
+        <div class="share-content" style="width: 55px;">
           <div
             style="position: absolute; display: flex; align-items: center"
             @click="clickPraise(infoData.is_point_my_card)"
@@ -124,7 +124,7 @@
           </div>
 
           <!-- 分享区域 开始 -->
-          <div class="items-review-box" :class="show_share ? 'show-box' : ''">
+          <div class="items-review-box" :class="show_share ? 'show-box' : 'd-none'">
             <div class="share-list">
               <div class="share-item" @click="clickShareWent(1)">
                 <img src="../../../assets//image/share-wx.png" />
@@ -1320,6 +1320,10 @@ export default {
     padding-bottom: 14px;
     max-height: 450px;
     margin-right: 50px;
+    display: block;
+  }
+  &.d-none{
+    display: none;
   }
   .fabu-box {
     width: 80%;

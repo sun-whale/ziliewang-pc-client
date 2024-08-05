@@ -39,11 +39,11 @@
 
             <div class="message-item-content" :class="{ self: item.senderId === currentUser.id }">
               <!-- 头像 开始 -->
-              <div class="sender-info" v-if="currentUser.id === item.senderId">
+              <div class="sender-info" @click="clickUserImage(0)" v-if="currentUser.id === item.senderId">
                 <img :src="currentUser.avatar?currentUser.avatar:require('../../../../assets/image/img-user.jpg')" class="sender-avatar"/>
                 <!-- <span class="span-id">ID: {{ user_number  }}</span> -->
               </div>
-              <div class="sender-info" v-else>
+              <div class="sender-info" v-else @click="clickUserImage(friend)">
                 <img :src="friend.avatar?friend.avatar:require('../../../../assets/image/img-user.jpg')" class="sender-avatar"/>
                 <!-- <span class="span-id">ID: {{ friend.user_number }}</span> -->
               </div>
@@ -607,6 +607,30 @@ import Complaint from "@/components/complaint";
       this.goEasy.im.off(this.GoEasy.IM_EVENT.CONVERSATIONS_UPDATED, this.renderConversations);
     },
     methods: {
+      // 点击头像跳转页面
+      clickUserImage(type){
+        if(type == 0){ // 个人主页
+          this.$router.push({path:'/careerIdentity'});
+        } else {
+          // 判断是好友还是职位人
+          if(type.position_id){
+            this.$router.push({
+              path:'/JobDetails',   //跳转的路径
+              query:{           //路由传参时push和query搭配使用 ，作用时传递参数
+                id:type.position_id,
+              }
+            })
+
+          }else{
+            this.$router.push({
+              path:'/careerIdentity',   //跳转的路径
+              query:{           //路由传参时push和query搭配使用 ，作用时传递参数
+                see_uid:type.uid,
+              }
+            })
+          }
+        }
+      },
       clickShare(url){
         this.$router.push(url);
       },
