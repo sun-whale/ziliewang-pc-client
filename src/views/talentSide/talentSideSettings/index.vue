@@ -60,11 +60,15 @@
           <div class="container-right-items" id="set_shield">
             <div class="title" :class="setType =='set_shield'? 'hover': '' ">屏蔽公司</div>
             <div class="info-box">你可以屏蔽HR或猎头所在公司</div>
+            
             <button @click="clickSetShield">
               <img src="../../../assets/image/Frame_11.png" alt="" />
               <span>添加屏蔽公司</span>
             </button>
-
+            <div class="shield-tip-box" v-if="basic_info.shield_tip">
+              <span class="span-1">*</span>
+              <span class="span-2">{{ basic_info.shield_tip }}</span>
+            </div>
             <div class="shield-boss-box">
               <div v-for="(item,index) in shieldBossList" :key="index" class="items-box">
                 <span class="items-name">{{  item.company.company_name }}</span>
@@ -1036,6 +1040,23 @@ export default {
           }
          
           
+        }
+      }
+      .shield-tip-box{
+        width: 100%;
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        margin-top: 10px;
+        &>.span-1{
+          font-weight: bold;
+          font-size: 24px;
+          color: red;
+          margin-top: 6px;
+        }
+        &>.span-2{
+          padding-left: 10px;
+          color: #666;
         }
       }
       .shield-boss-box{

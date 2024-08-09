@@ -685,11 +685,9 @@ export default {
       // }else{
       //   url = `/api/user-evaluate/list?page=${p.page}&pagesize=${p.pagesize}`
       // }
-      this.$axios
-        .get(url, {})
-        .then((res) => {
+      this.$axios.get(url, {}).then((res) => {
           if (res.code == 0) {
-            if (res.data.list.length <= 0) {
+            if (p.page !=1 && res.data.list.length <= 0) {
               this.$message.error({
                 message: "暂无更多数据...",
               });

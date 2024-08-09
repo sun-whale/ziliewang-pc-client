@@ -326,6 +326,9 @@ export default {
 
   },
   created(){
+    if(this.$route.query.tag){
+      this.tag = this.$route.query.tag;
+    }
     if(this.tag == 'hot'|| this.tag == 'attention' || this.tag == 'myCircle'){
       this.getList();
     }

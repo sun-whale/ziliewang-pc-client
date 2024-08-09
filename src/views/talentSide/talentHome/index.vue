@@ -148,6 +148,12 @@ export default {
             that.$message.error({
               message: '请先完善个人简历！'
             })
+            setTimeout( () =>{
+              that.$router.push({
+                path:'/myResume',
+                query:{}
+              })
+            },1500)
             return
           }
           that.$router.push({

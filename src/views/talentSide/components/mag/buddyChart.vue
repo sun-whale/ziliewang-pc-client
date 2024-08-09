@@ -1,13 +1,15 @@
 <template>
-  <div class="conversations" :style="`width: ${laiyuan == 'nav'? width + 'px':'100%'};height:${laiyuan == 'nav'? height + 'px':'100%'};`">
-    <div class="conversation-list">
+  <div class="conversations" :style="`width: 100%;height:100%;`">
+    <div class="conversation-list" :class=" is_show ? 'show' : '' " >
       <div class="conversation-list-container">
-        <div class="conversation-list-content">
+        <div class="conversation-list-content" :style="`padding: ${is_show ?'10px 8px':'0'}`">
 
-          <ConversationList :title_show="title_show" :infoData="profile.friend" :laiyuan="laiyuan" @chatLocation="chatLocation"/>
+          <ConversationList :infoData="profile.friend" :laiyuan="laiyuan" @chatLocation="chatLocation"/>
           
         </div>
       </div>
+      <img src="../../../../assets/image/icon-shouqi.png" alt="收起" class="icon-shouqi" v-if="is_show" @click="clickiconShow"/>
+      <img src="../../../../assets/image/icon-zhankai.png" alt="展开" class="icon-zhankai" v-if="!is_show" @click="clickiconShow"/>
     </div>
     <!-- 聊天部分 开始-->
     <div class="contact-main">
@@ -33,24 +35,6 @@ export default {
           return {}
         }
       },
-    title_show:{
-      type: String,
-      default() {
-        return ''
-      }
-    },
-    width:{
-      type: Number,
-      default() {
-        return 1000
-      }
-    },
-    height:{
-      type: Number,
-      default() {
-        return 500
-      }
-    },
     laiyuan:{
       type: String,
       default() {
@@ -63,7 +47,8 @@ export default {
       profile: {
         friend: null,
       },
-      is_chat: false
+      is_chat: false,
+      is_show: true
     };
   },
   created() {
@@ -74,7 +59,9 @@ export default {
   },
   
   methods: {
-    
+    clickiconShow(){
+      this.is_show = !this.is_show;
+    },
     chatLocation (conversation) {
       this.profile.friend = conversation;
       console.log(this.profile.friend)
@@ -95,9 +82,31 @@ export default {
   color: #333333;
 }
 .conversation-list {
+  width: 0;
+  position: relative;
+}
+.conversation-list.show{
   width: 260px;
 }
 
+.icon-shouqi{
+  width: 30px;
+  height: 46px;
+  position: absolute;
+  top: 0;
+  right: -10px;
+  cursor: pointer;
+  z-index: 100;
+}
+.icon-zhankai{
+  width: 30px;
+  height: 46px;
+  position: absolute;
+  top: 0;
+  left: -10px;
+  cursor: pointer;
+  z-index: 100;
+}
 .conversation-list-container {
   height: 100%;
   display: flex;
@@ -109,7 +118,6 @@ export default {
 .conversation-list-content {
   flex: 1;
   overflow-y: auto;
-  padding: 10px 8px;
   padding-top: 0;
   scrollbar-width: none;
   -ms-overflow-style: none;

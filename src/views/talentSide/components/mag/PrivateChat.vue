@@ -2,7 +2,7 @@
   <div class="chat-container">
     <div class="chat-title">
       <div class="chat-title-l">
-        <img :src="friend.avatar?friend.avatar:require('../../../../assets/image/img-user.jpg')" class="chat-avatar"/>
+        <img :src="friend.avatar?friend.avatar:require('../../../../assets/image/img-user.jpg')" class="chat-avatar" :class="friend.company_id?'hover':''" @click="clickFriendAvatar"/>
         <div class="chat-name">{{ friend.name }}</div>
       </div>
       <div class="position-name">
@@ -451,25 +451,39 @@
       </span>
     </el-dialog>
 
+    <!-- 查看企业信息弹窗 -->
+     <!-- <div id="enterprise-info-box">
+      <el-dialog title="企业信息"
+        :center="false"
+        :visible.sync="en_dialogVisible"
+        width="940px"
+        :before-close="handleEnClose">
+        <div class="enterprise-info-box m-box">
+          <companyDetails :id="en_company_id" v-if="en_company_id"/>
+        </div>
+      </el-dialog>
+     </div> -->
+
     <Complaint ref="complaint" states="0" :id="complaintData.id" :uId="complaintData.uid" pdiTop="20px" zIndex="1000" />
   </div>
 </template>
 
 <script>
-import Complaint from "@/components/complaint";
+  import Complaint from "@/components/complaint";
   import {formatDate} from '../../../../utils/utils.js'
   import EmojiDecoder from '../../../../utils/EmojiDecoder';
   import GoeasyVideoPlayer from "../../../../components/GoEasyVideoPlayer";
   import BaiduMap from '../../../../utils/map.js'
   import ScreenShot from 'js-web-screen-shot'
-
+  // import companyDetails from "../../companyDetails"
   const IMAGE_MAX_WIDTH = 200;
   const IMAGE_MAX_HEIGHT = 150;
   export default {
     name: 'PrivateChat',
     components: {
       GoeasyVideoPlayer,
-      Complaint
+      Complaint,
+      // companyDetails
     },
     props:{
       infoData:{
@@ -556,7 +570,9 @@ import Complaint from "@/components/complaint";
         yqms_tag: 1, // 面试邀请 3、 同意 2、拒绝
         //查看面试信息弹窗
         ms_dialogVisible: false,
-        ms_infoData: {}
+        ms_infoData: {},
+        en_dialogVisible: false,
+        en_company_id: ''
       };
     },
     watch:{
@@ -614,6 +630,27 @@ import Complaint from "@/components/complaint";
       clickCliseMessage(){
         this.quoteMessageShow = false;
         this.quoteMessage = '';
+      // 点击企业端头像
+      clickFriendAvatar(){
+        let friend = this.friend;
+        if(friend.company_id){
+          this.$router.push({
+              path:'/companyDetails',   //跳转的路径
+              query:{           //路由传参时push和query搭配使用 ，作用时传递参数
+                id:friend.company_id
+              }
+            })
+          // this.en_company_id= '';
+          // this.$nextTick( ()=>{
+          //   this.en_company_id = friend.company_id;
+          //   this.en_dialogVisible = true;
+          // })
+
+        }
+      },
+      handleEnClose(){
+        this.en_company_id = '';
+        this.en_dialogVisible = false;
       },
       // 点击头像跳转页面
       clickUserImage(type){
@@ -1576,7 +1613,7 @@ import Complaint from "@/components/complaint";
 
   .chat-title {
     height: auto;
-    padding: 6px 10px;
+    padding: 6px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -1598,6 +1635,9 @@ import Complaint from "@/components/complaint";
   .chat-avatar {
     width: 35px;
     height: 35px;
+  }
+  .chat-avatar.hover{
+    cursor: pointer;
   }
 
   .chat-name {

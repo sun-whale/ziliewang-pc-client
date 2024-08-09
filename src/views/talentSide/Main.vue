@@ -16,7 +16,7 @@
     <!-- 底部 结束  -->
 
     <!-- 侧边栏 -->
-    <Sidebar :infoData="infoData"/>
+    <Sidebar ref="sidebar" :infoData="infoData" :filteredList="filteredList"/>
     <!-- 聊天弹窗 开始-->
     <transition name="suck-in" mode="out-in">
       <VueDragResize :style="`z-index:${zInfex_0};`"
@@ -24,21 +24,24 @@
        :isActive="true" :isDraggable="true" :parentLimitation="true" :preventActiveBehavior="true"
        :parentW="parentW" :parentH="parentH" 
        :w="width" :h="height" :minw="minw" :minh="minh"
-       :x='left' :y='top' 
+       :x="left" :y="top" 
        @resizing="resize" 
        @dragging="resize" 
        @deactivated="onDeactivated"
        v-if="is_VueDragResize">
         <div class="VueDragResize-centent-box">
           <div class="VueDragResize-title-box">
-            <div class="title">消息中心</div>
+            <div class="title">{{ vueDragResizeTitle }}</div>
             <div class="icon-box">
-              <img src="../../assets/image/icon-minificationpng.png" alt="缩小"  @click="clickMinificationpngBtn">
-              <img src="../../assets/image/icon-close.png" alt="关闭" @click="clickCloseBtn"/>
+              <img src="../../assets/image/icon-minificationpng.png" title="缩小"  @click="clickSXBtn" />
+              <img src="../../assets/image/icon-fangda.png" title="放大"  @click="clickFDBtn" />
+              <img src="../../assets/image/icon-close.png" title="关闭" @click="clickMinificationpngBtn" />
             </div>
           </div>
           <div class="Chat-box">
-            <buddyChart :title_show="title_show" :infoData="infoData" :laiyuan="laiyuan" :width="width" :height="height - 50"  is_pop="is_pop" ref="chat" />
+
+            <!-- <buddyChart :infoData="infoData" :laiyuan="laiyuan" is_pop="is_pop" ref="chat" /> -->
+            <magInfo :infoData="infoData" :laiyuan="laiyuan" @setVueDragResizeTitle="setVueDragResizeTitle" is_pop="is_pop" ref="chat" />
           </div>
         </div>
       </VueDragResize>
@@ -63,14 +66,28 @@
       <el-drawer title="系统通知" :visible.sync="is_Notification" :before-close="clickCloseNotificationBtn">
         <div class="items-box">
           <ul>
-            <li class="s-list-nav" v-for="(item,index) in userDefriendList" :key="index">
-             
+            <li class="s-list-nav" v-for="(item,index) in notificationList" :key="index">
+              <div class="itemWrap" @click="clickNotificationItem(item)">
+                <div class="s-avatar">
+                  <img :src=" item.operate_user_avatar ? item.operate_user_avatar : require('../../assets/image/img-user.jpg')" alt="" />
+                </div>
+                <div class="s-list-info">
+                  <div class="s-list-name">
+                    <span>
+                      <span>{{ item.operate_desc }}</span>
+                    </span>
+                    <span class="span-time">{{ item.createtime }}</span>
+                  </div>
+                  <div class="s-list-intro"><span>{{ item.content?item.content :'暂无'  }}</span></div>
+                </div>
+              </div>
             </li>
           </ul>
-          <div class="tips-box" v-if="userDefriendList.length<= 0">- 暂无通知 -</div>
+          <div class="tips-box" v-if="notificationList.length<= 0">- 暂无通知 -</div>
         </div>
       </el-drawer>
     </div>
+
   </div>
 </template>
 <script>
@@ -78,7 +95,8 @@ import Navbar from './components/Navbar';
 import Footer from '../../components/footer';
 import VueDragResize from 'vue-drag-resize';
 import Sidebar from './components/sidebar';
-import buddyChart from './components/mag/buddyChart.vue';
+// import buddyChart from './components/mag/buddyChart.vue';
+import magInfo from './components/mag/magInfo.vue';
 import { TUICallKit, TUICallKitServer, TUICallType,STATUS } from "@tencentcloud/call-uikit-vue2.6";
 import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
 
@@ -95,26 +113,27 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
       Footer,
       VueDragResize,
       Sidebar,
-      buddyChart,
-      TUICallKit
+      // buddyChart,
+      magInfo,
+      TUICallKit,
     },
     data(){
       return {
         isRouterAlive: true,
         width: 0,
         height: 0,
-        minw: 516,
+        minw: 630,
         minh: 340,
         parentH: 0,
         parentW: 0,
-        top: 40,
+        top: 1,
         left: 500,
         zInfex_0: 99,
         is_VueDragResize: false,
-        title_show: '',
         laiyuan:'',
         is_pop:'pop',
         infoData: {},
+        filteredList: [],
         show_TUICallKit: false,
         // 腾讯云 SDKAppID、userSig 的获取参考下面步骤
         // 主叫的 userID
@@ -126,9 +145,9 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
         countTime: null,
         counter: 0,
         unreadTotal: null, // 新消息数量
-
-        is_Notification: false,
-        userDefriendList: []
+        vueDragResizeTitle: '消息中心',
+        notificationList: [],
+        is_Notification: false
       }
     },
     watch: {
@@ -161,9 +180,10 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
       let getViewportSize = this.$getViewportSize();
       this.parentH = getViewportSize.height; // 组件范围
       this.parentW = getViewportSize.width; // 组件范围 
-      this.width = Number(getViewportSize.width)/2>820?Number(getViewportSize.width)/2:820; // 可拖动div 宽度
-      this.height = Number(getViewportSize.height - 80); // 可拖动div 高度
+      this.width = Number(getViewportSize.width)/2>880?Number(getViewportSize.width)/2:880; // 可拖动div 宽度
+      this.height = Number(getViewportSize.height - 120); // 可拖动div 高度
       this.left = Number(getViewportSize.width)/2 - Number(this.width)/2;
+      this.top = 60;
       this.currentUser = {
         id: 'u_'+ localStorage.getItem('realUid'),
         uid:localStorage.getItem('realUid'),
@@ -177,6 +197,7 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
          this.connectGoEasy(); 
       }
       this.listenConversationUpdate();// 监听会话列表变化
+      this.loadConversations(); //加载会话列表
 
       // 腾讯云 音视频 初始化 ↓
       this.Init();
@@ -195,6 +216,32 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
       this.goEasy.im.off(this.GoEasy.IM_EVENT.CONVERSATIONS_UPDATED, this.setUnreadNumber);
     },
     methods:{
+      clickNotificationItem(i){
+        let that = this;
+        let item = i;
+        console.log(item)
+        //  1.用户简历 2.用户职业身份名片 3.企业职位 4.用户联系方式 5.企业联系是Number方式 6.职圈 7.职圈评论
+        let path = '';
+        if(item.tag == 1 || item.tag == 4){
+          path = '/myResume'
+        }
+        if(item.tag == 2){
+          path = '/careerIdentity'
+        }
+        if(item.tag == 3){
+          
+        }
+        if(item.tag == 5){
+          
+        }
+        if(item.tag == 6 || item.tag == 7){
+          path = '/professionalCircle?tag=myCircle'
+        } 
+        that.$router.push({
+          path,
+          query:{}
+        })
+      },
       //连接goeasy
        connectGoEasy() {
         let that = this;
@@ -217,56 +264,63 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
           }
         });
       },
+      // 监听会话列表变化
       listenConversationUpdate() {
         this.goEasy.im.on(this.GoEasy.IM_EVENT.CONVERSATIONS_UPDATED, this.setUnreadNumber);
+      },
+      //加载会话列表
+      loadConversations() {
+        this.goEasy.im.latestConversations({
+          onSuccess: (result) => {
+            let content = result.content;
+            this.setUnreadNumber(content);
+          },
+          onFailed: (error) => {
+            console.log('获取最新会话列表失败, code:' + error.code + 'content:' + error.content);
+          },
+        });
       },
       // 获取消息数量
       setUnreadNumber(content) {
         console.log(content)
+        this.filteredList = content.conversations; // 会话列表
         this.unreadAmount = content.unreadTotal;
         this.$store.dispatch('user/actions_unreadTotal', content.unreadTotal); // vuex
+        if(content.unreadTotal >0){
+          this.$store.dispatch('user/actions_sidebarShow',true);// vuex
+        }
       },
       talentSide_receiveParams(params){
         console.log(params)
         // '接收到的参数:' params
         this.laiyuan = params.laiyuan?params.laiyuan:'';
-        if(params.type){
-          this.title_show = params.type //JobDetails 是详情页  navbarMag 是导航
-        }
         this.infoData = params.infoData;
         this.is_VueDragResize = false;
         this.$nextTick(function () {
           this.is_VueDragResize = true;
         });
+        this.$store.dispatch('user/actions_sidebarShow',false);// vuex
         // this.zInfex_0 = 99;
         // this.top = 56;
       },
       // 监听导航上 点击通知按钮事件
       getNotification(params){
         let that = this;
-        this.is_Notification = false;
-        this.$nextTick(function () {
-          this.is_Notification = true;
-        });
-        return
-        that.$axios.post('',{}).then( res =>{
+        that.$axios.post('/api/system/notification/list',{}).then( res =>{
           if(res.code == 0){
-            that.userDefriendList = res.data.list;
-            that.drawer = true;
+            that.notificationList = res.data.list;
           }else{
             that.$message.error({
               message:res.msg
             })
-            return
           }
-
+          that.is_Notification = true;
         }).catch( e =>{
           that.$message.error({
             message:e.message
           })
           console.log(e)
         })
-       
       },
       // 点击会话列表获取所点击对象数据
       click_conversationList_item_getInfoData(params){
@@ -296,10 +350,35 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
         this.left = newRect.left;
       },
       // 点击 聊天弹窗关闭按钮
-      clickCloseBtn(){
+      // clickCloseBtn(){
+      //   this.is_VueDragResize = false;
+      // },
+      // 点击聊天窗口缩小
+      clickSXBtn(){
+        let getViewportSize = this.$getViewportSize();
         this.is_VueDragResize = false;
+        this.$nextTick(() =>{
+          this.width = Number(getViewportSize.width)/2>880?Number(getViewportSize.width)/2:880; // 可拖动div 宽度
+          this.height = Number(getViewportSize.height - 120); // 可拖动div 高度
+          this.top = 60;
+          this.left = Number(getViewportSize.width)/2 - Number(this.width)/2;
+          this.is_VueDragResize = true;
+        })
       },
-      // 点击聊天弹窗缩小--按钮
+      // 点击聊天窗口放大
+      clickFDBtn(){
+        let getViewportSize = this.$getViewportSize();
+        console.log(getViewportSize)
+        this.is_VueDragResize = false;
+        this.$nextTick(() =>{
+          this.top = 0;
+          this.left = 0;
+          this.height = getViewportSize.height; // 可拖动div 高度
+          this.width = getViewportSize.width - 16; // 可拖动div 宽度
+          this.is_VueDragResize = true;
+        })
+      },
+      // 点击聊天弹窗关闭--按钮
       clickMinificationpngBtn(){
         this.is_VueDragResize = false;
         // this.$bus.$emit('talentSide_clickSidebar',{ is_clickMinificationpngBtn:true } );
@@ -309,6 +388,15 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
       // 点击 系统通知弹窗关闭按钮
       clickCloseNotificationBtn(){
         this.is_Notification = false;
+      },
+      setVueDragResizeTitle(e){
+        // 'conversations' 聊天记录  ， 'contacts' 好友
+        if(e.menu_type == 'conversations'){
+          this.vueDragResizeTitle = '消息中心';
+        }
+        if(e.menu_type == 'contacts'){
+          this.vueDragResizeTitle = '我的好友';
+        }
       },
 
       // 腾讯云 初始化
@@ -538,6 +626,7 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
       font-size: 14px;
       height: auto;
       padding: 10px;
+      padding-left: 60px;
       cursor: move;
       .icon-box{
         display: flex;
@@ -562,7 +651,7 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
   }
   //  弹窗 动画样式 -----
   .suck-in-enter-active, .suck-in-leave-active {
-    transition: all 0.5s ease;
+    transition: all 0.4s ease;
     transform-origin: right;
   }
 
@@ -586,8 +675,10 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
     left: 50%;
     transform: translate(-50%,-50%);
   }
-  // 黑名单
   #drawer-box{
+    /deep/ .el-drawer{
+      width: 450px !important;
+    }
     /deep/ .el-drawer__header{
       margin: 0;
       padding-bottom: 10px;
@@ -599,6 +690,78 @@ import * as GenerateTestUserSig from "../../debug/GenerateTestUserSig-es";
       .s-list-nav{
         width: 100%;
         position: relative;
+        cursor: pointer;
+        .itemWrap{
+          padding: 8px 0;
+          display: flex;
+          align-items: center;
+          border-bottom: 1px solid #e2e2e2;
+          .s-avatar{
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            &>img{
+              width: 100%;
+              height: 100%;
+            }
+          }
+          .s-list-info{
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            margin: 10px;
+          
+            .s-list-name {
+              font-size: 15px;
+              color: #1e1f24;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+            }
+            .s-list-name span {
+              overflow-x: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              font-size: 14px;
+              font-weight: bold;
+            }
+            .s-list-name span.span-time{
+              font-size: 13px;
+              color: #848691;
+            }
+            .s-list-intro {
+              font-size: 14px;
+              height: 16px;
+              width: 100%;
+              color: #848691;
+              display: flex;
+              align-items: center;
+              padding-top: 10px;
+            }
+            .s-list-intro span {
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
+          }
+          .s-list-button .s-button {
+            height: 28px;
+            width: 60px;
+            background-color: $g_bg;
+            color: #fff;
+            border-radius: 20px;
+            font-size: 13px;
+            line-height: 28px;
+            text-align: center;
+            cursor: pointer;
+          }
+
+        }
+      }
+      .s-list-nav:hover{
+        background: rgba(236, 236, 236, 0.288);
       }
       .tips-box{
         width: 100%;

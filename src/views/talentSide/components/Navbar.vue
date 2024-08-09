@@ -24,19 +24,15 @@
         <div class="right-menu">
           <div class="right-items-box">
             <div @click="clickxsms">
-              <span>线上面试</span>
+              <span>求职Agent</span>
             </div>
             <div @click="clickProfessionalCircle">
               <img src="../../../assets/image/nav_1.png" alt="" />
               <span>朋友圈</span>
             </div>
-            <div @click="clickmyGoodFriend">
+            <div @click="clickMessage" class="communication-box">
               <img src="../../../assets/image/nav_hy.png" alt="" />
               <span>我的好友</span>
-            </div>
-            <div @click="clickMessage" class="communication-box">
-              <img src="../../../assets/image/icon-wechat1.png" alt="" />
-              <span>消息</span>
               <span class="corner-mark-box" v-if="unreadTotal">{{ unreadTotal }}</span>
             </div>
             <div @click="clickNotification" class="communication-box">
@@ -265,10 +261,11 @@ export default {
   justify-content: space-between;
   .hospital{
     height: 40px;
+    width: auto;
   }
   .hospital>img{
-    width: 100%;
-    height: 100%;
+    width: 152px;
+    height: 40px;
     -o-object-fit: cover;
     object-fit: cover;
   }
