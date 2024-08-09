@@ -630,6 +630,7 @@
       clickCliseMessage(){
         this.quoteMessageShow = false;
         this.quoteMessage = '';
+      },
       // 点击企业端头像
       clickFriendAvatar(){
         let friend = this.friend;
