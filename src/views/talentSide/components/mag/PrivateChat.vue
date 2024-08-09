@@ -361,7 +361,10 @@
         <div class="input-box" @click.stop="clickInput">
           <textarea ref="input" @focus="onInputFocus" @keyup.enter="sendTextMessage" placeholder="输入内容...." v-model="text" maxlength="700"  class="input-content"></textarea>
           <!-- 引用的消息 -->
-           <div class="reply-message" style="width: 450px;" v-if="quoteMessageShow">{{quoteMessage}}</div>
+           <div class="reply-message" style="width: 450px;" v-if="quoteMessageShow">
+            <div style="width: 420px;">{{quoteMessage}}</div>
+            <i class="el-icon-circle-close" @click="clickCliseMessage"></i>
+           </div>
         </div>
         <div class="send-box">
           <button class="send-button" @click="sendTextMessage">发送</button>
@@ -607,6 +610,11 @@ import Complaint from "@/components/complaint";
       this.goEasy.im.off(this.GoEasy.IM_EVENT.CONVERSATIONS_UPDATED, this.renderConversations);
     },
     methods: {
+      // 删除引用消息
+      clickCliseMessage(){
+        this.quoteMessageShow = false;
+        this.quoteMessage = '';
+      },
       // 点击头像跳转页面
       clickUserImage(type){
         if(type == 0){ // 个人主页
@@ -2154,6 +2162,12 @@ import Complaint from "@/components/complaint";
     margin-left: 20px;
     color: #555;
     background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    i{
+      cursor: pointer;
+    }
   }
 
   .input-content {
