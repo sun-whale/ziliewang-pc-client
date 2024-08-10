@@ -434,6 +434,25 @@ export default {
     // 点击城市
     click_position_list(item,index){
       let selectCityList = this.selectCityList;
+      let position_list = this.position_list;
+      if(item.code == '0001'){
+        // 选的省份--全省
+        position_list.forEach( p_ele =>{
+          selectCityList.forEach( ele =>{
+            if(ele === p_ele.label && p_ele.code != '0001'){
+              selectCityList.splice(selectCityList.indexOf(ele),1);
+            }
+          })
+        })
+      }else{
+        let name = position_list[0].label;
+        if( selectCityList.indexOf(name) != -1){
+          selectCityList.push(item.label)
+          selectCityList.splice(selectCityList.indexOf(name),1);
+        }
+      }
+
+
       if( selectCityList.length >=5 ){
         this.$message.error('最多可选择五个城市！');
         return

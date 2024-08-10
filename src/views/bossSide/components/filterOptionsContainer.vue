@@ -579,6 +579,25 @@ export default {
     // 点击城市弹窗 城市
     click_city_list(item,index){
       let selectCityList = this.selectCityList;
+      let city_list = this.city_list;
+      if(item.code == '0001'){
+        // 选的省份--全省
+        city_list.forEach( p_ele =>{
+          selectCityList.forEach( ele =>{
+            if(ele === p_ele.label && p_ele.code != '0001'){
+              selectCityList.splice(selectCityList.indexOf(ele),1);
+            }
+          })
+        })
+      }else{
+        let name = city_list[0].label;
+        if( selectCityList.indexOf(name) != -1){
+          selectCityList.push(item.label)
+          selectCityList.splice(selectCityList.indexOf(name),1);
+        }
+      }
+
+
       if( selectCityList.length >=5 ){
         this.$message.error('最多可选择五个城市！');
         return
@@ -614,6 +633,25 @@ export default {
     // 点击期望城市弹窗 城市
     click_expect_city_list(item,index){
       let selectExpectCityList = this.selectExpectCityList;
+      let expect_city_list = this.expect_city_list;
+      if(item.code == '0001'){
+        // 选的省份--全省
+        expect_city_list.forEach( p_ele =>{
+          selectExpectCityList.forEach( ele =>{
+            if(ele === p_ele.label && p_ele.code != '0001'){
+              selectExpectCityList.splice(selectExpectCityList.indexOf(ele),1);
+            }
+          })
+        })
+      }else{
+        let name = expect_city_list[0].label;
+        if( selectExpectCityList.indexOf(name) != -1){
+          selectExpectCityList.push(item.label)
+          selectExpectCityList.splice(selectExpectCityList.indexOf(name),1);
+        }
+      }
+
+
       if( selectExpectCityList.length >=5 ){
         this.$message.error('最多可选择五个城市！');
         return

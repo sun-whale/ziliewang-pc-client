@@ -158,6 +158,7 @@ export default {
         desired_industry: '', // 期望行业
         expected_salary: '', // 期望月薪
         job_preference: '', // 职位偏好
+        desired_location_province: '',
       },
       is_creat: false,
       dialogVisible: false,
@@ -199,6 +200,9 @@ export default {
       // console.log(thsAreaCode) // 注意3： 最终结果是个一维数组对象
       // thsAreaCode = this.$refs['cascaderAddr'].getCheckedNodes()[0].pathLabels// 注意2： 获取label值
       this.infoData.desired_location = thsAreaCode[1];
+      this.infoData.desired_location_province = thsAreaCode[0] + thsAreaCode[1];
+
+      console.log(thsAreaCode)
     },
     //接收组件方法
     clickSearchItem(e){
@@ -212,6 +216,7 @@ export default {
         desired_industry: '', // 期望行业
         expected_salary: '', // 期望月薪
         job_preference: '', // 职位偏好
+        desired_location_province: '',
       },
       this.dialogVisible_seach = '';
       this.expected_salary_st = '';
@@ -288,6 +293,7 @@ export default {
             desired_industry: '', // 期望行业
             expected_salary: '', // 期望月薪
             job_preference: '', // 职位偏好
+            desired_location_province: '',
           },
           that.dialogVisible_seach = '';
           that.expected_salary_st = '';
