@@ -84,8 +84,8 @@
                 placeholder="请选择职位级别"
               >
                 <el-option
-                  :label="item.label"
-                  :value="item.value"
+                  :label="item.name"
+                  :value="item.id"
                   v-for="(item, index) in rank_list"
                   :key="index"
                 ></el-option>
@@ -121,8 +121,8 @@
                 placeholder="请选择汇报上级"
               >
                 <el-option
-                  :label="item.label"
-                  :value="item.value"
+                  :label="item.name"
+                  :value="item.id"
                   v-for="(item, index) in superiors_list"
                   :key="index"
                 ></el-option>
@@ -147,8 +147,8 @@
                 placeholder="请选择归属部门"
               >
                 <el-option
-                  :label="item.label"
-                  :value="item.value"
+                  :label="item.name"
+                  :value="item.id"
                   v-for="(item, index) in department_list"
                   :key="index"
                 ></el-option>
@@ -504,40 +504,7 @@ export default {
         },
       ],
       // 汇报上级
-      superiors_list: [
-        { label: "班长", value: "1" },
-        { label: "领班", value: "2" },
-        { label: "组长", value: "3" },
-        { label: "部门主管", value: "4" },
-        { label: "副主任", value: "5" },
-        { label: "主任", value: "6" },
-        { label: "部门经理", value: "7" },
-        { label: "副厂长", value: "8" },
-        { label: "厂长", value: "9" },
-        { label: "副总监", value: "10" },
-        { label: "总监", value: "12" },
-        { label: "业务负责人", value: "13" },
-        { label: "项目负责人", value: "14" },
-        { label: "总工", value: "15" },
-        { label: "技术负责人", value: "16" },
-        { label: "副总经理", value: "17" },
-        { label: "项目总经理", value: "18" },
-        { label: "区域城市总经理", value: "19" },
-        { label: "公司总经理", value: "20" },
-        { label: "秘书", value: "21" },
-        { label: "助理", value: "22" },
-        { label: "副部长", value: "23" },
-        { label: "部长", value: "24" },
-        { label: "副院长", value: "25" },
-        { label: "院长", value: "26" },
-        { label: "副书记", value: "27" },
-        { label: "书记", value: "28" },
-        { label: "副总裁", value: "29" },
-        { label: "总裁", value: "30" },
-        { label: "董事长", value: "31" },
-        { label: "董事会", value: "32" },
-        { label: "其他领导", value: "33" },
-      ],
+      superiors_list: [],
       // 下级人数
       subordinate_list: [
         { label: "1-3人", value: "1" },
@@ -552,93 +519,9 @@ export default {
         { label: "1000人以上", value: "10" },
       ],
       // 归属部门
-      department_list: [
-        { label: "总裁办", value: "1" },
-        { label: "总经理办", value: "2" },
-        { label: "人力资源部", value: "3" },
-        { label: "行政部", value: "4" },
-        { label: "财务部", value: "5" },
-        { label: "法务部", value: "6" },
-        { label: "执行部", value: "7" },
-        { label: "生产部", value: "8" },
-        { label: "交付部", value: "9" },
-        { label: "安监部", value: "10" },
-        { label: "其他支持部门", value: "11" },
-        { label: "党群部", value: "12" },
-        { label: "工会办", value: "13" },
-        { label: "运营部", value: "14" },
-        { label: "保卫部", value: "15" },
-        { label: "纪检部", value: "16" },
-        { label: "宣传部", value: "17" },
-        { label: "后勤部", value: "18" },
-        { label: "投诉部", value: "19" },
-        { label: "投资部", value: "20" },
-        { label: "金融部", value: "21" },
-        { label: "融资部", value: "22" },
-        { label: "业务部", value: "23" },
-        { label: "工程部", value: "24" },
-        { label: "销售部", value: "25" },
-        { label: "策划部", value: "26" },
-        { label: "技术部", value: "27" },
-        { label: "研发部", value: "28" },
-        { label: "研究部", value: "29" },
-        { label: "开发部", value: "30" },
-        { label: "法务部", value: "31" },
-        { label: "发展部", value: "32" },
-        { label: "前期部", value: "33" },
-        { label: "售前部", value: "34" },
-        { label: "售后部", value: "35" },
-        { label: "维修部", value: "36" },
-        { label: "统计部", value: "37" },
-        { label: "分析部", value: "38" },
-        { label: "项目部", value: "39" },
-        { label: "采购部", value: "40" },
-        { label: "材料部", value: "41" },
-        { label: "测试部", value: "42" },
-        { label: "公关部", value: "43" },
-        { label: "运维部", value: "44" },
-        { label: "其他部门", value: "45" },
-      ],
+      department_list: [],
       // 职位级别
-      rank_list: [
-        { label: "工程师", value: "1" },
-        { label: "程序员", value: "2" },
-        { label: "测试员", value: "3" },
-        { label: "服务员", value: "4" },
-        { label: "专员", value: "5" },
-        { label: "普通员工", value: "6" },
-        { label: "班长", value: "7" },
-        { label: "领班", value: "8" },
-        { label: "组长", value: "9" },
-        { label: "部门主管", value: "10" },
-        { label: "副主任", value: "11" },
-        { label: "主任", value: "12" },
-        { label: "部门经理", value: "13" },
-        { label: "副厂长", value: "14" },
-        { label: "厂长", value: "15" },
-        { label: "副总监", value: "16" },
-        { label: "总监", value: "17" },
-        { label: "业务负责人", value: "18" },
-        { label: "项目负责人", value: "19" },
-        { label: "总工", value: "20" },
-        { label: "技术负责人", value: "21" },
-        { label: "副总经理", value: "22" },
-        { label: "项目总经理", value: "23" },
-        { label: "区域城市总经理", value: "24" },
-        { label: "公司总经理", value: "25" },
-        { label: "秘书", value: "26" },
-        { label: "助理", value: "27" },
-        { label: "副部长", value: "28" },
-        { label: "部长", value: "29" },
-        { label: "副院长", value: "30" },
-        { label: "院长", value: "31" },
-        { label: "副书记", value: "32" },
-        { label: "书记", value: "33" },
-        { label: "副总裁", value: "34" },
-        { label: "总裁", value: "35" },
-        { label: "董事长", value: "36" },
-        { label: "其他职位", value: "37" },
-      ],
+      rank_list: [],
       // 学历
       education_list: [
         { label: "普通高校", value: "1" },
@@ -888,9 +771,55 @@ export default {
       },
     };
   },
-  mounted() {},
+  mounted() {
+    console.log(123);
+    this.getSelectData();
+  },
   created() {},
   methods: {
+    // 获取数据
+    getSelectData() {
+      const that = this;
+      // 汇报上级
+      that.$axios
+        .get("/api/company-position/option", {
+          type: 1,
+        })
+        .then((res) => {
+          that.superiors_list = res.data;
+        })
+        .catch((e) => {
+          that.$message.error({
+            message: e.message,
+          });
+        });
+      // 部门
+      that.$axios
+        .get("/api/company-position/option", {
+          type: 2,
+        })
+        .then((res) => {
+          that.department_list = res.data;
+        })
+        .catch((e) => {
+          that.$message.error({
+            message: e.message,
+          });
+        });
+      // 职位
+      that.$axios
+        .get("/api/company-position/option", {
+          type: 3,
+        })
+        .then((res) => {
+          that.rank_list = res.data;
+        })
+        .catch((e) => {
+          that.$message.error({
+            message: e.message,
+          });
+        });
+    },
     // 点击图标地址
     clickIconAddress(i) {
       this.addressType = i;
