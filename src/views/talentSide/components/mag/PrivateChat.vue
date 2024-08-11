@@ -1438,56 +1438,28 @@ export default {
           // 获取历史记录
           this.loadHistoryMessage(true);
 
-          this.goEasy.im.on(this.GoEasy.IM_EVENT.PRIVATE_MESSAGE_RECEIVED, this.onReceivedPrivateMessage); // 监听消息
+          this.goEasy.im.on(
+            this.GoEasy.IM_EVENT.PRIVATE_MESSAGE_RECEIVED,
+            this.onReceivedPrivateMessage
+          ); // 监听消息
 
           this.listenConversationUpdate(); //监听会话列表变化
           this.loadConversations(); //加载会话列表
           // 获取个人信息
           this.getUserProfile();
         }
-      })
+      });
     },
-    beforeDestroy() {
-      this.goEasy.im.off(this.GoEasy.IM_EVENT.PRIVATE_MESSAGE_RECEIVED, this.onReceivedPrivateMessage);
-      this.goEasy.im.off(this.GoEasy.IM_EVENT.CONVERSATIONS_UPDATED, this.renderConversations);
-    },
-      // 删除引用消息
-      clickCliseMessage(){
-        this.quoteMessageShow = false;
-        this.quoteMessage = '';
-      },
-      // 点击企业端头像
-      clickFriendAvatar(){
-        let friend = this.friend;
-        if(friend.company_id){
-          this.$router.push({
-              path:'/companyDetails',   //跳转的路径
-              query:{           //路由传参时push和query搭配使用 ，作用时传递参数
-                id:friend.company_id
-              }
-            })
-          // this.en_company_id= '';
-          // this.$nextTick( ()=>{
-          //   this.en_company_id = friend.company_id;
-          //   this.en_dialogVisible = true;
-          // })
-
-        }
-      },
-      handleEnClose(){
-        this.en_company_id = '';
-        this.en_dialogVisible = false;
-      },
-      // 点击头像跳转页面
-      clickUserImage(type){
-        if(type == 0){ // 个人主页
-          this.$router.push({path:'/careerIdentity'});
-        } else {
-          that.$message.error({
-            message: res.msg,
-          });
-        }
-      },
+    // beforeDestroy() {
+    //   this.goEasy.im.off(
+    //     this.GoEasy.IM_EVENT.PRIVATE_MESSAGE_RECEIVED,
+    //     this.onReceivedPrivateMessage
+    //   );
+    //   this.goEasy.im.off(
+    //     this.GoEasy.IM_EVENT.CONVERSATIONS_UPDATED,
+    //     this.renderConversations
+    //   );
+    // },
     //
 
     // 交换联系方式
