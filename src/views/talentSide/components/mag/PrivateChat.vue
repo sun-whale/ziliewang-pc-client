@@ -297,8 +297,7 @@
                     "
                   >
                     <h4
-                      class="message-phone-universal-card-header"
-                      style="color: #ff0000"
+                      class="message-phone-universal-card-header color-ff0000"
                     >
                       同意了面试邀请
                     </h4>
@@ -346,7 +345,7 @@
                       面试邀请
                     </h4>
                     <div class="message-phone-universal-card-footer">
-                      <span style="color: #ff0000">拒绝了面试邀请</span>
+                      <span class="color-ff0000">拒绝了面试邀请</span>
                     </div>
                   </div>
                   <!-- 拒绝面试邀请 结束 -->
@@ -1436,21 +1435,22 @@ export default {
       that.$axios.post("/api/user/operate-interview-invite", p).then((res) => {
         if (res.code == 0) {
           that.clickYqms(info);
-      // 获取历史记录
-      this.loadHistoryMessage(true);
+          // 获取历史记录
+          this.loadHistoryMessage(true);
 
-      this.goEasy.im.on(this.GoEasy.IM_EVENT.PRIVATE_MESSAGE_RECEIVED, this.onReceivedPrivateMessage); // 监听消息
+          this.goEasy.im.on(this.GoEasy.IM_EVENT.PRIVATE_MESSAGE_RECEIVED, this.onReceivedPrivateMessage); // 监听消息
 
-      this.listenConversationUpdate(); //监听会话列表变化
-      this.loadConversations(); //加载会话列表
-      // 获取个人信息
-      this.getUserProfile();
+          this.listenConversationUpdate(); //监听会话列表变化
+          this.loadConversations(); //加载会话列表
+          // 获取个人信息
+          this.getUserProfile();
+        }
+      })
     },
     beforeDestroy() {
       this.goEasy.im.off(this.GoEasy.IM_EVENT.PRIVATE_MESSAGE_RECEIVED, this.onReceivedPrivateMessage);
       this.goEasy.im.off(this.GoEasy.IM_EVENT.CONVERSATIONS_UPDATED, this.renderConversations);
     },
-    methods: {
       // 删除引用消息
       clickCliseMessage(){
         this.quoteMessageShow = false;
@@ -1487,8 +1487,7 @@ export default {
             message: res.msg,
           });
         }
-      });
-    },
+      },
     //
 
     // 交换联系方式
@@ -3083,5 +3082,8 @@ export default {
 }
 .message-quote {
   border: 1px solid #000;
+}
+.color-ff0000 {
+  color: #ff0000;
 }
 </style>
