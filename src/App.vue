@@ -33,7 +33,7 @@ export default {
       // 初始化io对象
       var socket = io("http://59.110.24.172:2120");
       // uid 可以为网站用户的uid
-      var uid = 1; // 单个用户
+      var uid = localStorage.getItem("realUid"); // 单个用户
       // var uid = Math.floor(Math.random() * (10 - 1 + 1)) + 1; // 多个用户
       // 当socket连接后发送登录请求
       socket.on("connect", function () {
